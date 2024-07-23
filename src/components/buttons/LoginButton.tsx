@@ -3,7 +3,7 @@ import { View, Text, Pressable, } from 'react-native';
 
 interface CustomInputProps {
   label: string;
-  onClick: () => {};
+  onClick: () => void;
 }
 
 const LoginButton: React.FC<CustomInputProps> = ({ label, onClick }) => {

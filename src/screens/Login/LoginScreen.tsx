@@ -1,18 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  View,
-  Text,
-  Animated,
-  Easing,
-  Dimensions,
-  Pressable,
-} from "react-native";
+import { View, Animated, Easing, Dimensions } from "react-native";
 import { useAuth } from "../../contexts/AuthContext";
-import LoginInput from "@/src/components/inputs/LoginInput";
-import LoginButton from "@/src/components/buttons/LoginButton";
-import { CheckBox } from "@rneui/themed";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import LoginComponent from "./LoginComponent";
+import RecoverComponent from "./RecoverComponent";
+import ChangePasswordComponent from "./ChangePasswordComponent";
 
 const { height } = Dimensions.get("window");
 
@@ -20,9 +12,12 @@ const LoginScreen = () => {
   const { onLogin } = useAuth();
 
   const [checked, setChecked] = useState<boolean>(false);
-  const [cgc, setCgc] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-
+  const [cgc, setCgc] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [newPasswordRepeat, setNewPasswordRepeat] = useState<string>("");
+  const [verificationCode, setVerificationCode] = useState<string>("");
+  const [view, setView] = useState<"login" | "recover" | "changePassword">("login");
   const translationLogo = useRef(new Animated.Value(0)).current;
   const translationView = useRef(new Animated.Value(height)).current;
 
@@ -33,6 +28,28 @@ const LoginScreen = () => {
     } else {
       alert("Login Successful");
     }
+  };
+
+  const sendEmail = async () => {
+    // lógica para enviar email
+    setView("changePassword"); // Simula que o e-mail foi enviado e agora deve alterar a senha
+  };
+
+  const handlePasswordChange = () => {
+    if (newPassword !== newPasswordRepeat) {
+      alert("As senhas não coincidem");
+      return;
+    }
+    changePassword(newPassword, verificationCode);
+  };
+
+  const changePassword = async (newPassword: string, verificationCode: string) => {
+    // lógica para trocar a senha
+    setView("login")
+  };
+
+  const toggleComponent = (newView: "login" | "recover" | "changePassword") => {
+    setView(newView);
   };
 
   useEffect(() => {
@@ -59,7 +76,7 @@ const LoginScreen = () => {
       contentContainerStyle={{ flex: 1 }}
       resetScrollToCoords={{ x: 0, y: 0 }}
       scrollEnabled={true}
-      extraScrollHeight={25}
+      extraScrollHeight={40}
     >
       <View className="flex-1 h-full justify-center items-center bg-bordo gap-10">
         <Animated.Image
@@ -74,42 +91,38 @@ const LoginScreen = () => {
           }}
           className="absolute bottom-0 w-full justify-center items-center bg-white rounded-t-3xl"
         >
-          <View className="flex-1 w-10/12 items-center gap-2 py-7">
-            <Text className="px-3 text-lg text-black mb-5 font-bold">
-              Login
-            </Text>
-            <LoginInput
-              label={"CPF ou CNPJ"}
-              placeholder={"Digite seu CPF ou CNPJ"}
-              type="number-pad"
-              dataType="cgc"
-              value={cgc}
-              onChangeText={setCgc}
+          {view === "login" && (
+            <LoginComponent
+              cgc={cgc}
+              setCgc={setCgc}
+              password={password}
+              setPassword={setPassword}
+              checked={checked}
+              setChecked={setChecked}
+              handleLogin={handleLogin}
+              toggleComponent={() => toggleComponent("recover")}
             />
-            <LoginInput
-              label={"Senha"}
-              placeholder={"Digite sua senha"}
-              isPassword
-              value={password}
-              onChangeText={setPassword}
+          )}
+          {view === "recover" && (
+            <RecoverComponent
+              cgc={cgc}
+              setCgc={setCgc}
+              sendEmail={sendEmail}
+              toggleComponent={() => toggleComponent("login")}
             />
-            <View className="p-0 mt-5 flex-row w-full items-center justify-between">
-              <CheckBox
-                center
-                title="Mantenha-me conectado"
-                checked={checked}
-                onPress={() => setChecked(!checked)}
-                containerStyle={{ margin: 0, padding: 0, gap: 0 }}
-                textStyle={{ fontSize: 12, fontWeight: '400', color: '#707070' }}
-                checkedIcon={<Icon name="check-square" size={24} color="grey" />}
-                uncheckedIcon={<Icon name="square-o" size={24} color="grey" />}
-              />
-              <Pressable>
-                <Text className="text-sm font-normal text-[#707070]">Esqueci a Senha</Text>
-              </Pressable>
-            </View>
-            <LoginButton label={"Login"} onClick={handleLogin} />
-          </View>
+          )}
+          {view === "changePassword" && (
+            <ChangePasswordComponent
+              toggleComponent={() => toggleComponent("login")}
+              changePassword={handlePasswordChange}
+              newPassword={newPassword}
+              setNewPassword={setNewPassword}
+              newPasswordRepeat={newPasswordRepeat}
+              setNewPasswordRepeat={setNewPasswordRepeat}
+              verificationCode={verificationCode}
+              setVerificationCode={setVerificationCode}
+            />
+          )}
         </Animated.View>
       </View>
     </KeyboardAwareScrollView>
