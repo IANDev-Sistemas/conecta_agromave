@@ -7,38 +7,12 @@ interface CustomInputProps {
   placeholder: string;
   isPassword?: boolean;
   type?: KeyboardTypeOptions;
-  dataType?: 'cgc';
   value: string;
   onChangeText: (text: string) => void;
 }
 
-const applyMask = (value: string, maskType: 'cgc' | undefined) => {
-  if (maskType === 'cgc') {
-    if (value.length <= 14) {
-      return value
-        .replace(/\D/g, '')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    } else {
-      return value
-        .replace(/\D/g, '')
-        .replace(/(\d{2})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1/$2')
-        .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
-    }
-  }
-  return value;
-};
-
-const LoginInput: React.FC<CustomInputProps> = ({ label, placeholder, isPassword = false, type = 'default', dataType, value, onChangeText }) => {
+const LoginInput: React.FC<CustomInputProps> = ({ label, placeholder, isPassword = false, type = 'default', value, onChangeText }) => {
   const [secureText, setSecureText] = useState(isPassword);
-
-  const handleChange = (text: string) => {
-    const maskedText = applyMask(text, dataType);
-    onChangeText(maskedText);
-  };
 
   const toggleSecureText = () => {
     setSecureText(!secureText);
@@ -55,7 +29,7 @@ const LoginInput: React.FC<CustomInputProps> = ({ label, placeholder, isPassword
           secureTextEntry={secureText}
           keyboardType={type}
           value={value}
-          onChangeText={handleChange}
+          onChangeText={onChangeText}
           autoComplete='off'
           textContentType='none'
         />

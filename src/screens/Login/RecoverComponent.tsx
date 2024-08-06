@@ -1,5 +1,6 @@
 import LoginButton from "@/src/components/buttons/LoginButton";
 import LoginInput from "@/src/components/inputs/LoginInput";
+import { applyMask, removeMask } from "@/src/helpers/mask";
 import { AntDesign } from "@expo/vector-icons";
 import React from "react";
 import { View, Text, Pressable } from "react-native";
@@ -11,12 +12,19 @@ interface RecoverProps {
   toggleComponent: () => void;
 }
 
+
 const RecoverComponent: React.FC<RecoverProps> = ({
   cgc,
   setCgc,
   sendEmail,
   toggleComponent,
 }) => {
+
+  const handleCgcChange = (text: string) => {
+    const unmaskedValue = removeMask(text);
+    setCgc(unmaskedValue);
+  };
+
   return (
     <View className="flex-1 w-10/12 gap-2 py-7">
       <View className="flex flex-row w-2/3 justify-between">
@@ -31,9 +39,8 @@ const RecoverComponent: React.FC<RecoverProps> = ({
         label="CPF ou CNPJ"
         placeholder="Digite seu CPF ou CNPJ"
         type="number-pad"
-        dataType="cgc"
-        value={cgc}
-        onChangeText={setCgc}
+        value={applyMask(cgc, 'cgc')}
+        onChangeText={handleCgcChange}
       />
       <LoginButton label="Enviar E-mail de Recuperação" onClick={sendEmail} />
     </View>

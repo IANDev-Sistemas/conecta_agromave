@@ -4,6 +4,7 @@ import { CheckBox } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
+import { applyMask, removeMask } from '@/src/helpers/mask';
 
 interface LoginProps {
   cgc: string;
@@ -14,6 +15,7 @@ interface LoginProps {
   setChecked: (checked: boolean) => void;
   handleLogin: () => {};
   toggleComponent: () => void;
+  msg: string
 }
 
 const LoginComponent: React.FC<LoginProps> = ({
@@ -25,17 +27,23 @@ const LoginComponent: React.FC<LoginProps> = ({
   setChecked,
   handleLogin,
   toggleComponent,
+  msg
 }) => {
+
+  const handleCgcChange = (text: string) => {
+    const unmaskedValue = removeMask(text);
+    setCgc(unmaskedValue);
+  };
+
   return (
     <View className="flex-1 w-10/12 items-center gap-2 py-7">
-      <Text className="px-3 text-lg text-black mb-5 font-bold">Login</Text>
+      <Text className="px-3 text-lg text-black mb-2 font-bold">Login</Text>
       <LoginInput
         label="CPF ou CNPJ"
         placeholder="Digite seu CPF ou CNPJ"
         type="number-pad"
-        dataType="cgc"
-        value={cgc}
-        onChangeText={setCgc}
+        value={applyMask(cgc, 'cgc')}
+        onChangeText={handleCgcChange}
       />
       <LoginInput
         label="Senha"
@@ -58,6 +66,9 @@ const LoginComponent: React.FC<LoginProps> = ({
         <Pressable onPress={toggleComponent}>
           <Text className="text-sm font-normal text-[#707070]">Esqueci a Senha</Text>
         </Pressable>
+      </View>
+      <View className='w-full p-2' >
+      <Text className='text-left color-bordo'>{msg}</Text>
       </View>
       <LoginButton label="Login" onClick={handleLogin} />
     </View>

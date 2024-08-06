@@ -9,10 +9,11 @@ import ChangePasswordComponent from "./ChangePasswordComponent";
 const { height } = Dimensions.get("window");
 
 const LoginScreen = () => {
-  const { onLogin } = useAuth();
+  const { authState, onLogin, checkValidationCode, forgotPassword, changePassword } = useAuth();
 
   const [checked, setChecked] = useState<boolean>(false);
   const [cgc, setCgc] = useState<string>("");
+  const [msg, setMsg] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [newPasswordRepeat, setNewPasswordRepeat] = useState<string>("");
@@ -22,35 +23,45 @@ const LoginScreen = () => {
   const translationView = useRef(new Animated.Value(height)).current;
 
   const handleLogin = async () => {
-    const result = await onLogin?.(cgc, password);
+    setMsg("")
+    const result = await onLogin?.(cgc, password, checked);
+    console.log(result);
     if (result?.error) {
-      alert(result.msg);
-    } else {
-      alert("Login Successful");
+      setMsg(result.msg);
     }
   };
 
   const sendEmail = async () => {
-    // lógica para enviar email
-    setView("changePassword"); // Simula que o e-mail foi enviado e agora deve alterar a senha
+    const response =  await forgotPassword?.(cgc);
+
+    setView("changePassword"); 
   };
 
-  const handlePasswordChange = () => {
+  const handlePasswordChange = async () => {
     if (newPassword !== newPasswordRepeat) {
       alert("As senhas não coincidem");
       return;
     }
-    changePassword(newPassword, verificationCode);
-  };
-
-  const changePassword = async (newPassword: string, verificationCode: string) => {
-    // lógica para trocar a senha
-    setView("login")
+    await changePassword?.(cgc, verificationCode, newPassword );
   };
 
   const toggleComponent = (newView: "login" | "recover" | "changePassword") => {
     setView(newView);
   };
+
+  const validateCode = async () => {
+    const result = await checkValidationCode?.(cgc, verificationCode)
+    if (result?.error) {
+      alert(result.msg);
+    }
+  }
+
+  useEffect(() => {
+    if(authState?.status === "needupdate")
+      toggleComponent("changePassword")
+    if(authState?.status === "login")
+      toggleComponent("login")
+  }, [authState]);
 
   useEffect(() => {
     Animated.parallel([
@@ -93,6 +104,7 @@ const LoginScreen = () => {
         >
           {view === "login" && (
             <LoginComponent
+              msg={msg}
               cgc={cgc}
               setCgc={setCgc}
               password={password}
@@ -113,13 +125,13 @@ const LoginScreen = () => {
           )}
           {view === "changePassword" && (
             <ChangePasswordComponent
+              validateCode={validateCode}
               toggleComponent={() => toggleComponent("login")}
               changePassword={handlePasswordChange}
               newPassword={newPassword}
               setNewPassword={setNewPassword}
               newPasswordRepeat={newPasswordRepeat}
               setNewPasswordRepeat={setNewPasswordRepeat}
-              verificationCode={verificationCode}
               setVerificationCode={setVerificationCode}
             />
           )}

@@ -4,6 +4,9 @@ import { AntDesign } from "@expo/vector-icons";
 import LoginInput from "@/src/components/inputs/LoginInput";
 import LoginButton from "@/src/components/buttons/LoginButton";
 import VerificationCodeInput from "./VerificationCodeInput";
+import { useAuth } from "@/src/contexts/AuthContext";
+
+
 
 interface ChangePasswordProps {
   toggleComponent: () => void;
@@ -12,8 +15,8 @@ interface ChangePasswordProps {
   setNewPassword: (text: string) => void;
   newPasswordRepeat: string;
   setNewPasswordRepeat: (text: string) => void;
-  verificationCode: string;
   setVerificationCode: (text: string) => void;
+  validateCode: () => void;
 }
 
 const ChangePasswordComponent: React.FC<ChangePasswordProps> = ({
@@ -23,9 +26,10 @@ const ChangePasswordComponent: React.FC<ChangePasswordProps> = ({
   setNewPassword,
   newPasswordRepeat,
   setNewPasswordRepeat,
-  verificationCode,
-  setVerificationCode
+  setVerificationCode,
+  validateCode
 }) => {
+  const { authState } = useAuth();
   return (
     <View className="flex-1 w-10/12 gap-2 py-7">
       <View className="flex flex-row w-2/3 justify-between">
@@ -36,8 +40,14 @@ const ChangePasswordComponent: React.FC<ChangePasswordProps> = ({
           Alterar Senha
         </Text>
       </View>
-      <Text className="text-black text-lg font-bold px-3">Código de Verificação</Text>
-      <VerificationCodeInput onCodeFilled={setVerificationCode} />
+      { authState?.status ==='needupdate' &&
+        (<>
+          <Text className="text-black text-lg font-bold px-3">Código de Verificação</Text>
+          <VerificationCodeInput onCodeFilled={setVerificationCode} />
+          <LoginButton label="Validar" onClick={validateCode} />
+        </>)
+      }
+        { authState?.status ==='changePassword' &&<>
       <LoginInput
         label="Nova Senha"
         placeholder="Digite sua nova senha"
@@ -53,6 +63,7 @@ const ChangePasswordComponent: React.FC<ChangePasswordProps> = ({
         onChangeText={setNewPasswordRepeat}
       />
       <LoginButton label="Alterar Senha" onClick={changePassword} />
+      </>}
     </View>
   );
 };
