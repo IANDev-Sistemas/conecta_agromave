@@ -6,20 +6,20 @@ import React from "react";
 import { View, Text, Pressable } from "react-native";
 
 interface RecoverProps {
+  msg: string;
   cgc: string;
   setCgc: (text: string) => void;
   sendEmail: () => {};
   toggleComponent: () => void;
 }
 
-
 const RecoverComponent: React.FC<RecoverProps> = ({
+  msg,
   cgc,
   setCgc,
   sendEmail,
   toggleComponent,
 }) => {
-
   const handleCgcChange = (text: string) => {
     const unmaskedValue = removeMask(text);
     setCgc(unmaskedValue);
@@ -39,10 +39,17 @@ const RecoverComponent: React.FC<RecoverProps> = ({
         label="CPF ou CNPJ"
         placeholder="Digite seu CPF ou CNPJ"
         type="number-pad"
-        value={applyMask(cgc, 'cgc')}
+        value={applyMask(cgc, "cgc")}
         onChangeText={handleCgcChange}
       />
-      <LoginButton label="Enviar E-mail de Recuperação" onClick={sendEmail} />
+      <View className="w-full p-1">
+        <Text className="text-left color-bordo">{msg}</Text>
+      </View>
+      <LoginButton
+        disabled={cgc.length > 10 ? false : true}
+        label="Enviar E-mail de Recuperação"
+        onClick={sendEmail}
+      />
     </View>
   );
 };

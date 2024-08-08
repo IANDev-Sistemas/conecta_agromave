@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import * as SecureStore from 'expo-secure-store';
 import apiPublic from '../api/api';
 import { getHashSHA1 } from '../helpers/getHash';
+import * as Notifications from 'expo-notifications';
+import { Alert } from 'react-native';
 
 interface AuthProps {
   authState?: {
@@ -14,6 +16,29 @@ interface AuthProps {
   forgotPassword?: (cgc: string) => Promise<any>;
   checkValidationCode?: (cgc:string, validateCode:string) =>Promise<any>
   changePassword?: (cgc:string, validateCode:string, newPwd:string) =>Promise<any>
+}
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
+const handleNotification = async (msg:string, title:string)=>{
+  let { status }:any = await Notifications.getPresentedNotificationsAsync();
+
+  if(status!== 'granted'){
+    await Notifications.requestPermissionsAsync();
+  }
+  await Notifications.scheduleNotificationAsync({
+    content:{
+        title: title,
+        body: msg,
+    },
+    trigger:null,
+  })
 }
 
 const TOKEN_KEY = 'my-jwt';
@@ -55,7 +80,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (cgc: string, password: string, checked:boolean) => {
     const passwordHash = getHashSHA1(password)
-
     try {
       const response = await apiPublic.get('/odwctrl', {
         params: {
@@ -111,6 +135,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const forgotPassword = async (cgc: string) =>{
+    console.log(`cgc:${cgc}`)
     try {
       const response = await apiPublic.get('/odwctrl', {
         params: {
@@ -123,6 +148,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       if(response.data.status ==='ok'){
+        handleNotification(response.data.msg, "E-mail Enviado 📩")
+
         setAuthState({
           token:null,
           authenticated: false,
@@ -131,7 +158,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         return response.data
       }
-     
+      return response.data
     } catch (error) {
       console.error('Error during password change:', error);
       return {
@@ -163,7 +190,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         return response.data
       }
-     
+      return response.data
     } catch (error) {
       console.error('Error during password change:', error);
       return {
@@ -173,6 +200,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
   const changePassword = async (cgc:string, validationCode: string, newPwd:string) =>{
+    console.log(`cgc:${cgc}, code:${validationCode}, newPwd: ${newPwd}`)
     try {
       const response = await apiPublic.get('/odwctrl', {
         params: {
@@ -187,6 +215,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       if(response.data.status ==='ok'){
+
+        Alert.alert(response.data.msg)
+
         setAuthState({
           token:null,
           authenticated: false,
@@ -195,7 +226,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         return response.data
       }
-     
+      return response.data
     } catch (error) {
       console.error('Error during password change:', error);
       return {

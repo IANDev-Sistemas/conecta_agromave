@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Animated, Easing, Dimensions } from "react-native";
+import { View, Animated, Easing, Dimensions, ImageBackground } from "react-native";
 import { useAuth } from "../../contexts/AuthContext";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import LoginComponent from "./LoginComponent";
@@ -23,9 +23,7 @@ const LoginScreen = () => {
   const translationView = useRef(new Animated.Value(height)).current;
 
   const handleLogin = async () => {
-    setMsg("")
     const result = await onLogin?.(cgc, password, checked);
-    console.log(result);
     if (result?.error) {
       setMsg(result.msg);
     }
@@ -34,25 +32,36 @@ const LoginScreen = () => {
   const sendEmail = async () => {
     const response =  await forgotPassword?.(cgc);
 
-    setView("changePassword"); 
+    if(response?.status === 'error')
+      setMsg(response.msg)
   };
 
   const handlePasswordChange = async () => {
+    setMsg("")
     if (newPassword !== newPasswordRepeat) {
-      alert("As senhas não coincidem");
-      return;
+      setMsg("Senhas não coincidem")
     }
-    await changePassword?.(cgc, verificationCode, newPassword );
+    else{
+      const result =  await changePassword?.(cgc, verificationCode, newPassword );
+      if (result?.error) {
+        setMsg(result.msg);
+      }
+    }
   };
 
   const toggleComponent = (newView: "login" | "recover" | "changePassword") => {
     setView(newView);
+    setMsg("")
   };
 
   const validateCode = async () => {
+    setMsg("")
     const result = await checkValidationCode?.(cgc, verificationCode)
-    if (result?.error) {
-      alert(result.msg);
+    if(result.status === 'error')
+      setMsg(result.msg)
+    else{
+      setNewPassword('')
+      setNewPasswordRepeat('')
     }
   }
 
@@ -83,61 +92,66 @@ const LoginScreen = () => {
   }, [height, translationLogo, translationView]);
 
   return (
-    <KeyboardAwareScrollView
-      contentContainerStyle={{ flex: 1 }}
-      resetScrollToCoords={{ x: 0, y: 0 }}
-      scrollEnabled={true}
-      extraScrollHeight={40}
-    >
-      <View className="flex-1 h-full justify-center items-center bg-bordo gap-10">
-        <Animated.Image
-          style={{ transform: [{ translateY: translationLogo }] }}
-          source={require("../../../assets/images/conecta_logo.png")}
-          className="absolute"
-        />
-        <Animated.View
-          style={{
-            transform: [{ translateY: translationView }],
-            height: "60%",
-          }}
-          className="absolute bottom-0 w-full justify-center items-center bg-white rounded-t-3xl"
-        >
-          {view === "login" && (
-            <LoginComponent
-              msg={msg}
-              cgc={cgc}
-              setCgc={setCgc}
-              password={password}
-              setPassword={setPassword}
-              checked={checked}
-              setChecked={setChecked}
-              handleLogin={handleLogin}
-              toggleComponent={() => toggleComponent("recover")}
-            />
-          )}
-          {view === "recover" && (
-            <RecoverComponent
-              cgc={cgc}
-              setCgc={setCgc}
-              sendEmail={sendEmail}
-              toggleComponent={() => toggleComponent("login")}
-            />
-          )}
-          {view === "changePassword" && (
-            <ChangePasswordComponent
-              validateCode={validateCode}
-              toggleComponent={() => toggleComponent("login")}
-              changePassword={handlePasswordChange}
-              newPassword={newPassword}
-              setNewPassword={setNewPassword}
-              newPasswordRepeat={newPasswordRepeat}
-              setNewPasswordRepeat={setNewPasswordRepeat}
-              setVerificationCode={setVerificationCode}
-            />
-          )}
-        </Animated.View>
-      </View>
-    </KeyboardAwareScrollView>
+    <ImageBackground source={require("../../../assets/images/background.png")} style={{flex:1}}>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{ flex: 1 }}
+        resetScrollToCoords={{ x: 0, y: 0 }}
+        scrollEnabled={true}
+        extraScrollHeight={40}
+      >
+        <View className="flex-1 h-full justify-center items-center gap-10">
+          <Animated.Image
+            style={{ transform: [{ translateY: translationLogo }] }}
+            source={require("../../../assets/images/conecta_logo_new.png")}
+            className="absolute"
+          />
+          <Animated.View
+            style={{
+              transform: [{ translateY: translationView }],
+              height: "65%",
+            }}
+            className="absolute bottom-0 w-full justify-center items-center bg-white rounded-t-3xl"
+          >
+            {view === "login" && (
+              <LoginComponent
+                msg={msg}
+                cgc={cgc}
+                setCgc={setCgc}
+                password={password}
+                setPassword={setPassword}
+                checked={checked}
+                setChecked={setChecked}
+                handleLogin={handleLogin}
+                toggleComponent={() => toggleComponent("recover")}
+              />
+            )}
+            {view === "recover" && (
+              <RecoverComponent
+                msg={msg}
+                cgc={cgc}
+                setCgc={setCgc}
+                sendEmail={sendEmail}
+                toggleComponent={() => toggleComponent("login")}
+              />
+            )}
+            {view === "changePassword" && (
+              <ChangePasswordComponent
+                msg={msg}
+                validateCode={validateCode}
+                toggleComponent={() => toggleComponent("login")}
+                changePassword={handlePasswordChange}
+                newPassword={newPassword}
+                setNewPassword={setNewPassword}
+                newPasswordRepeat={newPasswordRepeat}
+                setNewPasswordRepeat={setNewPasswordRepeat}
+                setVerificationCode={setVerificationCode}
+                verificationCode={verificationCode}
+              />
+            )}
+          </Animated.View>
+        </View>
+      </KeyboardAwareScrollView>
+    </ImageBackground>
   );
 };
 

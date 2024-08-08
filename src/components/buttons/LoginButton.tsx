@@ -1,18 +1,45 @@
 import React from 'react';
-import { View, Text, Pressable, } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-interface CustomInputProps {
+interface LoginButtonProps {
   label: string;
   onClick: () => void;
+  disabled?: boolean; // Propriedade opcional
 }
 
-const LoginButton: React.FC<CustomInputProps> = ({ label, onClick }) => {
-
+const LoginButton: React.FC<LoginButtonProps> = ({ label, onClick, disabled = false }) => {
   return (
-        <Pressable className='mt-5 w-full justify-center items-center h-[50px] rounded-full bg-bordo' onPress={onClick}>
-            <Text className="text-lg text-white font-bold">{label}</Text>
-        </Pressable>
+    <TouchableOpacity
+      style={[styles.button, disabled && styles.buttonDisabled]}
+      onPress={onClick}
+      disabled={disabled}
+    >
+      <Text style={[styles.buttonText, disabled && styles.buttonTextDisabled]}>{label}</Text>
+    </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    marginTop: 10,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#800020', 
+  },
+  buttonDisabled: {
+    backgroundColor: '#d3d3d3',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  buttonTextDisabled: {
+    color: '#a9a9a9',
+  },
+});
 
 export default LoginButton;

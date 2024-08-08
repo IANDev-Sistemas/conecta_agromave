@@ -1,12 +1,13 @@
-import LoginButton from '@/src/components/buttons/LoginButton';
-import LoginInput from '@/src/components/inputs/LoginInput';
-import { CheckBox } from '@rneui/themed';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
+import { CheckBox } from '@rneui/themed';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import LoginButton from '@/src/components/buttons/LoginButton';
+import LoginInput from '@/src/components/inputs/LoginInput';
 import { applyMask, removeMask } from '@/src/helpers/mask';
 
 interface LoginProps {
+  msg: string;
   cgc: string;
   setCgc: (text: string) => void;
   password: string;
@@ -15,10 +16,10 @@ interface LoginProps {
   setChecked: (checked: boolean) => void;
   handleLogin: () => {};
   toggleComponent: () => void;
-  msg: string
 }
 
 const LoginComponent: React.FC<LoginProps> = ({
+  msg,
   cgc,
   setCgc,
   password,
@@ -27,9 +28,7 @@ const LoginComponent: React.FC<LoginProps> = ({
   setChecked,
   handleLogin,
   toggleComponent,
-  msg
 }) => {
-
   const handleCgcChange = (text: string) => {
     const unmaskedValue = removeMask(text);
     setCgc(unmaskedValue);
@@ -67,8 +66,8 @@ const LoginComponent: React.FC<LoginProps> = ({
           <Text className="text-sm font-normal text-[#707070]">Esqueci a Senha</Text>
         </Pressable>
       </View>
-      <View className='w-full p-2' >
-      <Text className='text-left color-bordo'>{msg}</Text>
+      <View className='w-full p-2'>
+        <Text className='text-left color-bordo'>{msg}</Text>
       </View>
       <LoginButton label="Login" onClick={handleLogin} />
     </View>

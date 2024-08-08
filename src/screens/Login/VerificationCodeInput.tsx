@@ -14,14 +14,17 @@ const VerificationCodeInput: React.FC<VerificationCodeInputProps> = ({ onCodeFil
       const newCode = [...code];
       newCode[index] = text;
       setCode(newCode);
+      onCodeFilled(newCode.join("")); // Chama a função com o código atualizado
 
       if (text && index < 5) {
         inputs.current[index + 1]?.focus();
       }
+    }
+  };
 
-      if (newCode.every(char => char !== "")) {
-        onCodeFilled(newCode.join(""));
-      }
+  const handleKeyPress = (nativeEvent: any, index: number, char: string) => {
+    if (nativeEvent.key === "Backspace" && index > 0 && !char) {
+      inputs.current[index - 1]?.focus();
     }
   };
 
@@ -38,11 +41,7 @@ const VerificationCodeInput: React.FC<VerificationCodeInputProps> = ({ onCodeFil
           maxLength={1}
           value={char}
           onChangeText={text => handleChangeText(text, index)}
-          onKeyPress={({ nativeEvent }) => {
-            if (nativeEvent.key === "Backspace" && index > 0 && !char) {
-              inputs.current[index - 1]?.focus();
-            }
-          }}
+          onKeyPress={({ nativeEvent }) => handleKeyPress(nativeEvent, index, char)}
         />
       ))}
     </View>
