@@ -6,6 +6,7 @@ import { Divider } from "@rneui/themed";
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigationState } from "@react-navigation/native";
 import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { Calendar, CardPos, House, Profile2User, ProfileCircle, Routing, TicketStar } from "iconsax-react-native";
 
 const statusBarHeight = Platform.OS === "ios" ? 50 : Constants.statusBarHeight+20;
 
@@ -80,10 +81,13 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
   };
 
   const menuItems = [
-    { icon: <FontAwesome name="users" size={24} />, label: "Clientes", route: "Clientes" },
-    { icon: <MaterialIcons name="person-search" size={24} />, label: "Consultor", route: "Consultor" },
-    { icon: <MaterialCommunityIcons name="map-marker-distance" size={24} />, label: "Visitas", route: "Visitas" },
-    { icon: <FontAwesome name="briefcase" size={24} />, label: "Serviços", route: "Servicos" }
+    { icon: <ProfileCircle size={30} color="white" variant="Bold" />, label: "Cliente", route: "Cliente" },
+    { icon: <House size="24" color="white"  />, label: "Propriedades", route: "Propriedades" },
+    { icon: <Routing size={24} />, label: "Visitas", route: "Visitas" },
+    { icon: <CardPos size={24} />, label: "Financeiro", route: "Financeiro" },
+    { icon: <Calendar size={24} />, label: "Agenda", route: "Agenda" },
+    { icon: <Profile2User size={24} />, label: "Consultor", route: "Consultor" },
+    { icon: <TicketStar size={24} />, label: "Eventos", route: "Eventos" },
   ];
 
   const profileItems = [

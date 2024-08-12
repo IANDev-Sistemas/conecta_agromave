@@ -5,6 +5,7 @@ import { Divider } from "@rneui/themed";
 import { useAuth } from "../contexts/AuthContext";
 import Constants from "expo-constants";
 import { expo } from "../../app.json";
+import { ProfileCircle } from "iconsax-react-native";
 
 const statusBarHeight = Constants.statusBarHeight;
 
@@ -15,7 +16,7 @@ const CustomHeader = ({
   setCardVisible: any;
   cardVisible: boolean;
 }) => {
-  const { onLogout } = useAuth();
+  const {authState, onLogout } = useAuth();
 
   const toggleCardVisibility = () => {
     setCardVisible(!cardVisible);
@@ -27,8 +28,9 @@ const CustomHeader = ({
         className="absolute w-full flex justify-center bg-bordo px-10"
         style={{ paddingTop: statusBarHeight, paddingVertical: 20 }}
       >
-        <Pressable className="w-20" onPress={toggleCardVisibility}>
-          <FontAwesome name="user-circle-o" size={30} color="white" />
+        <Pressable className="flex-row w-100 items-center gap-5" onPress={toggleCardVisibility}>
+          <ProfileCircle size={30} color="white" variant="Bold" />
+          <Text className="font-bold text-white" >Olá, {authState?.usuario?.nomeUsuario}</Text>
         </Pressable>
       </View>
 

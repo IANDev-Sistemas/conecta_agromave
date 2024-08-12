@@ -1,21 +1,37 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import * as SecureStore from 'expo-secure-store';
-import apiPublic from '../api/api';
-import { getHashSHA1 } from '../helpers/getHash';
-import * as Notifications from 'expo-notifications';
-import { Alert } from 'react-native';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import * as SecureStore from "expo-secure-store";
+import apiPublic from "../api/api";
+import { getHashSHA1 } from "../helpers/getHash";
+import * as Notifications from "expo-notifications";
+import { Alert } from "react-native";
 
 interface AuthProps {
   authState?: {
     token: string | null;
     authenticated: boolean | null;
     status: string | null;
+    usuario: {
+      usuario: string;
+      nomeUsuario: string;
+      idUsuario: number;
+      apiToken: string;
+    } | null;
   };
-  onLogin?: (cgc: string, password: string, checked:boolean) => Promise<any>;
+  onLogin?: (cgc: string, password: string, checked: boolean) => Promise<any>;
   onLogout?: () => Promise<any>;
   forgotPassword?: (cgc: string) => Promise<any>;
-  checkValidationCode?: (cgc:string, validateCode:string) =>Promise<any>
-  changePassword?: (cgc:string, validateCode:string, newPwd:string) =>Promise<any>
+  checkValidationCode?: (cgc: string, validateCode: string) => Promise<any>;
+  changePassword?: (
+    cgc: string,
+    validateCode: string,
+    newPwd: string
+  ) => Promise<any>;
 }
 
 Notifications.setNotificationHandler({
@@ -26,22 +42,22 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const handleNotification = async (msg:string, title:string)=>{
-  let { status }:any = await Notifications.getPresentedNotificationsAsync();
+const handleNotification = async (msg: string, title: string) => {
+  let { status }: any = await Notifications.getPresentedNotificationsAsync();
 
-  if(status!== 'granted'){
+  if (status !== "granted") {
     await Notifications.requestPermissionsAsync();
   }
   await Notifications.scheduleNotificationAsync({
-    content:{
-        title: title,
-        body: msg,
+    content: {
+      title: title,
+      body: msg,
     },
-    trigger:null,
-  })
-}
+    trigger: null,
+  });
+};
 
-const TOKEN_KEY = 'my-jwt';
+const TOKEN_KEY = "my-jwt";
 const AuthContext = createContext<AuthProps>({});
 
 export const useAuth = () => {
@@ -56,192 +72,221 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authState, setAuthState] = useState<{
     token: string | null;
     authenticated: boolean | null;
-    status:string |null;
+    status: string | null;
+    usuario: {
+      usuario: string;
+      nomeUsuario: string;
+      idUsuario: number;
+      apiToken: string;
+    } | null;
   }>({
     token: null,
     authenticated: null,
     status: null,
+    usuario: null,
   });
 
   useEffect(() => {
     const loadToken = async () => {
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
+      const usuarioString = await SecureStore.getItemAsync("Usuario_Details");
+
       if (token) {
+        const usuario = usuarioString ? JSON.parse(usuarioString) : null;
         setAuthState({
           token,
           authenticated: true,
-          status:"Ok"
+          status: "Ok",
+          usuario:
+            usuario &&
+            typeof usuario === "object" &&
+            "usuario" in usuario &&
+            "nomeUsuario" in usuario &&
+            "idUsuario" in usuario &&
+            "apiToken" in usuario
+              ? usuario
+              : null,
         });
       }
     };
+
     loadToken();
   }, []);
 
-
-  const login = async (cgc: string, password: string, checked:boolean) => {
-    const passwordHash = getHashSHA1(password)
+  const login = async (cgc: string, password: string, checked: boolean) => {
+    const passwordHash = getHashSHA1(password);
     try {
-      const response = await apiPublic.get('/odwctrl', {
+      const response = await apiPublic.get("/odwctrl", {
         params: {
-          action: 'execTarefa',
-          apelido: 'CNTAGROMAVE-api-public',
-          tKey: 'ec21c9ee-81fb-4346-8326-8abb8f24efc4',
-          scriptFunction: 'auth',
+          action: "execTarefa",
+          apelido: "CNTAGROMAVE-api-public",
+          tKey: "ec21c9ee-81fb-4346-8326-8abb8f24efc4",
+          scriptFunction: "auth",
           usr: cgc,
           pwd: `!${passwordHash}`,
         },
       });
 
       if (response.data.status !== "error") {
-     
-        if(response.data.status === "needupdate"){
+        if (response.data.status === "needupdate") {
           setAuthState({
-            token:null,
+            token: null,
             authenticated: false,
-            status: "needupdate"
+            status: "needupdate",
+            usuario: null,
           });
 
-          await forgotPassword(cgc)
-        }
-        else
-        {
-          const token = 'my-jwt'; 
+          await forgotPassword(cgc);
+        } else {
+          const token = "my-jwt";
 
           setAuthState({
-            token:token,
+            token: token,
             authenticated: true,
-            status: "Ok"
+            status: "Ok",
+            usuario: response.data.usuario,
           });
 
-          if(checked){
+          if (checked) {
             await SecureStore.setItemAsync(TOKEN_KEY, token);
           }
-         
-          return response.data
+
+          await SecureStore.setItemAsync(
+            "Usuario_Details",
+            JSON.stringify(response.data.usuario)
+          );
+          return response.data;
         }
       } else {
         return {
           error: true,
-          msg: response.data.msg || 'Usuário/senha inválido.',
+          msg: response.data.msg || "Usuário/senha inválido.",
         };
       }
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error("Error during login:", error);
       return {
         error: true,
-        msg: 'Usuário/senha inválido.',
+        msg: "Usuário/senha inválido.",
       };
     }
   };
 
-  const forgotPassword = async (cgc: string) =>{
-    console.log(`cgc:${cgc}`)
+  const forgotPassword = async (cgc: string) => {
+    console.log(`cgc:${cgc}`);
     try {
-      const response = await apiPublic.get('/odwctrl', {
+      const response = await apiPublic.get("/odwctrl", {
         params: {
-          action: 'execTarefa',
-          apelido: 'CNTAGROMAVE-api-public',
-          tKey: 'ec21c9ee-81fb-4346-8326-8abb8f24efc4',
-          scriptFunction: 'forgotPwd',
+          action: "execTarefa",
+          apelido: "CNTAGROMAVE-api-public",
+          tKey: "ec21c9ee-81fb-4346-8326-8abb8f24efc4",
+          scriptFunction: "forgotPwd",
           usr: cgc,
         },
       });
 
-      if(response.data.status ==='ok'){
-        handleNotification(response.data.msg, "E-mail Enviado 📩")
+      if (response.data.status === "ok") {
+        handleNotification(response.data.msg, "E-mail Enviado 📩");
 
         setAuthState({
-          token:null,
+          token: null,
           authenticated: false,
-          status: "needupdate"
+          status: "needupdate",
+          usuario: null,
         });
 
-        return response.data
+        return response.data;
       }
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Error during password change:', error);
+      console.error("Error during password change:", error);
       return {
         error: true,
-        msg: 'Invalid details',
+        msg: "Invalid details",
       };
     }
   };
 
-  const checkValidationCode = async (cgc:string, validationCode: string) =>{
+  const checkValidationCode = async (cgc: string, validationCode: string) => {
     try {
-      const response = await apiPublic.get('/odwctrl', {
+      const response = await apiPublic.get("/odwctrl", {
         params: {
-          action: 'execTarefa',
-          apelido: 'CNTAGROMAVE-api-public',
-          tKey: 'ec21c9ee-81fb-4346-8326-8abb8f24efc4',
-          scriptFunction: 'checkValidationCode',
-          usr: cgc,
-          validationCode: validationCode
-        },
-      });
-
-      if(response.data.status ==='ok'){
-        setAuthState({
-          token:null,
-          authenticated: false,
-          status: "changePassword"
-        });
-
-        return response.data
-      }
-      return response.data
-    } catch (error) {
-      console.error('Error during password change:', error);
-      return {
-        error: true,
-        msg: 'Invalid details',
-      };
-    }
-  }
-  const changePassword = async (cgc:string, validationCode: string, newPwd:string) =>{
-    console.log(`cgc:${cgc}, code:${validationCode}, newPwd: ${newPwd}`)
-    try {
-      const response = await apiPublic.get('/odwctrl', {
-        params: {
-          action: 'execTarefa',
-          apelido: 'CNTAGROMAVE-api-public',
-          tKey: 'ec21c9ee-81fb-4346-8326-8abb8f24efc4',
-          scriptFunction: 'updatePwd',
+          action: "execTarefa",
+          apelido: "CNTAGROMAVE-api-public",
+          tKey: "ec21c9ee-81fb-4346-8326-8abb8f24efc4",
+          scriptFunction: "checkValidationCode",
           usr: cgc,
           validationCode: validationCode,
-          newPwd:`@${newPwd}`
         },
       });
 
-      if(response.data.status ==='ok'){
-
-        Alert.alert(response.data.msg)
-
+      if (response.data.status === "ok") {
         setAuthState({
-          token:null,
+          token: null,
           authenticated: false,
-          status: "login"
+          status: "changePassword",
+          usuario: null,
         });
 
-        return response.data
+        return response.data;
       }
-      return response.data
+      return response.data;
     } catch (error) {
-      console.error('Error during password change:', error);
+      console.error("Error during password change:", error);
       return {
         error: true,
-        msg: 'Invalid details',
+        msg: "Invalid details",
       };
     }
-  }
+  };
+  const changePassword = async (
+    cgc: string,
+    validationCode: string,
+    newPwd: string
+  ) => {
+    console.log(`cgc:${cgc}, code:${validationCode}, newPwd: ${newPwd}`);
+    try {
+      const response = await apiPublic.get("/odwctrl", {
+        params: {
+          action: "execTarefa",
+          apelido: "CNTAGROMAVE-api-public",
+          tKey: "ec21c9ee-81fb-4346-8326-8abb8f24efc4",
+          scriptFunction: "updatePwd",
+          usr: cgc,
+          validationCode: validationCode,
+          newPwd: `@${newPwd}`,
+        },
+      });
+
+      if (response.data.status === "ok") {
+        Alert.alert(response.data.msg);
+
+        setAuthState({
+          token: null,
+          authenticated: false,
+          status: "login",
+          usuario: null,
+        });
+
+        return response.data;
+      }
+      return response.data;
+    } catch (error) {
+      console.error("Error during password change:", error);
+      return {
+        error: true,
+        msg: "Invalid details",
+      };
+    }
+  };
 
   const logout = async () => {
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     setAuthState({
       token: null,
       authenticated: false,
-      status:null
+      status: null,
+      usuario: null,
     });
   };
 
@@ -250,7 +295,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     onLogout: logout,
     checkValidationCode: checkValidationCode,
     forgotPassword: forgotPassword,
-    changePassword:changePassword,
+    changePassword: changePassword,
     authState,
   };
 

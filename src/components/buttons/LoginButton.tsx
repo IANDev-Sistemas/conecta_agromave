@@ -4,7 +4,7 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 interface LoginButtonProps {
   label: string;
   onClick: () => void;
-  disabled?: boolean; // Propriedade opcional
+  disabled?: boolean;
 }
 
 const LoginButton: React.FC<LoginButtonProps> = ({ label, onClick, disabled = false }) => {

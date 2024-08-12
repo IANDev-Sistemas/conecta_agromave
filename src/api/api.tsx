@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
 
-
 const baseURL = 'http://obs.grupoagromave.com.br:38080/bdoserver2.7/'; 
 
 const apiPublic = axios.create({

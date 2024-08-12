@@ -6,15 +6,12 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
-import Constants from "expo-constants";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { BottomTabNavigationProp, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../screens/Home";
 import Financeiro from "../screens/Financeiro";
 import Agenda from "../screens/Agenda";
-import Clientes from "../screens/Clientes";
+import Cliente from "../screens/Cliente/Cliente";
 import Consultor from "../screens/Consultor";
-import Visitas from "../screens/Visitas";
-import Servicos from "../screens/Servicos";
 import CustomDrawer from "./CustomDrawer";
 import CustomHeader from "./CustomHearder";
 import {
@@ -25,11 +22,18 @@ import {
   CardPos,
   More,
 } from "iconsax-react-native";
-import Propriedades from "../screens/Propriedades";
+import Propriedades from "../screens/Propriedades/Propriedades";
+import Eventos from "../screens/Eventos";
+import Visitas from "../screens/Visitas/Visitas";
+
+type BottomTabNavigation = {
+  Propriedades: undefined;
+  Visitas: { selectedFazenda?: number };
+};
+
+export type BottomTabsTypes = BottomTabNavigationProp<BottomTabNavigation> 
 
 const Tab = createBottomTabNavigator();
-const statusBarHeight =
-  Platform.OS === "ios" ? 50 : Constants.statusBarHeight + 10;
 
 const handleIcon = (label: string, focused: boolean, color: string) => {
   switch (label) {
@@ -207,9 +211,9 @@ const BottomTabs = ({ navigation }: any) => {
             }}
           />
           <Tab.Screen
-            name="Clientes"
-            component={Clientes}
-            options={{ tabBarButton: () => null }}
+            name="Cliente"
+            component={Cliente}
+            options={{ tabBarButton: () => null, headerShown: false }}
           />
           <Tab.Screen
             name="Consultor"
@@ -217,8 +221,8 @@ const BottomTabs = ({ navigation }: any) => {
             options={{ tabBarButton: () => null }}
           />
           <Tab.Screen
-            name="Servicos"
-            component={Servicos}
+            name="Eventos"
+            component={Eventos}
             options={{ tabBarButton: () => null }}
           />
         </Tab.Navigator>
