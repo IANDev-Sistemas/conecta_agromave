@@ -23,13 +23,11 @@ const Visitas = () => {
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const navigation = useNavigation();
 
-  // Verifica se o selectedFazenda foi passado como parâmetro, caso contrário, define como 0
   const [selectedFazenda, setSelectedFazenda] = useState<number>(
     route.params?.selectedFazenda || 0
   );
 
   useEffect(() => {
-    // Atualiza o estado selectedFazenda se o parâmetro mudar
     if (route.params?.selectedFazenda !== undefined) {
       setSelectedFazenda(route.params.selectedFazenda);
     }

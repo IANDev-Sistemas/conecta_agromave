@@ -6,7 +6,7 @@ import { Divider } from "@rneui/themed";
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigationState } from "@react-navigation/native";
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { Calendar, CardPos, House, Profile2User, ProfileCircle, Routing, TicketStar } from "iconsax-react-native";
+import { Calendar, CardPos, House, Logout, LogoutCurve, Profile2User, ProfileCircle, Routing, SmsNotification, TicketStar } from "iconsax-react-native";
 
 const statusBarHeight = Platform.OS === "ios" ? 50 : Constants.statusBarHeight+20;
 
@@ -20,7 +20,7 @@ interface MenuItemProps {
 
 const MenuItem: React.FC<MenuItemProps> = ({ icon, label, route, currentRoute, onPress }) => {
   const isActive = currentRoute === route;
-  const iconColor = isActive ? "white" : "#8B0000";
+  const iconColor = isActive ? "white" : "#F66E58";
   
   return (
     <TouchableOpacity
@@ -30,7 +30,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, label, route, currentRoute, o
         flexDirection: "row",
         gap: 10,
         alignItems: "center",
-        backgroundColor: isActive ? "#8B0000" : "transparent",
+        backgroundColor: isActive ? "#F66E58" : "transparent",
         borderRadius: 16,
         padding: 10,
       }}
@@ -81,7 +81,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
   };
 
   const menuItems = [
-    { icon: <ProfileCircle size={30} color="white" variant="Bold" />, label: "Cliente", route: "Cliente" },
+    { icon: <ProfileCircle size={30} color="white"  />, label: "Cliente", route: "Cliente" },
     { icon: <House size="24" color="white"  />, label: "Propriedades", route: "Propriedades" },
     { icon: <Routing size={24} />, label: "Visitas", route: "Visitas" },
     { icon: <CardPos size={24} />, label: "Financeiro", route: "Financeiro" },
@@ -91,8 +91,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
   ];
 
   const profileItems = [
-    { icon: <MaterialIcons name="settings" size={24} />, label: "Configurações", route: "Configurações" },
-    { icon: <MaterialIcons name="message" size={24} />, label: "Mensagens", route: "Mensagens" }
+    { icon: <SmsNotification  size={24} />, label: "Notificações", route: "Notificações" }
   ];
 
   return (
@@ -135,7 +134,6 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
           />
         ))}
         <Divider />
-        <Text className="font-bold text-l text-[#49454F]">Perfil</Text>
         {profileItems.map((item) => (
           <MenuItem
             key={item.route}
@@ -152,9 +150,9 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
         <Divider />
         <TouchableOpacity
           onPress={onLogout}
-          style={{padding:7, marginTop: 20, borderRadius: 16, backgroundColor: "#8B0000", justifyContent: "center", display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}
+          style={{padding:7, marginTop: 20, borderRadius: 16, backgroundColor: "#F66E58", justifyContent: "center", display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}
         >
-          <MaterialIcons name="logout" size={24} color="white" />
+          <LogoutCurve size={24} color="white" />
           <Text className="my-2 text-white font-bold">Sair</Text>
         </TouchableOpacity>
       </Animated.View>

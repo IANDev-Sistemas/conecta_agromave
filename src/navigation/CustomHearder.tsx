@@ -1,11 +1,13 @@
 import React from "react";
-import { View, Pressable, Text } from "react-native";
+import { View, Pressable, Text, TouchableOpacity } from "react-native";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { Divider } from "@rneui/themed";
 import { useAuth } from "../contexts/AuthContext";
 import Constants from "expo-constants";
 import { expo } from "../../app.json";
-import { ProfileCircle } from "iconsax-react-native";
+import { LogoutCurve, ProfileCircle } from "iconsax-react-native";
+import { useNavigation } from "@react-navigation/native";
+import { BottomTabsTypes } from "./BottomTabs";
 
 const statusBarHeight = Constants.statusBarHeight;
 
@@ -21,6 +23,7 @@ const CustomHeader = ({
   const toggleCardVisibility = () => {
     setCardVisible(!cardVisible);
   };
+  const navigation = useNavigation<BottomTabsTypes>();
 
   return (
     <View>
@@ -48,18 +51,20 @@ const CustomHeader = ({
           }}
         >
           <View className="flex-row gap-3 justify-center items-center py-4">
-            <FontAwesome name="cog" size={24} color="#8B0000" />
+            <TouchableOpacity onPress={()=>navigation.navigate("Cliente")} style={{display:'flex', flexDirection:'row', gap:10}}>
+            <ProfileCircle variant="Bold" size={24} color="#F66E58" />
             <Text className="text-lg text-[#49454F] font-bold">
-              Configurações
+              Cliente
             </Text>
+            </TouchableOpacity>
           </View>
           <Divider />
           <Text className="text-lg text-[#49454F] text-center my-4 font-bold" >Versão {expo.version}</Text>
           <Pressable
-            className="bg-[#8B0000] rounded-full p-2 gap-2  mx-4 my-2 flex flex-row items-center justify-center"
+            className="bg-[#F66E58] rounded-full p-2 gap-2  mx-4 my-2 flex flex-row items-center justify-center"
             onPress={onLogout}
           >
-            <MaterialIcons name="logout" size={24} color="white" />
+            <LogoutCurve size={24} color="white" />
             <Text className="text-white  font-bold">Sair</Text>
           </Pressable>
         </View>

@@ -8,13 +8,12 @@ import {
   Pressable,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
-import Consultor from "./Consultor";
 import { fazendas } from "../../../dummydata";
 import CustomDropdown from "@/src/components/inputs/Dropdown";
 import Header from "@/src/components/Header";
 import FazendaCard from "./FazendaCard";
 import { BottomTabsTypes } from "@/src/navigation/BottomTabs";
+import Consultor from "./ConsultorCardFazenda";
 
 interface Consultor {
   tipo: string;
@@ -56,13 +55,19 @@ const Propriedades: React.FC = () => {
         </Header>
 
         {selectedFazenda && (
-          <ScrollView
-            contentContainerStyle={{ }}
-            style={{ width: "100%" }}
-          >
-            <Pressable style={{ width: "100%", paddingHorizontal:10, justifyContent:"center", alignItems:'center',display:"flex", flexDirection:"column"  }}>
+          <ScrollView contentContainerStyle={{}} style={{ width: "100%" }}>
+            <Pressable
+              style={{
+                width: "100%",
+                paddingHorizontal: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
               <FazendaCard fazenda={selectedFazenda} />
-              <View className="text-left ml-16  w-full flex-column mt-8">
+              <View className="text-left ml-16  w-full flex-column mt-4">
                 <Text className="text-lg font-bold">Consultores</Text>
                 {selectedFazenda.consultores.map((consultor, index) => (
                   <Consultor key={index} {...consultor} />
@@ -74,11 +79,15 @@ const Propriedades: React.FC = () => {
                   justifyContent: "center",
                   alignItems: "center",
                 }}
-                onPress={() => navigation.navigate("Visitas", { selectedFazenda: selectedFazenda?.id })}
+                onPress={() =>
+                  navigation.navigate("Visitas", {
+                    selectedFazenda: selectedFazenda?.id,
+                  })
+                }
               >
                 <View
                   style={{ padding: 16 }}
-                  className="rounded-xl bg-bordo w-full items-center mt-10"
+                  className="rounded-xl bg-bordo w-full items-center mt-8"
                 >
                   <Text className="font-bold text-white">
                     Visualizar Visitas

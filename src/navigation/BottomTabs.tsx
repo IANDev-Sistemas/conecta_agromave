@@ -9,9 +9,8 @@ import {
 import { BottomTabNavigationProp, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../screens/Home";
 import Financeiro from "../screens/Financeiro";
-import Agenda from "../screens/Agenda";
+import AgendaScreen from "../screens/Agenda/AgendaScreen";
 import Cliente from "../screens/Cliente/Cliente";
-import Consultor from "../screens/Consultor";
 import CustomDrawer from "./CustomDrawer";
 import CustomHeader from "./CustomHearder";
 import {
@@ -23,12 +22,16 @@ import {
   More,
 } from "iconsax-react-native";
 import Propriedades from "../screens/Propriedades/Propriedades";
-import Eventos from "../screens/Eventos";
 import Visitas from "../screens/Visitas/Visitas";
+import Consultor from "../screens/Consultor/Consultor";
+import Eventos from "../screens/Eventos/Eventos";
 
 type BottomTabNavigation = {
   Propriedades: undefined;
   Visitas: { selectedFazenda?: number };
+  Consultor: { selectedFazenda?: number };
+  Cliente:undefined;
+  Financeiro:undefined;
 };
 
 export type BottomTabsTypes = BottomTabNavigationProp<BottomTabNavigation> 
@@ -47,7 +50,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <House size="24" color={focused ? "#8B0000" : color} />
+          <House size="24" color={focused ? "#F66E58" : color} />
         </View>
       );
     case "Home":
@@ -60,7 +63,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <Home2 size="24" color={focused ? "#8B0000" : color} />
+          <Home2 size="24" color={focused ? "#F66E58" : color} />
         </View>
       );
     case "Visitas":
@@ -73,7 +76,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <Routing size="24" color={focused ? "#8B0000" : color} />
+          <Routing size="24" color={focused ? "#F66E58" : color} />
         </View>
       );
     case "Financeiro":
@@ -86,7 +89,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <CardPos size={24} color={focused ? "#8B0000" : color} />
+          <CardPos size={24} color={focused ? "#F66E58" : color} />
         </View>
       );
     case "Agenda":
@@ -99,7 +102,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <Calendar size={24} color={focused ? "#8B0000" : color} />
+          <Calendar size={24} color={focused ? "#F66E58" : color} />
         </View>
       );
     default:
@@ -134,7 +137,7 @@ const BottomTabs = ({ navigation }: any) => {
               borderTopLeftRadius: 16,
               borderTopRightRadius: 16,
               position: "absolute",
-              backgroundColor: "#8B0000",
+              backgroundColor: "#F66E58",
               height: Platform.OS === "ios" ? 90 : 60,
               overflow: "hidden",
               bottom: 0,
@@ -143,7 +146,7 @@ const BottomTabs = ({ navigation }: any) => {
             },
             tabBarItemStyle: {
               borderRadius: 16,
-              gap: 5,
+              gap: 2,
             },
           }}
         >
@@ -173,7 +176,7 @@ const BottomTabs = ({ navigation }: any) => {
           />
           <Tab.Screen
             name="Agenda"
-            component={Agenda}
+            component={AgendaScreen}
             options={{
               tabBarIcon: ({ focused, color }) =>
                 handleIcon("Agenda", focused, color),
@@ -195,7 +198,7 @@ const BottomTabs = ({ navigation }: any) => {
                 <TouchableOpacity
                   style={{
                     marginVertical: "auto",
-                    backgroundColor: "#8B0000",
+                    backgroundColor: "#F66E58",
                     justifyContent: "center",
                     alignItems: "center",
                     paddingRight: 20,
