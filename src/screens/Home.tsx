@@ -39,6 +39,7 @@ const HomeCard: React.FC<HomeCardProps> = ({ title, icon }) => {
           shadowOffset: { width: 0, height: 1 },
           shadowOpacity: 0.3,
           shadowRadius: 2,
+          elevation:10
         }}
       >
         <View className="flex-row items-center gap-2 px-4 py-2">

@@ -23,7 +23,7 @@ const LoginInput: React.FC<CustomInputProps> = ({ label, placeholder, isPassword
       <Text className="px-3 text-lg text-black mb-1 font-bold">{label}</Text>
       <View className="flex-row w-full items-center bg-transparent rounded-lg px-3 h-10 border-b-[1px] py-2 border-[#ADADAD]">
         <TextInput
-          className="w-full flex-1 text-[#ADADAD]"
+          className="w-full flex-1 text-[#424141]"
           placeholder={placeholder}
           placeholderTextColor="#AAA"
           secureTextEntry={secureText}

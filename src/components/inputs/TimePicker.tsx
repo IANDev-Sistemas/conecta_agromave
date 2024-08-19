@@ -2,19 +2,19 @@ import React, { useState } from "react";
 import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-type DatePickerProps = {
+type TimePickerProps = {
   label: string;
   value: Date | null;
-  onChange: (date: Date | null) => void;
+  onChange: (time: Date | null) => void;
   icon?: React.ReactNode;
 };
 
-const DatePicker: React.FC<DatePickerProps> = ({ label, value, onChange, icon }) => {
+const TimePicker: React.FC<TimePickerProps> = ({ label, value, onChange, icon }) => {
   const [showPicker, setShowPicker] = useState(false);
 
-  const handleChange = (event: any, selectedDate: Date | undefined) => {
-    if (selectedDate) {
-      onChange(selectedDate);
+  const handleChange = (event: any, selectedTime: Date | undefined) => {
+    if (selectedTime) {
+      onChange(selectedTime);
     }
     if (Platform.OS === 'android') {
       setShowPicker(false);
@@ -24,10 +24,10 @@ const DatePicker: React.FC<DatePickerProps> = ({ label, value, onChange, icon })
   return (
     <View className=" justify-center items-center">
       {Platform.OS === 'ios' ? (
-        <View className="h-10 w-24">
+        <View className="h-10 w-20">
           <DateTimePicker
             value={value || new Date()}
-            mode="date"
+            mode="time"
             display="default"
             onChange={handleChange}
             style={{margin:0, padding:0}}
@@ -37,12 +37,12 @@ const DatePicker: React.FC<DatePickerProps> = ({ label, value, onChange, icon })
         <Pressable onPress={() => setShowPicker(true)} style={styles.inputContainer}>
           {icon && <View style={styles.icon}>{icon}</View>}
           <Text style={styles.text}>
-            {value ? value.toDateString() : label}
+            {value ? value.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : label}
           </Text>
           {showPicker && (
             <DateTimePicker
               value={value || new Date()}
-              mode="date"
+              mode="time"
               display="default"
               onChange={handleChange}
             />
@@ -71,4 +71,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DatePicker;
+export default TimePicker;

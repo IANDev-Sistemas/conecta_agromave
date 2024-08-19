@@ -8,7 +8,7 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import Header from "@/src/components/Header";
+import Header from "@/src/components/general/Header";
 import StyledInput from "@/src/components/inputs/StyledInput";
 import { SearchNormal1, ArrowDown2, ArrowUp2 } from "iconsax-react-native";
 import LoginButton from "@/src/components/buttons/LoginButton";

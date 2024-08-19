@@ -1,5 +1,5 @@
 import { consultores, fazendas } from '@/dummydata';
-import Header from '@/src/components/Header';
+import Header from '@/src/components/general/Header';
 import CustomDropdown from '@/src/components/inputs/Dropdown';
 import { BottomTabsTypes } from '@/src/navigation/BottomTabs';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';

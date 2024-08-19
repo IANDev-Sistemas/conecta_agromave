@@ -20,7 +20,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ggodinho.conecta_agromave"
     },
     "web": {
       "bundler": "metro",
@@ -72,6 +73,7 @@
     },
     "updates": {
       "url": "https://u.expo.dev/37cdb63d-01f8-48f8-9567-ef62262abe5b"
-    }
+    },
+    "owner": "ggodinho"
   }
 }

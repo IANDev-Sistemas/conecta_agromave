@@ -2,6 +2,7 @@ import React from "react";
 import { Modal, View, Image, Text } from "react-native";
 import { Button } from "@rneui/themed";
 import LoginButton from "@/src/components/buttons/LoginButton";
+import ButtonGeneral from "@/src/components/buttons/ButtonGeneral";
 
 interface CustomModalProps {
   visible: boolean;
@@ -40,7 +41,7 @@ const ModalEvento: React.FC<CustomModalProps> = ({
         />
         <Text className="text-lg font-semibold mt-4 mb-2">{title}</Text>
         <Text className="text-gray-700 mb-4">{description}</Text>
-        <LoginButton label="Saiba mais" onClick={onRedirect} />
+        <ButtonGeneral label="Saiba mais" onClick={onRedirect} />
       </View>
     </Modal>
   );

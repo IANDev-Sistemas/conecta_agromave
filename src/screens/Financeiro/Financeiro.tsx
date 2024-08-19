@@ -1,7 +1,7 @@
 import IconButton from "@/src/components/buttons/IconButton";
-import Header from "@/src/components/Header";
+import Header from "@/src/components/general/Header";
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ScrollView, Pressable } from "react-native";
 import {
   DocumentText1,
   ReceiptText,
@@ -9,6 +9,7 @@ import {
   Wallet,
 } from "iconsax-react-native";
 import { RouteProp, useRoute } from "@react-navigation/native";
+import FinanceiroCard from "./FinanceiroCard";
 
 type RouteParams = {
   params: {
@@ -18,7 +19,9 @@ type RouteParams = {
 
 const Financeiro = () => {
   const route = useRoute<RouteProp<RouteParams, "params">>();
-  const [content, setContent] = useState<string>( route.params?.content || "financeiro");
+  const [content, setContent] = useState<string>(
+    route.params?.content || "financeiro"
+  );
 
   useEffect(() => {
     if (route.params?.content) {
@@ -69,6 +72,24 @@ const Financeiro = () => {
             />
           </View>
         </Header>
+        <ScrollView contentContainerStyle={{}} style={{ width: "100%" }}>
+          <Pressable
+            style={{
+              width: "100%",
+              paddingHorizontal: 10,
+              justifyContent: "center",
+              alignItems: "center",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <View className="w-full gap-5 p-5">
+              <FinanceiroCard value="R$10.000,00" title="Total a Pagar" />
+              <FinanceiroCard value="R$ 5.500,00" title="Total Vencido" />
+              <FinanceiroCard value="R$ 5.000,00" title="Total à Vencer" />
+            </View>
+          </Pressable>
+        </ScrollView>
       </View>
     </View>
   );

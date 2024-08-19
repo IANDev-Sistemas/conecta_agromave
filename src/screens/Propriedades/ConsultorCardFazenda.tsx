@@ -1,4 +1,3 @@
-// components/Consultor.tsx
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { User, Whatsapp } from "iconsax-react-native";
@@ -22,8 +21,8 @@ const Consultor: React.FC<ConsultorProps> = ({ tipo, nome }) => {
     >
       <Text className="text-md font-medium">{tipo}</Text>
       <View className="flex-row">
-        <View className="gap-2 w-2/5 ">
-          <Text className="text-md font-bold flex-wrap ">{nome}</Text>
+        <View className="gap-2 w-2/5">
+          <Text className="text-md font-bold flex-wrap">{nome}</Text>
         </View>
         <Divider
           orientation="vertical"

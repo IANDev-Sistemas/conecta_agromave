@@ -10,6 +10,8 @@ import apiPublic from "../api/api";
 import { getHashSHA1 } from "../helpers/getHash";
 import * as Notifications from "expo-notifications";
 import { Alert } from "react-native";
+import { useFazenda } from "./FazendaContext";
+import { tKeyGenerator } from "../helpers/tKeyGenerator";
 
 interface AuthProps {
   authState?: {
@@ -17,10 +19,10 @@ interface AuthProps {
     authenticated: boolean | null;
     status: string | null;
     usuario: {
-      usuario: string;
-      nomeUsuario: string;
-      idUsuario: number;
-      apiToken: string;
+      nome: string;
+      codigo: number;
+      email: string;
+      telefone: string;
     } | null;
   };
   onLogin?: (cgc: string, password: string, checked: boolean) => Promise<any>;
@@ -64,6 +66,7 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
+
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -74,10 +77,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     authenticated: boolean | null;
     status: string | null;
     usuario: {
-      usuario: string;
-      nomeUsuario: string;
-      idUsuario: number;
-      apiToken: string;
+      nome: string;
+      codigo: number;
+      email: string;
+      telefone: string;
     } | null;
   }>({
     token: null,
@@ -86,33 +89,48 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     usuario: null,
   });
 
+  const { carregarFazendas } = useFazenda(); 
+
+  const initialLoad = async () => {
+    if (authState.usuario?.codigo) {
+      await carregarFazendas(authState.usuario.codigo);
+    }
+  }
+
+
   useEffect(() => {
     const loadToken = async () => {
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
       const usuarioString = await SecureStore.getItemAsync("Usuario_Details");
-
+  
       if (token) {
         const usuario = usuarioString ? JSON.parse(usuarioString) : null;
+
         setAuthState({
           token,
           authenticated: true,
           status: "Ok",
-          usuario:
-            usuario &&
-            typeof usuario === "object" &&
-            "usuario" in usuario &&
-            "nomeUsuario" in usuario &&
-            "idUsuario" in usuario &&
-            "apiToken" in usuario
-              ? usuario
-              : null,
+          usuario: usuario &&
+          typeof usuario === "object" &&
+          "nome" in usuario &&
+          "codigo" in usuario &&
+          "telefone" in usuario &&
+          "email" in usuario
+            ? usuario
+            : null,
         });
+  
+        if (usuario?.codigo) {
+          await carregarFazendas(usuario.codigo);
+        }
       }
     };
-
+  
     loadToken();
   }, []);
 
+
+  
   const login = async (cgc: string, password: string, checked: boolean) => {
     const passwordHash = getHashSHA1(password);
     try {
@@ -127,8 +145,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         },
       });
 
-      await getDados(cgc);
-
       if (response.data.status !== "error") {
         if (response.data.status === "needupdate") {
           setAuthState({
@@ -140,23 +156,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
           await forgotPassword(cgc);
         } else {
+
+
+          
           const token = "my-jwt";
-
-          setAuthState({
-            token: token,
-            authenticated: true,
-            status: "Ok",
-            usuario: response.data.usuario,
-          });
-
           if (checked) {
             await SecureStore.setItemAsync(TOKEN_KEY, token);
           }
 
-          await SecureStore.setItemAsync(
-            "Usuario_Details",
-            JSON.stringify(response.data.usuario)
-          );
+          await getDados(cgc);
+          await initialLoad();
           return response.data;
         }
       } else {
@@ -192,7 +201,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         setAuthState({
           token: null,
-          authenticated: false,
+          authenticated: true,
           status: "needupdate",
           usuario: null,
         });
@@ -210,18 +219,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const getDados = async (cgc: string) => {
+
+    const tKey = tKeyGenerator();
+
+    const token = "my-jwt";
     try {
       const response = await apiPublic.get("/odwctrl", {
         params: {
           action: "execTarefa",
           apelido: "CNTAGROMAVE-api-rotas",
-          tKey: "346a78ff-872f-4157-9f6f-4e3f56afc100.$v{dataAtual}",
+          tKey: tKey,
           scriptFunction: "getInfoUser",
           cpfCnpj: cgc,
         },
       });
 
-      console.log(response.data)
+      setAuthState({
+        token: token,
+        authenticated: true,
+        status: "login",
+        usuario: response.data,
+      });
+
+      await SecureStore.setItemAsync(
+        "Usuario_Details",
+        JSON.stringify(response.data)
+      );
+
       return response.data;
     } catch (error) {
       console.error("Error during password change:", error);

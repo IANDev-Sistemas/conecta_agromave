@@ -2,17 +2,12 @@ import React from "react";
 import { View, Text } from "react-native";
 import { Location } from "iconsax-react-native";
 
-interface Consultor {
-  tipo: string;
-  nome: string;
-}
-
 interface Fazenda {
-  id: number;
+  codigo: number;
   nome: string;
-  municipio: string;
-  area: string;
-  consultores: Consultor[];
+  cidade: string;
+  uf: string;
+  area: number;
 }
 
 interface FazendaProps {
@@ -33,10 +28,10 @@ const FazendaCard: React.FC<FazendaProps> = ({ fazenda }) => {
       <Text className="text-xl font-bold mb-3">{fazenda.nome}</Text>
       <View className="text-left w-full flex-row items-center gap-2">
         <Location size={18} color="black" />
-        <Text className="text-md font-medium">{fazenda.municipio}</Text>
+        <Text className="text-md font-medium">{fazenda.cidade} - {fazenda.uf}</Text>
       </View>
-      <View className="text-left ml-14 w-full flex-row items-">
-        <Text className="text-md font-medium">{fazenda.area}</Text>
+      <View className="text-left ml-14 w-full flex-row items-center">
+        <Text className="text-md font-medium">Área: {fazenda.area} ha</Text>
       </View>
     </View>
   );

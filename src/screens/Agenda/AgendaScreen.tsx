@@ -8,9 +8,10 @@ import {
 } from "react-native";
 import moment from "moment";
 import "moment/locale/pt-br";
-import Header from "../../components/Header";
+import Header from "../../components/general/Header";
 import DatePicker from "@/src/components/inputs/DatePicker";
 import { AddCircle } from "iconsax-react-native";
+import NovaProgModal from "./NovaProgModal";
 
 const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
@@ -52,23 +53,28 @@ const AgendaScreen: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [days, setDays] = useState<string[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [showOnlyEvents, setShowOnlyEvents] = useState(false); // Estado do filtro
-  const flatListRef = useRef<FlatList>(null); 
+  const [showOnlyEvents, setShowOnlyEvents] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
-    loadInitialDays(); 
+    loadInitialDays();
   }, []);
 
   const loadInitialDays = () => {
-    const initialDays = generateDays(new Date(), 14, []); 
+    const initialDays = generateDays(new Date(), 14, []);
     setDays(initialDays);
   };
 
-  const generateDays = (startDate: Date, numberOfDays: number, existingDays: string[]): string[] => {
+  const generateDays = (
+    startDate: Date,
+    numberOfDays: number,
+    existingDays: string[]
+  ): string[] => {
     const newDays = [];
     for (let i = 0; i < numberOfDays; i++) {
       const day = moment(startDate).add(i, "days").format("YYYY-MM-DD");
-      if (!existingDays.includes(day)) { 
+      if (!existingDays.includes(day)) {
         newDays.push(day);
       }
     }
@@ -79,8 +85,8 @@ const AgendaScreen: React.FC = () => {
     if (loadingMore) return;
 
     setLoadingMore(true);
-    const lastDay = moment(days[days.length - 1]).toDate(); 
-    const moreDays = generateDays(lastDay, 14, days); 
+    const lastDay = moment(days[days.length - 1]).toDate();
+    const moreDays = generateDays(lastDay, 14, days);
 
     setTimeout(() => {
       setDays((prevDays) => [...prevDays, ...moreDays]);
@@ -91,17 +97,43 @@ const AgendaScreen: React.FC = () => {
   const handleDateChange = (date: Date | null) => {
     if (date) {
       const selectedDay = moment(date).format("YYYY-MM-DD");
-
+  
       setDays((prevDays) => {
-        const updatedDays = prevDays.filter((day) => day !== selectedDay);
-        return [selectedDay, ...updatedDays]; 
+        let updatedDays = [...prevDays];
+        const firstDay = moment(updatedDays[0]);
+        const lastDay = moment(updatedDays[updatedDays.length - 1]);
+  
+        // Se o dia selecionado for antes do primeiro dia da lista atual
+        if (moment(date).isBefore(firstDay)) {
+          const daysToAdd = firstDay.diff(date, "days");
+          const newDays = generateDays(moment(date).toDate(), daysToAdd + 1, updatedDays);
+          updatedDays = [...newDays, ...updatedDays];
+        }
+        // Se o dia selecionado for após o último dia da lista atual
+        else if (moment(date).isAfter(lastDay)) {
+          const daysToAdd = moment(date).diff(lastDay, "days");
+          const newDays = generateDays(lastDay.add(1, "day").toDate(), daysToAdd, updatedDays);
+          updatedDays = [...updatedDays, ...newDays];
+        }
+  
+        // Se o dia selecionado não estiver na lista, adicione-o
+        if (!updatedDays.includes(selectedDay)) {
+          updatedDays = [selectedDay, ...updatedDays];
+        }
+  
+        return updatedDays;
       });
-
-      setSelectedDate(date); 
-
-      flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
+  
+      setSelectedDate(date);
+  
+      // Scroll para o dia selecionado
+      const index = days.indexOf(selectedDay);
+      if (index !== -1) {
+        flatListRef.current?.scrollToIndex({ animated: true, index });
+      }
     }
   };
+  
 
   const toggleFilter = () => {
     setShowOnlyEvents((prev) => !prev);
@@ -119,7 +151,7 @@ const AgendaScreen: React.FC = () => {
         width: 250,
         padding: 10,
         borderRadius: 15,
-        marginBottom: 10, 
+        marginBottom: 10,
       }}
     >
       <Text style={{ fontWeight: "bold" }}>{appointment.time}</Text>
@@ -131,29 +163,60 @@ const AgendaScreen: React.FC = () => {
   const renderDayItem = ({ item }: { item: string }) => {
     const dayOfMonth = moment(item).format("DD");
     const dayOfWeek = weekDays[moment(item).day()];
-    const isLastDayOfMonth = moment(item).isSame(moment(item).endOf('month'), 'day');
-    const monthName = moment(item).format("MMMM"); 
+    const isLastDayOfMonth = moment(item).isSame(
+      moment(item).endOf("month"),
+      "day"
+    );
+    const monthName = moment(item).format("MMMM");
 
-    
     const dayAppointments = appointments[item];
 
     return (
-      <View key={item} style={{ width: '100%' }}>
-        <Pressable style={{ marginVertical: 10, alignItems: "flex-start", display: 'flex', flexDirection: 'row', gap: 10, paddingHorizontal: 10 }}>
-          <View style={{ alignItems: "center", width: 80, marginTop:7 }}>
-            <Text style={{ fontSize: 24, fontWeight: "bold" }}>{dayOfMonth}</Text>
-            <Text style={{ fontSize: 16, fontWeight: "bold" }}>{dayOfWeek}</Text>
+      <View key={item} style={{ width: "100%" }}>
+        <Pressable
+          style={{
+            marginVertical: 10,
+            alignItems: "flex-start",
+            display: "flex",
+            flexDirection: "row",
+            gap: 10,
+            paddingHorizontal: 10,
+          }}
+        >
+          <View style={{ alignItems: "center", width: 80, marginTop: 7 }}>
+            <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+              {dayOfMonth}
+            </Text>
+            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+              {dayOfWeek}
+            </Text>
           </View>
           <View>
             {dayAppointments ? (
-              dayAppointments.map((appointment) => renderAppointmentItem(appointment))
+              dayAppointments.map((appointment) =>
+                renderAppointmentItem(appointment)
+              )
             ) : (
-              <View style={{ backgroundColor: "#f0f0f0", width: 250, height: 60, borderRadius: 15 }}></View>
+              <View
+                style={{
+                  backgroundColor: "#f0f0f0",
+                  width: 250,
+                  height: 60,
+                  borderRadius: 15,
+                }}
+              ></View>
             )}
           </View>
         </Pressable>
         {isLastDayOfMonth && (
-          <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold', marginVertical: 20 }}>
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 18,
+              fontWeight: "bold",
+              marginVertical: 20,
+            }}
+          >
             {monthName.charAt(0).toUpperCase() + monthName.slice(1)}
           </Text>
         )}
@@ -164,7 +227,15 @@ const AgendaScreen: React.FC = () => {
   return (
     <View style={{ flex: 1, marginTop: 90, backgroundColor: "#fff" }}>
       <Header title="Agenda">
-        <View style={{ flexDirection: "column", width: "100%", gap: 10, justifyContent: 'flex-start', alignItems: "flex-start" }}>
+        <View
+          style={{
+            flexDirection: "column",
+            width: "100%",
+            gap: 10,
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+          }}
+        >
           <TouchableOpacity
             style={{
               display: "flex",
@@ -176,9 +247,12 @@ const AgendaScreen: React.FC = () => {
               borderRadius: 16,
               justifyContent: "center",
             }}
+            onPress={() => setShowModal(true)}
           >
             <AddCircle size={20} color="white" />
-            <Text style={{ color: "white", fontWeight: "bold" }}>Agendar Visita</Text>
+            <Text style={{ color: "white", fontWeight: "bold" }}>
+              Agendar Visita
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={toggleFilter}
@@ -200,7 +274,6 @@ const AgendaScreen: React.FC = () => {
             value={selectedDate}
             onChange={handleDateChange}
           />
-          
         </View>
       </Header>
       <FlatList
@@ -212,6 +285,14 @@ const AgendaScreen: React.FC = () => {
         onEndReachedThreshold={0.1}
         showsVerticalScrollIndicator={false}
       />
+      {showModal && (
+        <NovaProgModal
+          onChange={() => {}}
+          onClose={() => setShowModal(false)}
+          onRedirect={() => {}} 
+          visible={showModal}
+        />
+      )}
     </View>
   );
 };

@@ -1,4 +1,3 @@
-// components/Propriedades.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -8,32 +7,50 @@ import {
   Pressable,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { fazendas } from "../../../dummydata";
 import CustomDropdown from "@/src/components/inputs/Dropdown";
-import Header from "@/src/components/Header";
+import Header from "@/src/components/general/Header";
 import FazendaCard from "./FazendaCard";
 import { BottomTabsTypes } from "@/src/navigation/BottomTabs";
 import Consultor from "./ConsultorCardFazenda";
+import { useFazenda } from "@/src/contexts/FazendaContext";
+import { consultores } from "@/dummydata";
 
 interface Consultor {
   tipo: string;
   nome: string;
+  contato: string;
+  email: string;
 }
 
 interface Fazenda {
-  id: number;
+  codigo: number;
   nome: string;
-  municipio: string;
-  area: string;
-  consultores: Consultor[];
+  cidade: string;
+  uf: string;
+  area: number;
 }
 
 const Propriedades: React.FC = () => {
   const [selectedFazenda, setSelectedFazenda] = useState<Fazenda | null>(null);
+  const [selectedConsultores, setSelectedConsultores] = useState<Consultor[]>([]);
   const navigation = useNavigation<BottomTabsTypes>();
 
+  const { fazendas } = useFazenda();
+
+  const getConsultoresByFazenda = (codigoFazenda: number) => {
+    return consultores.filter((consultor) => consultor.idFazenda === codigoFazenda);
+  };
+
   const handleFazendaChange = (value: number) => {
-    const fazenda = fazendas.find((f) => f.id === value) || null;
+    const fazenda = fazendas.find((f) => f.codigo === value) || null;
+
+    if (fazenda) {
+      const consultoresFazenda = getConsultoresByFazenda(fazenda.codigo);
+      setSelectedConsultores(consultoresFazenda);
+    } else {
+      setSelectedConsultores([]); // Limpar consultores se a fazenda não for encontrada
+    }
+
     setSelectedFazenda(fazenda);
   };
 
@@ -43,10 +60,10 @@ const Propriedades: React.FC = () => {
         <Header title="Propriedades">
           <View className="flex-col w-2/3 gap-5">
             <CustomDropdown
-              onChange={(value) => handleFazendaChange(value)}
-              value={selectedFazenda ? selectedFazenda.id : ""}
+              onChange={(value) => handleFazendaChange(Number(value))}
+              value={selectedFazenda ? selectedFazenda.codigo : ""}
               list={fazendas.map((fazenda) => ({
-                key: fazenda.id,
+                key: fazenda.codigo,
                 name: fazenda.nome,
               }))}
               placeholder="Selecione a propriedade"
@@ -67,11 +84,15 @@ const Propriedades: React.FC = () => {
               }}
             >
               <FazendaCard fazenda={selectedFazenda} />
-              <View className="text-left ml-16  w-full flex-column mt-4">
+              <View className="text-left ml-16 w-full flex-column mt-4">
                 <Text className="text-lg font-bold">Consultores</Text>
-                {selectedFazenda.consultores.map((consultor, index) => (
-                  <Consultor key={index} {...consultor} />
-                ))}
+                {selectedConsultores && selectedConsultores.length > 0 ? (
+                  selectedConsultores.map((consultor, index) => (
+                    <Consultor key={index} {...consultor} />
+                  ))
+                ) : (
+                  <Text className="text-gray-600">Nenhum consultor encontrado.</Text>
+                )}
               </View>
               <TouchableOpacity
                 style={{
@@ -81,17 +102,15 @@ const Propriedades: React.FC = () => {
                 }}
                 onPress={() =>
                   navigation.navigate("Visitas", {
-                    selectedFazenda: selectedFazenda?.id,
+                    selectedFazenda: selectedFazenda?.codigo,
                   })
                 }
               >
                 <View
                   style={{ padding: 16 }}
-                  className="rounded-xl bg-bordo w-full items-center mt-8"
+                  className="rounded-xl bg-principal w-full items-center mt-8"
                 >
-                  <Text className="font-bold text-white">
-                    Visualizar Visitas
-                  </Text>
+                  <Text className="font-bold text-white">Visualizar Visitas</Text>
                 </View>
               </TouchableOpacity>
             </Pressable>

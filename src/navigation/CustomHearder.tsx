@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Pressable, Text, TouchableOpacity } from "react-native";
+import { View, Pressable, Text, TouchableOpacity, Platform } from "react-native";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { Divider } from "@rneui/themed";
 import { useAuth } from "../contexts/AuthContext";
@@ -29,11 +29,11 @@ const CustomHeader = ({
     <View>
       <View
         className="absolute w-full flex justify-center bg-principal px-10"
-        style={{ paddingTop: statusBarHeight, paddingVertical: 20 }}
+        style={{ paddingTop: Platform.OS === 'ios' ? statusBarHeight : statusBarHeight+25 , paddingVertical: 20 }}
       >
         <Pressable className="flex-row w-100 items-center gap-5" onPress={toggleCardVisibility}>
           <ProfileCircle size={30} color="white" variant="Bold" />
-          <Text className="font-bold text-white" >Olá, {authState?.usuario?.nomeUsuario}</Text>
+          <Text className="font-bold text-white" >Olá, {authState?.usuario?.nome}</Text>
         </Pressable>
       </View>
 

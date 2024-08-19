@@ -24,6 +24,7 @@ const ConsultorCard: React.FC<ConsultorProps> = ({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.5,
         shadowRadius: 2,
+        elevation:20
       }}
       className=" flex-col mt-5 w-11/12 rounded-xl border-background border-1 bg-white  pb-8 pt-4 px-3 gap-4 text-left"
     >

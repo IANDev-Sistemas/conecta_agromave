@@ -44,7 +44,7 @@ const Cliente = () => {
           />
           <Text className="text-2xl font-bold mb-4 text-principal">
             {" "}
-            Olá, {authState?.usuario?.nomeUsuario}{" "}
+            Olá, {authState?.usuario?.nome}{" "}
           </Text>
           <CreditSlider
             maxCreditLimit={1000}
@@ -71,19 +71,23 @@ const Cliente = () => {
 
                 <LoginInput
                   label="Email"
-                  placeholder=""
-                  value={email}
+                  placeholder="Digite seu email"
+                  value={
+                    authState?.usuario?.email ? authState?.usuario?.email : ""
+                  }
                   onChangeText={setEmail}
                 />
                 <LoginInput
                   label="Celular"
                   placeholder=""
-                  value={celular}
+                  value={
+                    authState?.usuario?.telefone ? authState?.usuario?.telefone : ""
+                  }
                   onChangeText={setCelular}
                 />
 
-                <LoginButton onClick={()=>{}} label="Salvar Alterações" />
-                <LoginButton onClick={()=>{}} label="Alterar Senhas" />
+                <LoginButton onClick={() => {}} label="Salvar Alterações" />
+                <LoginButton onClick={() => {}} label="Alterar Senha" />
               </Pressable>
             </ScrollView>
           </View>

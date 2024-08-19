@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, Pressable } from "react-native";
 import { fazendas, visitas } from "@/dummydata";
-import Header from "@/src/components/Header";
+import Header from "@/src/components/general/Header";
 import CustomDropdown from "@/src/components/inputs/Dropdown";
 import VisitasCard from "./VisitasCard";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
