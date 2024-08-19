@@ -1,13 +1,13 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-interface LoginButtonProps {
+interface ButtonProps {
   label: string;
   onClick: () => void;
   disabled?: boolean;
 }
 
-const LoginButton: React.FC<LoginButtonProps> = ({ label, onClick, disabled = false }) => {
+const ButtonGeneral: React.FC<ButtonProps> = ({ label, onClick, disabled = false }) => {
   return (
     <TouchableOpacity
       style={[styles.button, disabled && styles.buttonDisabled]}
@@ -25,9 +25,9 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 50,
+    padding:10,
     borderRadius: 25,
-    backgroundColor: '#023A5D', 
+    backgroundColor: '#F66E58', 
   },
   buttonDisabled: {
     backgroundColor: '#d3d3d3',
@@ -42,4 +42,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginButton;
+export default ButtonGeneral;

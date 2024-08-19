@@ -28,7 +28,7 @@ const CustomHeader = ({
   return (
     <View>
       <View
-        className="absolute w-full flex justify-center bg-bordo px-10"
+        className="absolute w-full flex justify-center bg-principal px-10"
         style={{ paddingTop: statusBarHeight, paddingVertical: 20 }}
       >
         <Pressable className="flex-row w-100 items-center gap-5" onPress={toggleCardVisibility}>
@@ -52,7 +52,7 @@ const CustomHeader = ({
         >
           <View className="flex-row gap-3 justify-center items-center py-4">
             <TouchableOpacity onPress={()=>navigation.navigate("Cliente")} style={{display:'flex', flexDirection:'row', gap:10}}>
-            <ProfileCircle variant="Bold" size={24} color="#F66E58" />
+            <ProfileCircle variant="Bold" size={24} color="#023A5D" />
             <Text className="text-lg text-[#49454F] font-bold">
               Cliente
             </Text>
@@ -61,7 +61,7 @@ const CustomHeader = ({
           <Divider />
           <Text className="text-lg text-[#49454F] text-center my-4 font-bold" >Versão {expo.version}</Text>
           <Pressable
-            className="bg-[#F66E58] rounded-full p-2 gap-2  mx-4 my-2 flex flex-row items-center justify-center"
+            className="bg-principal rounded-full p-2 gap-2  mx-4 my-2 flex flex-row items-center justify-center"
             onPress={onLogout}
           >
             <LogoutCurve size={24} color="white" />

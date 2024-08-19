@@ -27,7 +27,7 @@ const Cliente = () => {
   return (
     <View className="flex-1 w-full bg-white">
       <View
-        className="absolute w-full flex justify-center bg-bordo px-10 py-12"
+        className="absolute w-full flex justify-center bg-principal px-10 py-12"
         style={{ paddingTop: statusBarHeight, paddingVertical: 20 }}
       >
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -40,9 +40,9 @@ const Cliente = () => {
             size={90}
             rounded
             source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
-            avatarStyle={{ borderColor: "#800000", borderWidth: 2 }}
+            avatarStyle={{ borderColor: "#023A5D", borderWidth: 2 }}
           />
-          <Text className="text-2xl font-bold mb-4 text-bordo">
+          <Text className="text-2xl font-bold mb-4 text-principal">
             {" "}
             Olá, {authState?.usuario?.nomeUsuario}{" "}
           </Text>

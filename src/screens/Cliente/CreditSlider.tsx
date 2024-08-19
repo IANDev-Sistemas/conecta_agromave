@@ -25,9 +25,9 @@ const CreditSlider: React.FC<CreditSliderProps> = ({ maxCreditLimit,  currentCre
           step={50} 
           value={currentCredit}
           onValueChange={handleValueChange}
-          minimumTrackTintColor="#D67575"
-          maximumTrackTintColor="#F2BABA"
-          thumbTintColor="#A34242"
+          minimumTrackTintColor="#023A5D"
+          maximumTrackTintColor="#023A5D"
+          thumbTintColor="#023A5D"
         />
       </View>
       <Text style={styles.creditText}>

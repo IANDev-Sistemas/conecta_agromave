@@ -20,7 +20,7 @@ interface MenuItemProps {
 
 const MenuItem: React.FC<MenuItemProps> = ({ icon, label, route, currentRoute, onPress }) => {
   const isActive = currentRoute === route;
-  const iconColor = isActive ? "white" : "#F66E58";
+  const iconColor = isActive ? "white" : "#023A5D";
   
   return (
     <TouchableOpacity
@@ -30,7 +30,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, label, route, currentRoute, o
         flexDirection: "row",
         gap: 10,
         alignItems: "center",
-        backgroundColor: isActive ? "#F66E58" : "transparent",
+        backgroundColor: isActive ? "#023A5D" : "transparent",
         borderRadius: 16,
         padding: 10,
       }}
@@ -150,7 +150,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
         <Divider />
         <TouchableOpacity
           onPress={onLogout}
-          style={{padding:7, marginTop: 20, borderRadius: 16, backgroundColor: "#F66E58", justifyContent: "center", display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}
+          style={{padding:7, marginTop: 20, borderRadius: 16, backgroundColor: "#023A5D", justifyContent: "center", display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}
         >
           <LogoutCurve size={24} color="white" />
           <Text className="my-2 text-white font-bold">Sair</Text>

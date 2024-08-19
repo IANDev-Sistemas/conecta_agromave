@@ -127,6 +127,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         },
       });
 
+      await getDados(cgc);
+
       if (response.data.status !== "error") {
         if (response.data.status === "needupdate") {
           setAuthState({
@@ -207,6 +209,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const getDados = async (cgc: string) => {
+    try {
+      const response = await apiPublic.get("/odwctrl", {
+        params: {
+          action: "execTarefa",
+          apelido: "CNTAGROMAVE-api-rotas",
+          tKey: "346a78ff-872f-4157-9f6f-4e3f56afc100.$v{dataAtual}",
+          scriptFunction: "getInfoUser",
+          cpfCnpj: cgc,
+        },
+      });
+
+      console.log(response.data)
+      return response.data;
+    } catch (error) {
+      console.error("Error during password change:", error);
+      return {
+        error: true,
+        msg: "Invalid details",
+      };
+    }
+  };
+  
+
   const checkValidationCode = async (cgc: string, validationCode: string) => {
     try {
       const response = await apiPublic.get("/odwctrl", {
@@ -239,6 +265,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       };
     }
   };
+
   const changePassword = async (
     cgc: string,
     validationCode: string,

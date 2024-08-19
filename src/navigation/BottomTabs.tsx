@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { BottomTabNavigationProp, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../screens/Home";
-import Financeiro from "../screens/Financeiro";
 import AgendaScreen from "../screens/Agenda/AgendaScreen";
 import Cliente from "../screens/Cliente/Cliente";
 import CustomDrawer from "./CustomDrawer";
@@ -20,18 +19,23 @@ import {
   Calendar,
   CardPos,
   More,
+  ShoppingBag,
+  DocumentText1,
+  Receipt1,
+  ReceiptText,
 } from "iconsax-react-native";
 import Propriedades from "../screens/Propriedades/Propriedades";
 import Visitas from "../screens/Visitas/Visitas";
 import Consultor from "../screens/Consultor/Consultor";
 import Eventos from "../screens/Eventos/Eventos";
+import Financeiro from "../screens/Financeiro/Financeiro";
 
 type BottomTabNavigation = {
   Propriedades: undefined;
   Visitas: { selectedFazenda?: number };
   Consultor: { selectedFazenda?: number };
   Cliente:undefined;
-  Financeiro:undefined;
+  Financeiro: { content?: string };
 };
 
 export type BottomTabsTypes = BottomTabNavigationProp<BottomTabNavigation> 
@@ -50,7 +54,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <House size="24" color={focused ? "#F66E58" : color} />
+          <House size="24" color={focused ? "#023A5D" : color} />
         </View>
       );
     case "Home":
@@ -63,7 +67,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <Home2 size="24" color={focused ? "#F66E58" : color} />
+          <Home2 size="24" color={focused ? "#023A5D" : color} />
         </View>
       );
     case "Visitas":
@@ -76,7 +80,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <Routing size="24" color={focused ? "#F66E58" : color} />
+          <Routing size="24" color={focused ? "#023A5D" : color} />
         </View>
       );
     case "Financeiro":
@@ -89,7 +93,46 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <CardPos size={24} color={focused ? "#F66E58" : color} />
+          <CardPos size={24} color={focused ? "#023A5D" : color} />
+        </View>
+      );
+    case "Pedidos":
+      return (
+        <View
+          style={{
+            backgroundColor: focused ? "white" : "transparent",
+            borderRadius: 12,
+            padding: 4,
+            paddingHorizontal: 16,
+          }}
+        >
+          <ShoppingBag size={24} color={focused ? "#023A5D" : color} />
+        </View>
+      );
+    case "Contratos":
+      return (
+        <View
+          style={{
+            backgroundColor: focused ? "white" : "transparent",
+            borderRadius: 12,
+            padding: 4,
+            paddingHorizontal: 16,
+          }}
+        >
+          <DocumentText1 size={24} color={focused ? "#023A5D" : color} />
+        </View>
+      );
+    case "Notas":
+      return (
+        <View
+          style={{
+            backgroundColor: focused ? "white" : "transparent",
+            borderRadius: 12,
+            padding: 4,
+            paddingHorizontal: 16,
+          }}
+        >
+          <ReceiptText size={24} color={focused ? "#023A5D" : color} />
         </View>
       );
     case "Agenda":
@@ -102,7 +145,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <Calendar size={24} color={focused ? "#F66E58" : color} />
+          <Calendar size={24} color={focused ? "#023A5D" : color} />
         </View>
       );
     default:
@@ -137,7 +180,7 @@ const BottomTabs = ({ navigation }: any) => {
               borderTopLeftRadius: 16,
               borderTopRightRadius: 16,
               position: "absolute",
-              backgroundColor: "#F66E58",
+              backgroundColor: "#023A5D",
               height: Platform.OS === "ios" ? 90 : 60,
               overflow: "hidden",
               bottom: 0,
@@ -149,37 +192,32 @@ const BottomTabs = ({ navigation }: any) => {
               gap: 2,
             },
           }}
+          initialRouteName="Home"
         >
+        <Tab.Screen
+            name="Pedidos"
+            component={Financeiro}
+            options={{
+              tabBarIcon: ({ focused, color }) =>
+                handleIcon("Pedidos", focused, color),
+            }}
+            initialParams={{content:"pedidos"}}
+          />
           <Tab.Screen
+          name="Contratos"
+          component={Financeiro}
+          options={{
+            tabBarIcon: ({ focused, color }) =>
+              handleIcon("Contratos", focused, color),
+          }}
+          initialParams={{content:"contratos"}}
+        />
+           <Tab.Screen
             name="Home"
             component={Home}
             options={{
               tabBarIcon: ({ focused, color }) =>
                 handleIcon("Home", focused, color),
-            }}
-          />
-          <Tab.Screen
-            name="Propriedades"
-            component={Propriedades}
-            options={{
-              tabBarIcon: ({ focused, color }) =>
-                handleIcon("Propriedades", focused, color),
-            }}
-          />
-          <Tab.Screen
-            name="Visitas"
-            component={Visitas}
-            options={{
-              tabBarIcon: ({ focused, color }) =>
-                handleIcon("Visitas", focused, color),
-            }}
-          />
-          <Tab.Screen
-            name="Agenda"
-            component={AgendaScreen}
-            options={{
-              tabBarIcon: ({ focused, color }) =>
-                handleIcon("Agenda", focused, color),
             }}
           />
           <Tab.Screen
@@ -189,6 +227,16 @@ const BottomTabs = ({ navigation }: any) => {
               tabBarIcon: ({ focused, color }) =>
                 handleIcon("Financeiro", focused, color),
             }}
+            initialParams={{content:"financeiro"}}
+          />
+          <Tab.Screen
+            name="Notas"
+            component={Financeiro}
+            options={{
+              tabBarIcon: ({ focused, color }) =>
+                handleIcon("Notas", focused, color),
+            }}
+            initialParams={{content:"notas"}}
           />
           <Tab.Screen
             name="Mais"
@@ -198,7 +246,7 @@ const BottomTabs = ({ navigation }: any) => {
                 <TouchableOpacity
                   style={{
                     marginVertical: "auto",
-                    backgroundColor: "#F66E58",
+                    backgroundColor: "#023A5D",
                     justifyContent: "center",
                     alignItems: "center",
                     paddingRight: 20,
@@ -214,9 +262,24 @@ const BottomTabs = ({ navigation }: any) => {
             }}
           />
           <Tab.Screen
+            name="Agenda"
+            component={AgendaScreen}
+            options={{ tabBarButton: () => null}}
+          />
+          <Tab.Screen
+            name="Propriedades"
+            component={Propriedades}
+            options={{ tabBarButton: () => null}}
+          />
+          <Tab.Screen
+            name="Visitas"
+            component={Visitas}
+            options={{ tabBarButton: () => null}}
+          />
+          <Tab.Screen
             name="Cliente"
             component={Cliente}
-            options={{ tabBarButton: () => null, headerShown: false }}
+            options={{ tabBarButton: () => null}}
           />
           <Tab.Screen
             name="Consultor"
