@@ -14,7 +14,7 @@ const StyledInput = ({
   ...props
 }: SearchInputProps) => {
   return (
-    <View className="flex flex-row items-center bg-gray-200 rounded-2xl py-2 px-4">
+    <View style={styles.container}>
       <TextInput
         multiline={multiline ? true : false}
         placeholder={placeholder}
@@ -22,16 +22,28 @@ const StyledInput = ({
         style={styles.input} // Estilo adicional com StyleSheet
         {...props}
       />
-      {icon && <View className="ml-2">{icon}</View>}
+      {icon && <View style={styles.icon}>{icon}</View>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#E5E7EB", // Cor de fundo cinza claro
+    borderRadius: 25, // Bordas arredondadas
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    width: "100%",
+  },
   input: {
-    width: "80%",
-    color: "#ADADAD",
+    flex: 1,
+    color: "#424141",
     minHeight: 40,
+  },
+  icon: {
+    marginLeft: 8,
   },
 });
 

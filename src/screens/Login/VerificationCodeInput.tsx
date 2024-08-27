@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { View, TextInput } from "react-native";
+import { View, TextInput, StyleSheet } from "react-native";
 
 interface VerificationCodeInputProps {
   onCodeFilled: (code: string) => void;
@@ -29,23 +29,40 @@ const VerificationCodeInput: React.FC<VerificationCodeInputProps> = ({ onCodeFil
   };
 
   return (
-    <View className="flex-row justify-between my-2 px-3">
+    <View style={styles.container}>
       {code.map((char, index) => (
         <TextInput
           key={index}
-          ref={ref => {
+          ref={(ref) => {
             inputs.current[index] = ref;
           }}
-          className="w-10 h-10 border rounded text-center text-lg"
+          style={styles.input}
           keyboardType="number-pad"
           maxLength={1}
           value={char}
-          onChangeText={text => handleChangeText(text, index)}
+          onChangeText={(text) => handleChangeText(text, index)}
           onKeyPress={({ nativeEvent }) => handleKeyPress(nativeEvent, index, char)}
         />
       ))}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 8,
+    paddingHorizontal: 12,
+  },
+  input: {
+    width: 40,
+    height: 40,
+    borderWidth: 1,
+    borderRadius: 8,
+    textAlign: "center",
+    fontSize: 18,
+  },
+});
 
 export default VerificationCodeInput;

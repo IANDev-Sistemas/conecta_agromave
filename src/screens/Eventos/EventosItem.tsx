@@ -1,7 +1,6 @@
-
 import { Calendar2, Location } from "iconsax-react-native";
 import React, { useState } from "react";
-import { View, Text, Image, Pressable, Modal, Animated, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import ModalEvento from "./ModalEvento";
 
 interface EventosItemProps {
@@ -13,30 +12,38 @@ interface EventosItemProps {
   onRedirect: () => void;
 }
 
-const EventosItem: React.FC<EventosItemProps> = ({ title, date, location, imageUrl, description, onRedirect }) => {
+const EventosItem: React.FC<EventosItemProps> = ({
+  title,
+  date,
+  location,
+  imageUrl,
+  description,
+  onRedirect,
+}) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const opacity = new Animated.Value(0);
-
 
   return (
-    <View className=" bg-white w-5/6 rounded-2xl mx-2, mb-5" style={{shadowColor:"000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.3, shadowRadius: 2,}}>
-      <TouchableOpacity style={{display:"flex", flexDirection:"row", padding:10}} onPress={() => setModalVisible(true)}>
-      <Image
-        source={{ uri: imageUrl }}
-        className="w-28 h-28 rounded-lg "
-        resizeMode="cover"
-      />
-      <View className="ml-4 gap-2">
-        <Text className="text-lg font-semibold">{title}</Text>
-        <View className="flex-row items-center mt-2 gap-2">
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={styles.touchable}
+        onPress={() => setModalVisible(true)}
+      >
+        <Image
+          source={{ uri: imageUrl }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+        <View style={styles.infoContainer}>
+          <Text style={styles.title}>{title}</Text>
+          <View style={styles.row}>
             <Calendar2 size={20} color="#292D32" />
-          <Text className="text-gray-600">{date}</Text>
-        </View>
-        <View className="flex-row items-center mt-1 gap-2">
+            <Text style={styles.infoText}>{date}</Text>
+          </View>
+          <View style={styles.row}>
             <Location size={20} color="#292D32" />
-          <Text className="text-gray-600">{location}</Text>
+            <Text style={styles.infoText}>{location}</Text>
+          </View>
         </View>
-      </View>
       </TouchableOpacity>
 
       <ModalEvento
@@ -50,5 +57,46 @@ const EventosItem: React.FC<EventosItemProps> = ({ title, date, location, imageU
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    width: "83%",
+    borderRadius: 20,
+    marginHorizontal: 8,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 4,
+  },
+  touchable: {
+    flexDirection: "row",
+    padding: 10,
+  },
+  image: {
+    width: 110,
+    height: 110,
+    borderRadius: 12,
+  },
+  infoContainer: {
+    marginLeft: 16,
+    gap: 8,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 8,
+  },
+  infoText: {
+    color: "#6B7280",
+    marginLeft: 8,
+  },
+});
 
 export default EventosItem;

@@ -1,6 +1,5 @@
 import React from "react";
-import { View, Pressable, Text, TouchableOpacity, Platform } from "react-native";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { View, Pressable, Text, TouchableOpacity, Platform, StyleSheet } from "react-native";
 import { Divider } from "@rneui/themed";
 import { useAuth } from "../contexts/AuthContext";
 import Constants from "expo-constants";
@@ -18,59 +17,123 @@ const CustomHeader = ({
   setCardVisible: any;
   cardVisible: boolean;
 }) => {
-  const {authState, onLogout } = useAuth();
+  const { authState, onLogout } = useAuth();
 
   const toggleCardVisibility = () => {
     setCardVisible(!cardVisible);
   };
+
   const navigation = useNavigation<BottomTabsTypes>();
 
   return (
     <View>
       <View
-        className="absolute w-full flex justify-center bg-principal px-10"
-        style={{ paddingTop: Platform.OS === 'ios' ? statusBarHeight : statusBarHeight+25 , paddingVertical: 20 }}
+        style={[
+          styles.headerContainer,
+          { paddingTop: Platform.OS === "ios" ? statusBarHeight : statusBarHeight + 25 }
+        ]}
       >
-        <Pressable className="flex-row w-100 items-center gap-5" onPress={toggleCardVisibility}>
+        <Pressable style={styles.profileContainer} onPress={toggleCardVisibility}>
           <ProfileCircle size={30} color="white" variant="Bold" />
-          <Text className="font-bold text-white" >Olá, {authState?.usuario?.nome}</Text>
+          <Text style={styles.greetingText}>Olá, {authState?.usuario?.nome}</Text>
         </Pressable>
       </View>
 
       {cardVisible && (
-        <View
-          className="absolute py-2 w-1/2 flex justify-center bg-white rounded-lg"
-          style={{
-            top: statusBarHeight + 40,
-            marginHorizontal: 10,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.8,
-            shadowRadius: 2,
-            elevation: 50,
-          }}
-        >
-          <View className="flex-row gap-3 justify-center items-center py-4">
-            <TouchableOpacity onPress={()=>navigation.navigate("Cliente")} style={{display:'flex', flexDirection:'row', gap:10}}>
-            <ProfileCircle variant="Bold" size={24} color="#023A5D" />
-            <Text className="text-lg text-[#49454F] font-bold">
-              Cliente
-            </Text>
+        <View style={styles.cardContainer}>
+          <View style={styles.menuItemContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Cliente")}
+              style={styles.menuItem}
+            >
+              <ProfileCircle variant="Bold" size={24} color="#023A5D" />
+              <Text style={styles.menuItemText}>Cliente</Text>
             </TouchableOpacity>
           </View>
           <Divider />
-          <Text className="text-lg text-[#49454F] text-center my-4 font-bold" >Versão {expo.version}</Text>
-          <Pressable
-            className="bg-principal rounded-full p-2 gap-2  mx-4 my-2 flex flex-row items-center justify-center"
-            onPress={onLogout}
-          >
+          <Text style={styles.versionText}>Versão {expo.version}</Text>
+          <Pressable style={styles.logoutButton} onPress={onLogout}>
             <LogoutCurve size={24} color="white" />
-            <Text className="text-white  font-bold">Sair</Text>
+            <Text style={styles.logoutButtonText}>Sair</Text>
           </Pressable>
         </View>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    position: "absolute",
+    width: "100%",
+    justifyContent: "center",
+    backgroundColor: "#023A5D",
+    paddingHorizontal: 40,
+    paddingVertical: 20,
+  },
+  profileContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  greetingText: {
+    fontWeight: "bold",
+    color: "white",
+  },
+  cardContainer: {
+    position: "absolute",
+    paddingVertical: 8,
+    width: "50%",
+    justifyContent: "center",
+    backgroundColor: "white",
+    borderRadius: 10,
+    top: statusBarHeight + 40,
+    marginHorizontal: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 50,
+  },
+  menuItemContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 16,
+    gap: 10,
+  },
+  menuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  menuItemText: {
+    fontSize: 18,
+    color: "#49454F",
+    fontWeight: "bold",
+  },
+  versionText: {
+    fontSize: 18,
+    color: "#49454F",
+    textAlign: "center",
+    marginVertical: 16,
+    fontWeight: "bold",
+  },
+  logoutButton: {
+    backgroundColor: "#023A5D",
+    borderRadius: 9999,
+    padding: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 16,
+    marginVertical: 8,
+    gap: 10,
+  },
+  logoutButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+});
 
 export default CustomHeader;

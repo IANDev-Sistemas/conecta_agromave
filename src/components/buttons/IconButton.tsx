@@ -18,7 +18,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   badgeValue,
 }) => {
   return (
-    <View className="justify-center items-center  gap-3">
+    <View style={styles.container}>
       <TouchableOpacity
         style={[styles.button, ativo ? styles.active : styles.inactive]}
         onPress={onClick}
@@ -32,12 +32,17 @@ const IconButton: React.FC<IconButtonProps> = ({
         )}
         <View style={styles.iconContainer}>{icon}</View>
       </TouchableOpacity>
-      <Text className="font-semibold">{label}</Text>
+      <Text style={styles.label}>{label}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
   button: {
     marginTop: 10,
     width: 45,
@@ -49,7 +54,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.3,
     shadowRadius: 2,
-    elevation:10
+    elevation: 10,
   },
   active: {
     backgroundColor: "#1B3265",
@@ -60,6 +65,9 @@ const styles = StyleSheet.create({
   iconContainer: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  label: {
+    fontWeight: "600", // Substitui a classe "font-semibold"
   },
 });
 

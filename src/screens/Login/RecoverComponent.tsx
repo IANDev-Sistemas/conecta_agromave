@@ -3,13 +3,13 @@ import LoginInput from "@/src/components/inputs/LoginInput";
 import { applyMask, removeMask } from "@/src/helpers/mask";
 import { AntDesign } from "@expo/vector-icons";
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 
 interface RecoverProps {
   msg: string;
   cgc: string;
   setCgc: (text: string) => void;
-  sendEmail: () => {};
+  sendEmail: () => void;
   toggleComponent: () => void;
 }
 
@@ -26,14 +26,12 @@ const RecoverComponent: React.FC<RecoverProps> = ({
   };
 
   return (
-    <View className="flex-1 w-10/12 gap-2 py-7">
-      <View className="flex flex-row w-2/3 justify-between">
+    <View style={styles.container}>
+      <View style={styles.header}>
         <Pressable onPress={toggleComponent}>
           <AntDesign name="arrowleft" size={24} color="black" />
         </Pressable>
-        <Text className="px-3 text-lg text-black mb-5 font-bold">
-          Recuperação
-        </Text>
+        <Text style={styles.title}>Recuperação</Text>
       </View>
       <LoginInput
         label="CPF ou CNPJ"
@@ -42,8 +40,8 @@ const RecoverComponent: React.FC<RecoverProps> = ({
         value={applyMask(cgc, "cgc")}
         onChangeText={handleCgcChange}
       />
-      <View className="w-full p-1">
-        <Text className="text-left color-bordo">{msg}</Text>
+      <View style={styles.messageContainer}>
+        <Text style={styles.message}>{msg}</Text>
       </View>
       <LoginButton
         disabled={cgc.length > 10 ? false : true}
@@ -53,5 +51,34 @@ const RecoverComponent: React.FC<RecoverProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "83%",
+    paddingVertical: 20,
+    gap: 8,
+  },
+  header: {
+    flexDirection: "row",
+    width: "66%",
+    justifyContent: "space-between",
+  },
+  title: {
+    paddingHorizontal: 12,
+    fontSize: 18,
+    color: "black",
+    marginBottom: 20,
+    fontWeight: "bold",
+  },
+  messageContainer: {
+    width: "100%",
+    padding: 4,
+  },
+  message: {
+    color: "#8B0000", // Bordo color
+    textAlign: "left",
+  },
+});
 
 export default RecoverComponent;

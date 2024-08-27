@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
   ScrollView,
   Pressable,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import IconButton from "../components/buttons/IconButton";
 import {
   Calendar,
   Calendar1,
-  Calendar2,
   CardPos,
   DocumentText1,
   House,
@@ -20,7 +20,6 @@ import {
   Routing,
   ShoppingBag,
   SmsNotification,
-  Wallet,
 } from "iconsax-react-native";
 import { Divider } from "@rneui/themed";
 
@@ -32,19 +31,10 @@ interface HomeCardProps {
 const HomeCard: React.FC<HomeCardProps> = ({ title, icon }) => {
   return (
     <TouchableOpacity>
-      <View
-        className="w-full h-36 bg-white rounded-lg"
-        style={{
-          shadowColor: "000",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.3,
-          shadowRadius: 2,
-          elevation:10
-        }}
-      >
-        <View className="flex-row items-center gap-2 px-4 py-2">
+      <View style={styles.homeCard}>
+        <View style={styles.cardContent}>
           {icon}
-          <Text className="text-lg font-semibold">{title}</Text>
+          <Text style={styles.cardTitle}>{title}</Text>
         </View>
         <Divider width={2} color="#E7E7E7"></Divider>
       </View>
@@ -54,20 +44,14 @@ const HomeCard: React.FC<HomeCardProps> = ({ title, icon }) => {
 
 const Home = () => {
   return (
-    <View className="flex-1 h-full bg-white">
-      <View className="flex-1 mt-28 items-center w-full h-full">
-        <ScrollView contentContainerStyle={{paddingBottom:100}} style={{ width: "100%" }}>
-          <Pressable
-            style={{
-              width: "100%",
-              paddingHorizontal: 10,
-              justifyContent: "center",
-              alignItems: "center",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <View className="flex-row mt-10 w-full justify-evenly gap-4">
+    <View style={styles.container}>
+      <View style={styles.innerContainer}>
+        <ScrollView
+          contentContainerStyle={styles.scrollViewContent}
+          style={styles.scrollView}
+        >
+          <Pressable style={styles.pressableContainer}>
+            <View style={styles.row}>
               <IconButton
                 label={"Pedidos"}
                 onClick={() => {}}
@@ -88,17 +72,11 @@ const Home = () => {
                 ativo={false}
               />
             </View>
-            <View className="w-full flex-col gap-10 px-4 mt-16">
-              <HomeCard
-                icon={<ShoppingBag color={"#023A5D"} />}
-                title="Pedidos"
-              />
-              <HomeCard
-                icon={<ShoppingBag color={"#023A5D"} />}
-                title="Pedidos"
-              />
+            <View style={styles.column}>
+              <HomeCard icon={<ShoppingBag color={"#023A5D"} />} title="Pedidos" />
+              <HomeCard icon={<ShoppingBag color={"#023A5D"} />} title="Pedidos" />
             </View>
-            <View className="flex-row mt-10 w-5/6 justify-evenly gap-4">
+            <View style={styles.row}>
               <IconButton
                 label={"Pedidos"}
                 onClick={() => {}}
@@ -125,8 +103,7 @@ const Home = () => {
                 ativo={false}
               />
             </View>
-            <View className="flex-row mt-5 w-5/6 justify-evenly gap-4">
-              
+            <View style={styles.row}>
               <IconButton
                 label={"Propriedades"}
                 onClick={() => {}}
@@ -153,8 +130,7 @@ const Home = () => {
                 ativo={false}
               />
             </View>
-            <View className="flex-row mt-5 w-5/6 justify-evenly gap-4">
-              
+            <View style={styles.row}>
               <IconButton
                 label={"Consultor"}
                 onClick={() => {}}
@@ -174,12 +150,72 @@ const Home = () => {
                 ativo={false}
               />
             </View>
-
           </Pressable>
         </ScrollView>
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  innerContainer: {
+    flex: 1,
+    marginTop: 100,
+    alignItems: "center",
+    width: "100%",
+  },
+  scrollViewContent: {
+    paddingBottom: 100,
+  },
+  scrollView: {
+    width: "100%",
+  },
+  pressableContainer: {
+    width: "100%",
+    paddingHorizontal: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+  },
+  row: {
+    flexDirection: "row",
+    marginTop: 10,
+    width: "100%",
+    justifyContent: "space-evenly",
+    gap: 4,
+  },
+  column: {
+    flexDirection: "column",
+    gap: 10,
+    width: "100%",
+    paddingHorizontal: 16,
+    marginTop: 16,
+  },
+  homeCard: {
+    width: "100%",
+    height: 144,
+    backgroundColor: "white",
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 10,
+  },
+  cardContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    padding: 16,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
+});
 
 export default Home;

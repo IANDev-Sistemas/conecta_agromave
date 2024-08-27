@@ -1,14 +1,13 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, Easing, Platform, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Easing, Platform, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import Constants from "expo-constants";
 import { Divider } from "@rneui/themed";
-import { FontAwesome, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigationState } from "@react-navigation/native";
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { Calendar, CardPos, House, Logout, LogoutCurve, Profile2User, ProfileCircle, Routing, SmsNotification, TicketStar } from "iconsax-react-native";
+import { Calendar, CardPos, House, LogoutCurve, Profile2User, ProfileCircle, Routing, SmsNotification, TicketStar } from "iconsax-react-native";
 
-const statusBarHeight = Platform.OS === "ios" ? 50 : Constants.statusBarHeight+20;
+const statusBarHeight = Platform.OS === "ios" ? 50 : Constants.statusBarHeight + 20;
 
 interface MenuItemProps {
   icon: React.ReactNode;
@@ -25,19 +24,13 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, label, route, currentRoute, o
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        gap: 10,
-        alignItems: "center",
-        backgroundColor: isActive ? "#023A5D" : "transparent",
-        borderRadius: 16,
-        padding: 10,
-      }}
-
+      style={[
+        styles.menuItem,
+        isActive && styles.activeMenuItem,
+      ]}
     >
       {React.cloneElement(icon as React.ReactElement, { color: iconColor })}
-        <Text style={{color: isActive ? 'white' : "#49454F"}} className='my-2  font-bold'>{label}</Text>
+      <Text style={[styles.menuText, isActive && styles.activeMenuText]}>{label}</Text>
     </TouchableOpacity>
   );
 };
@@ -95,31 +88,15 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
   ];
 
   return (
-    <View className="absolute top-0 flex w-full h-full mb-20">
-      <View className="z-0 absolute top-0 left-0 bg-black opacity-50 w-full h-full" style={{ paddingVertical: statusBarHeight }} onTouchEndCapture={handleClose}></View>
+    <View style={styles.overlay}>
+      <View style={styles.backdrop} onTouchEndCapture={handleClose}></View>
       <Animated.View
-        style={{
-          transform: [{ translateX: animationValue }],
-          position: "absolute",
-          zIndex: 10,
-          top: 0,
-          right: 0,
-          width: "65%",
-          height: "100%",
-          backgroundColor: "white",
-          padding: 16,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.8,
-          shadowRadius: 2,
-          elevation: 5,
-          paddingVertical: statusBarHeight,
-          borderTopLeftRadius: 16,
-          borderBottomLeftRadius: 16,
-          gap: 10,
-        }}
+        style={[
+          styles.drawerContainer,
+          { transform: [{ translateX: animationValue }] },
+        ]}
       >
-        <Text className="font-bold text-xl text-[#49454F]">Menus</Text>
+        <Text style={styles.drawerTitle}>Menus</Text>
         {menuItems.map((item) => (
           <MenuItem
             key={item.route}
@@ -150,14 +127,91 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
         <Divider />
         <TouchableOpacity
           onPress={onLogout}
-          style={{padding:7, marginTop: 20, borderRadius: 16, backgroundColor: "#023A5D", justifyContent: "center", display: "flex", flexDirection: "row", gap: 10, alignItems: "center" }}
+          style={styles.logoutButton}
         >
           <LogoutCurve size={24} color="white" />
-          <Text className="my-2 text-white font-bold">Sair</Text>
+          <Text style={styles.logoutText}>Sair</Text>
         </TouchableOpacity>
       </Animated.View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'flex-end',
+  },
+  backdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'black',
+    opacity: 0.5,
+  },
+  drawerContainer: {
+    position: 'absolute',
+    zIndex: 10,
+    top: 0,
+    right: 0,
+    width: '65%',
+    height: '100%',
+    backgroundColor: 'white',
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+    paddingVertical: statusBarHeight,
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
+  },
+  drawerTitle: {
+    fontWeight: 'bold',
+    fontSize: 24,
+    color: '#49454F',
+    marginBottom: 20,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderRadius: 16,
+    padding: 10,
+    marginBottom: 10,
+  },
+  activeMenuItem: {
+    backgroundColor: '#023A5D',
+  },
+  menuText: {
+    marginLeft: 10,
+    color: '#49454F',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  activeMenuText: {
+    color: 'white',
+  },
+  logoutButton: {
+    padding: 7,
+    marginTop: 20,
+    borderRadius: 16,
+    backgroundColor: "#023A5D",
+    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  logoutText: {
+    marginLeft: 10,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+});
 
 export default CustomDrawer;

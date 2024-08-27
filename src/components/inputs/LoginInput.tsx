@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, KeyboardAvoidingView, KeyboardTypeOptions } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, KeyboardTypeOptions } from 'react-native';
 import { Feather } from "@expo/vector-icons";
 
 interface CustomInputProps {
@@ -19,11 +19,11 @@ const LoginInput: React.FC<CustomInputProps> = ({ label, placeholder, isPassword
   };
 
   return (
-    <View className="my-2">
-      <Text className="px-3 text-lg text-black mb-1 font-bold">{label}</Text>
-      <View className="flex-row w-full items-center bg-transparent rounded-lg px-3 h-10 border-b-[1px] py-2 border-[#ADADAD]">
+    <View style={styles.container}>
+      <Text style={styles.label}>{label}</Text>
+      <View style={styles.inputContainer}>
         <TextInput
-          className="w-full flex-1 text-[#424141]"
+          style={styles.input}
           placeholder={placeholder}
           placeholderTextColor="#AAA"
           secureTextEntry={secureText}
@@ -34,7 +34,7 @@ const LoginInput: React.FC<CustomInputProps> = ({ label, placeholder, isPassword
           textContentType='none'
         />
         {isPassword && (
-          <Pressable onPress={toggleSecureText} className="">
+          <Pressable onPress={toggleSecureText} style={styles.icon}>
             <Feather name={secureText ? "eye-off" : "eye"} size={20} color="#AAA" />
           </Pressable>
         )}
@@ -42,5 +42,37 @@ const LoginInput: React.FC<CustomInputProps> = ({ label, placeholder, isPassword
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: 8,
+    width: "100%",
+  },
+  label: {
+    paddingHorizontal: 12,
+    fontSize: 18,
+    color: 'black',
+    marginBottom: 4,
+    fontWeight: 'bold',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    height: 40,
+    borderBottomWidth: 1,
+    borderColor: '#ADADAD',
+    paddingVertical: 8,
+  },
+  input: {
+    flex: 1,
+    color: '#424141',
+  },
+  icon: {
+    paddingLeft: 8,
+  },
+});
 
 export default LoginInput;

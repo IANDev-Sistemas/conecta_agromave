@@ -4,7 +4,7 @@ import CustomDropdown from '@/src/components/inputs/Dropdown';
 import { BottomTabsTypes } from '@/src/navigation/BottomTabs';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Pressable } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import ConsultorCard from './ConsultorCard';
 
 interface Consultor {
@@ -37,13 +37,13 @@ const Consultor = () => {
   const navigation = useNavigation<BottomTabsTypes>();
 
   return (
-    <View className="flex-1 h-full bg-white">
-      <View className="flex-1 mt-28 items-center w-full h-full">
+    <View style={styles.container}>
+      <View style={styles.innerContainer}>
         <Header title="Consultores">
-          <View className="flex-col w-2/3 gap-5">
+          <View style={styles.dropdownContainer}>
             <CustomDropdown
               label="Propriedade"
-              onChange={(value) => setSelectedFazenda(value)}
+              onChange={(value) => setSelectedFazenda(Number(value))} // Converte o valor para número
               value={selectedFazenda}
               list={fazendas.map((fazenda) => ({
                 key: fazenda.id,
@@ -56,21 +56,12 @@ const Consultor = () => {
 
         {selectedFazenda !== 0 && filteredConsultores.length > 0 && (
           <ScrollView
-            contentContainerStyle={{}}
+            contentContainerStyle={styles.scrollViewContent}
             style={{ width: "100%" }}
           >
-            <Pressable
-              style={{
-                width: "100%",
-                paddingHorizontal: 10,
-                justifyContent: "center",
-                alignItems: "center",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <View className="text-left w-full px-6 py-4">
-                <Text className="text-xl font-bold text-left">Consultores</Text>
+            <Pressable style={styles.pressableContainer}>
+              <View style={styles.consultoresHeader}>
+                <Text style={styles.consultoresTitle}>Consultores</Text>
               </View>
               {filteredConsultores.map((consultor, index) => (
                 <ConsultorCard key={index} {...consultor} />
@@ -82,5 +73,43 @@ const Consultor = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  innerContainer: {
+    marginTop: 100,
+    alignItems: 'center',
+    width: '100%',
+  },
+  dropdownContainer: {
+    flexDirection: 'column',
+    width: '66%',
+    gap: 20,
+  },
+  scrollViewContent: {
+    paddingBottom: 20,
+  },
+  pressableContainer: {
+    width: '100%',
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
+  consultoresHeader: {
+    textAlign: 'left',
+    width: '100%',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  consultoresTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'left',
+  },
+});
 
 export default Consultor;

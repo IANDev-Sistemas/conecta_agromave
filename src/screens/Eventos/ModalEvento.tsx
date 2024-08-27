@@ -1,7 +1,5 @@
 import React from "react";
-import { Modal, View, Image, Text } from "react-native";
-import { Button } from "@rneui/themed";
-import LoginButton from "@/src/components/buttons/LoginButton";
+import { Modal, View, Image, Text, StyleSheet } from "react-native";
 import ButtonGeneral from "@/src/components/buttons/ButtonGeneral";
 
 interface CustomModalProps {
@@ -28,23 +26,60 @@ const ModalEvento: React.FC<CustomModalProps> = ({
       visible={visible}
       onRequestClose={onClose}
     >
-      <View
-        className="z-0 absolute top-0 left-0 w-full h-full justify-center items-center bg-black opacity-50"
-        onTouchEndCapture={onClose}
-      ></View>
-      <View className="left-10 w-5/6 top-56 bg-white rounded-lg p-5 z-10">
-      <Image
+      <View style={styles.overlay} onTouchEndCapture={onClose}></View>
+      <View style={styles.modalContainer}>
+        <Image
           source={{ uri: imageUrl }}
-          className="w-full h-64 rounded-md"
-          resizeMode="contain"  
-          style={{ maxHeight: 300 }} 
+          style={styles.image}
+          resizeMode="contain"
         />
-        <Text className="text-lg font-semibold mt-4 mb-2">{title}</Text>
-        <Text className="text-gray-700 mb-4">{description}</Text>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.description}>{description}</Text>
         <ButtonGeneral label="Saiba mais" onClick={onRedirect} />
       </View>
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
+    opacity: 0.5,
+  },
+  modalContainer: {
+    position: "absolute",
+    top: "25%",
+    left: "10%",
+    width: "80%",
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 20,
+    zIndex: 10,
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    borderRadius: 12,
+    maxHeight: 300,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  description: {
+    fontSize: 16,
+    color: "#4B5563",
+    marginBottom: 20,
+  },
+});
 
 export default ModalEvento;

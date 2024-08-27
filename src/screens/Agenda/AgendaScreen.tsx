@@ -5,6 +5,7 @@ import {
   FlatList,
   Pressable,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import moment from "moment";
 import "moment/locale/pt-br";
@@ -97,12 +98,12 @@ const AgendaScreen: React.FC = () => {
   const handleDateChange = (date: Date | null) => {
     if (date) {
       const selectedDay = moment(date).format("YYYY-MM-DD");
-  
+
       setDays((prevDays) => {
         let updatedDays = [...prevDays];
         const firstDay = moment(updatedDays[0]);
         const lastDay = moment(updatedDays[updatedDays.length - 1]);
-  
+
         // Se o dia selecionado for antes do primeiro dia da lista atual
         if (moment(date).isBefore(firstDay)) {
           const daysToAdd = firstDay.diff(date, "days");
@@ -115,17 +116,17 @@ const AgendaScreen: React.FC = () => {
           const newDays = generateDays(lastDay.add(1, "day").toDate(), daysToAdd, updatedDays);
           updatedDays = [...updatedDays, ...newDays];
         }
-  
+
         // Se o dia selecionado não estiver na lista, adicione-o
         if (!updatedDays.includes(selectedDay)) {
           updatedDays = [selectedDay, ...updatedDays];
         }
-  
+
         return updatedDays;
       });
-  
+
       setSelectedDate(date);
-  
+
       // Scroll para o dia selecionado
       const index = days.indexOf(selectedDay);
       if (index !== -1) {
@@ -133,7 +134,6 @@ const AgendaScreen: React.FC = () => {
       }
     }
   };
-  
 
   const toggleFilter = () => {
     setShowOnlyEvents((prev) => !prev);
@@ -144,17 +144,8 @@ const AgendaScreen: React.FC = () => {
     : days;
 
   const renderAppointmentItem = (appointment: Appointment) => (
-    <View
-      key={appointment.time}
-      style={{
-        backgroundColor: "#d0f0d0",
-        width: 250,
-        padding: 10,
-        borderRadius: 15,
-        marginBottom: 10,
-      }}
-    >
-      <Text style={{ fontWeight: "bold" }}>{appointment.time}</Text>
+    <View style={styles.appointmentItem} key={appointment.time}>
+      <Text style={styles.appointmentTime}>{appointment.time}</Text>
       <Text>{appointment.type}</Text>
       <Text>{appointment.description}</Text>
     </View>
@@ -172,24 +163,11 @@ const AgendaScreen: React.FC = () => {
     const dayAppointments = appointments[item];
 
     return (
-      <View key={item} style={{ width: "100%" }}>
-        <Pressable
-          style={{
-            marginVertical: 10,
-            alignItems: "flex-start",
-            display: "flex",
-            flexDirection: "row",
-            gap: 10,
-            paddingHorizontal: 10,
-          }}
-        >
-          <View style={{ alignItems: "center", width: 80, marginTop: 7 }}>
-            <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-              {dayOfMonth}
-            </Text>
-            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-              {dayOfWeek}
-            </Text>
+      <View key={item} style={styles.dayContainer}>
+        <Pressable style={styles.dayPressable}>
+          <View style={styles.dayInfo}>
+            <Text style={styles.dayOfMonth}>{dayOfMonth}</Text>
+            <Text style={styles.dayOfWeek}>{dayOfWeek}</Text>
           </View>
           <View>
             {dayAppointments ? (
@@ -197,26 +175,12 @@ const AgendaScreen: React.FC = () => {
                 renderAppointmentItem(appointment)
               )
             ) : (
-              <View
-                style={{
-                  backgroundColor: "#f0f0f0",
-                  width: 250,
-                  height: 60,
-                  borderRadius: 15,
-                }}
-              ></View>
+              <View style={styles.emptyAppointment}></View>
             )}
           </View>
         </Pressable>
         {isLastDayOfMonth && (
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 18,
-              fontWeight: "bold",
-              marginVertical: 20,
-            }}
-          >
+          <Text style={styles.monthName}>
             {monthName.charAt(0).toUpperCase() + monthName.slice(1)}
           </Text>
         )}
@@ -225,50 +189,26 @@ const AgendaScreen: React.FC = () => {
   };
 
   return (
-    <View style={{ flex: 1, marginTop: 90, backgroundColor: "#fff" }}>
+    <View style={styles.container}>
       <Header title="Agenda">
-        <View
-          style={{
-            flexDirection: "column",
-            width: "100%",
-            gap: 10,
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-          }}
-        >
+        <View style={styles.headerActions}>
           <TouchableOpacity
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: 7,
-              backgroundColor: "#023A5D",
-              padding: 6,
-              width: "50%",
-              borderRadius: 16,
-              justifyContent: "center",
-            }}
+            style={styles.addButton}
             onPress={() => setShowModal(true)}
           >
             <AddCircle size={20} color="white" />
-            <Text style={{ color: "white", fontWeight: "bold" }}>
-              Agendar Visita
-            </Text>
+            <Text style={styles.addButtonText}>Agendar Visita</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={toggleFilter}
-            style={{
-              backgroundColor: "#4CAF50",
-              padding: 8,
-              borderRadius: 16,
-              marginTop: 10,
-            }}
+            style={styles.filterButton}
           >
-            <Text style={{ color: "white", fontWeight: "bold" }}>
+            <Text style={styles.filterButtonText}>
               {showOnlyEvents ? "Todos os dias" : "Apenas dias com eventos"}
             </Text>
           </TouchableOpacity>
 
-          <Text style={{ color: "black", fontWeight: "bold" }}>Período</Text>
+          <Text style={styles.periodText}>Período</Text>
           <DatePicker
             label="Selecionar Data"
             value={selectedDate}
@@ -289,12 +229,99 @@ const AgendaScreen: React.FC = () => {
         <NovaProgModal
           onChange={() => {}}
           onClose={() => setShowModal(false)}
-          onRedirect={() => {}} 
+          onRedirect={() => {}}
           visible={showModal}
         />
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 90,
+    backgroundColor: "#fff",
+  },
+  headerActions: {
+    flexDirection: "column",
+    width: "100%",
+    gap: 10,
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  },
+  addButton: {
+    flexDirection: "row",
+    gap: 7,
+    backgroundColor: "#023A5D",
+    padding: 6,
+    width: "50%",
+    borderRadius: 16,
+    justifyContent: "center",
+  },
+  addButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  filterButton: {
+    backgroundColor: "#4CAF50",
+    padding: 8,
+    borderRadius: 16,
+    marginTop: 10,
+  },
+  filterButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  periodText: {
+    color: "black",
+    fontWeight: "bold",
+  },
+  dayContainer: {
+    width: "100%",
+  },
+  dayPressable: {
+    marginVertical: 10,
+    flexDirection: "row",
+    gap: 10,
+    paddingHorizontal: 10,
+    alignItems: "flex-start",
+  },
+  dayInfo: {
+    alignItems: "center",
+    width: 80,
+    marginTop: 7,
+  },
+  dayOfMonth: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  dayOfWeek: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  emptyAppointment: {
+    backgroundColor: "#f0f0f0",
+    width: 250,
+    height: 60,
+    borderRadius: 15,
+  },
+  appointmentItem: {
+    backgroundColor: "#d0f0d0",
+    width: 250,
+    padding: 10,
+    borderRadius: 15,
+    marginBottom: 10,
+  },
+  appointmentTime: {
+    fontWeight: "bold",
+  },
+  monthName: {
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginVertical: 20,
+  },
+});
 
 export default AgendaScreen;

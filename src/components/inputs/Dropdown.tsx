@@ -33,15 +33,15 @@ const CustomDropdown: React.FC<DropdownProps> = ({
   const textColor = disable ? '#ACB4BA' : '#000000';
 
   return (
-    <View className="flex-col gap-2">
-      {label && <Text className="font-semibold">{label}</Text>}
+    <View style={styles.container}>
+      {label && <Text style={styles.label}>{label}</Text>}
       <Dropdown
         style={styles.dropdown}
-        placeholderStyle={{ color: '#ACB4BA', fontSize: 14 }}
+        placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={{ color: textColor, fontSize: 14 }}
-        inputSearchStyle={{ color: '#000000', fontSize: 14 }}
-        itemTextStyle={{ fontSize: 14 }}
-        containerStyle={styles.dropdownContainer} 
+        inputSearchStyle={styles.inputSearchStyle}
+        itemTextStyle={styles.itemTextStyle}
+        containerStyle={styles.dropdownContainer}
         data={list}
         maxHeight={200}
         labelField="name"
@@ -63,6 +63,14 @@ const CustomDropdown: React.FC<DropdownProps> = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'column',
+    gap: 8,
+  },
+  label: {
+    fontWeight: '600', 
+    marginBottom: 4,
+  },
   dropdown: {
     backgroundColor: '#EEEEEE',
     width: '100%',
@@ -70,8 +78,19 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 12,
     padding: 10,
-    borderRadius: 12, 
+    borderRadius: 12,
     height: 44,
+  },
+  placeholderStyle: {
+    color: '#ACB4BA',
+    fontSize: 14,
+  },
+  inputSearchStyle: {
+    color: '#000000',
+    fontSize: 14,
+  },
+  itemTextStyle: {
+    fontSize: 14,
   },
   dropdownContainer: {
     borderRadius: 12,

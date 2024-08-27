@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Animated, Easing, Dimensions, ImageBackground } from "react-native";
+import { View, Animated, Easing, Dimensions, ImageBackground, StyleSheet } from "react-native";
 import { useAuth } from "../../contexts/AuthContext";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import LoginComponent from "./LoginComponent";
@@ -33,15 +33,14 @@ const LoginScreen = () => {
     const response =  await forgotPassword?.(cgc);
 
     if(response?.status === 'error')
-      setMsg(response.msg)
+      setMsg(response.msg);
   };
 
   const handlePasswordChange = async () => {
-    setMsg("")
+    setMsg("");
     if (newPassword !== newPasswordRepeat) {
-      setMsg("Senhas não coincidem")
-    }
-    else{
+      setMsg("Senhas não coincidem");
+    } else {
       const result =  await changePassword?.(cgc, verificationCode, newPassword );
       if (result?.error) {
         setMsg(result.msg);
@@ -51,25 +50,25 @@ const LoginScreen = () => {
 
   const toggleComponent = (newView: "login" | "recover" | "changePassword") => {
     setView(newView);
-    setMsg("")
+    setMsg("");
   };
 
   const validateCode = async () => {
-    setMsg("")
-    const result = await checkValidationCode?.(cgc, verificationCode)
+    setMsg("");
+    const result = await checkValidationCode?.(cgc, verificationCode);
     if(result.status === 'error')
-      setMsg(result.msg)
+      setMsg(result.msg);
     else{
-      setNewPassword('')
-      setNewPasswordRepeat('')
+      setNewPassword('');
+      setNewPasswordRepeat('');
     }
-  }
+  };
 
   useEffect(() => {
     if(authState?.status === "needupdate")
-      toggleComponent("changePassword")
+      toggleComponent("changePassword");
     if(authState?.status === "login")
-      toggleComponent("login")
+      toggleComponent("login");
   }, [authState]);
 
   useEffect(() => {
@@ -92,25 +91,23 @@ const LoginScreen = () => {
   }, [height, translationLogo, translationView]);
 
   return (
-    <ImageBackground source={require("../../../assets/images/background.png")} style={{flex:1}}>
+    <ImageBackground source={require("../../../assets/images/background.png")} style={styles.background}>
       <KeyboardAwareScrollView
         contentContainerStyle={{ flex: 1 }}
         resetScrollToCoords={{ x: 0, y: 0 }}
         scrollEnabled={true}
         extraScrollHeight={40}
       >
-        <View className="flex-1 h-full justify-center items-center gap-10">
+        <View style={styles.container}>
           <Animated.Image
-            style={{ transform: [{ translateY: translationLogo }] }}
+            style={[styles.logo, { transform: [{ translateY: translationLogo }] }]}
             source={require("../../../assets/images/conecta_logo_new.png")}
-            className="absolute"
           />
           <Animated.View
-            style={{
-              transform: [{ translateY: translationView }],
-              height: "65%",
-            }}
-            className="absolute bottom-0 w-full justify-center items-center bg-white rounded-t-3xl"
+            style={[
+              styles.animatedView,
+              { transform: [{ translateY: translationView }], height: "65%" }
+            ]}
           >
             {view === "login" && (
               <LoginComponent
@@ -154,5 +151,31 @@ const LoginScreen = () => {
     </ImageBackground>
   );
 };
+
+const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 40,
+  },
+  logo: {
+    position: 'absolute',
+  },
+  animatedView: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
+});
 
 export default LoginScreen;

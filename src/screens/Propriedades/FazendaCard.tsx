@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Location } from "iconsax-react-native";
 
 interface Fazenda {
@@ -16,25 +16,59 @@ interface FazendaProps {
 
 const FazendaCard: React.FC<FazendaProps> = ({ fazenda }) => {
   return (
-    <View
-      style={{
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 2,
-      }}
-      className="mt-5 w-5/6 rounded-xl border-background border-1 bg-white items-center pb-8 pt-4 px-5 gap-3"
-    >
-      <Text className="text-xl font-bold mb-3">{fazenda.nome}</Text>
-      <View className="text-left w-full flex-row items-center gap-2">
+    <View style={styles.cardContainer}>
+      <Text style={styles.fazendaName}>{fazenda.nome}</Text>
+      <View style={styles.locationRow}>
         <Location size={18} color="black" />
-        <Text className="text-md font-medium">{fazenda.cidade} - {fazenda.uf}</Text>
+        <Text style={styles.locationText}>{`${fazenda.cidade} - ${fazenda.uf}`}</Text>
       </View>
-      <View className="text-left ml-14 w-full flex-row items-center">
-        <Text className="text-md font-medium">Área: {fazenda.area} ha</Text>
+      <View style={styles.areaRow}>
+        <Text style={styles.areaText}>{`Área: ${fazenda.area} ha`}</Text>
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  cardContainer: {
+    marginTop: 20,
+    width: 270,
+    borderRadius: 15,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    gap: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+  },
+  fazendaName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 12,
+  },
+  locationRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    gap: 8,
+  },
+  locationText: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  areaRow: {
+    marginLeft: 40,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  areaText: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+});
 
 export default FazendaCard;

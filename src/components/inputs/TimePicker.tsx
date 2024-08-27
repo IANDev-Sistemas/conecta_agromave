@@ -22,15 +22,15 @@ const TimePicker: React.FC<TimePickerProps> = ({ label, value, onChange, icon })
   };
 
   return (
-    <View className=" justify-center items-center">
+    <View style={styles.container}>
       {Platform.OS === 'ios' ? (
-        <View className="h-10 w-20">
+        <View style={styles.iosPicker}>
           <DateTimePicker
             value={value || new Date()}
             mode="time"
             display="default"
             onChange={handleChange}
-            style={{margin:0, padding:0}}
+            style={{ margin: 0, padding: 0 }}
           />
         </View>
       ) : (
@@ -54,10 +54,18 @@ const TimePicker: React.FC<TimePickerProps> = ({ label, value, onChange, icon })
 };
 
 const styles = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  iosPicker: {
+    height: 40,
+    width: 80,
+  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#E5E7EB", // Cor de fundo semelhante ao StyledInput
+    backgroundColor: "#E5E7EB", // Cor de fundo cinza claro
     borderRadius: 9999, // Bordas arredondadas
     paddingVertical: 8,
     paddingHorizontal: 16,
@@ -66,7 +74,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   text: {
-    color: "#ADADAD", // Cor do texto semelhante ao StyledInput
+    color: "#ADADAD", // Cor do texto
     fontSize: 16,
   },
 });

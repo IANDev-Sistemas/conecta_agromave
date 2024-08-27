@@ -1,15 +1,25 @@
 import IconButton from "@/src/components/buttons/IconButton";
 import Header from "@/src/components/general/Header";
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
 import {
   DocumentText1,
   ReceiptText,
   ShoppingBag,
   Wallet,
 } from "iconsax-react-native";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import FinanceiroCard from "./FinanceiroCard";
+import FinanceiroGeral from "./FinanceiroGeral";
+import { BottomTabsTypes } from "@/src/navigation/BottomTabs";
+import Pedidos from "./Pedidos";
+import Contratos from "./Contratos";
+import CustomDropdown from "@/src/components/inputs/Dropdown";
+import Label from "@/src/components/general/Label";
+import TimePicker from "@/src/components/inputs/TimePicker";
+import DatePicker from "@/src/components/inputs/DatePicker";
+import ButtonGeneral from "@/src/components/buttons/ButtonGeneral";
+import { formatDate } from "@/src/helpers/formDate";
 
 type RouteParams = {
   params: {
@@ -17,11 +27,40 @@ type RouteParams = {
   };
 };
 
+const safras = [
+  {
+    key: 0,
+    name: "SAFRA 2024/25",
+  },
+  {
+    key: 1,
+    name: "SAFRA 2024",
+  },
+  {
+    key: 2,
+    name: "SAFRA 2023/24",
+  },
+  {
+    key: 3,
+    name: "SAFRA 2023",
+  },
+];
+
+type Safra = {
+  key: number;
+  name: string;
+};
+
 const Financeiro = () => {
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const [content, setContent] = useState<string>(
     route.params?.content || "financeiro"
   );
+  const [dataInicial, setDataInicial] = useState<Date | null>(new Date());
+  const [dataFinal, setDataFinal] = useState<Date | null>(new Date());
+  const [tipoFiltro, setTipoFiltro] = useState<string>("S");
+  const [safra, setSafra] = useState<string>(safras[0].name);
+  const [safraSelected, setSafraSelected] = useState<Safra | null>(safras[0]);
 
   useEffect(() => {
     if (route.params?.content) {
@@ -29,70 +68,177 @@ const Financeiro = () => {
     }
   }, [route.params?.content]);
 
+  const navigation = useNavigation<BottomTabsTypes>();
+
   return (
-    <View className="flex-1 h-full bg-white">
-      <View className="flex-1 mt-28 items-center w-full h-full">
+    <View style={styles.container}>
+      <View style={styles.innerContainer}>
         <Header title="Meu Financeiro">
-          <View className="flex-row w-full justify-evenly gap-4">
+          <View style={styles.iconButtonsContainer}>
             <IconButton
               label={"Visão Geral"}
-              onClick={() => setContent("financeiro")}
-              icon={
-                <Wallet color={content == "financeiro" ? "#fff" : "#023A5D"} />
+              onClick={() =>
+                navigation.navigate("Financeiro", { content: "financeiro" })
               }
-              ativo={content == "financeiro" ? true : false}
+              icon={
+                <Wallet
+                  color={content == "financeiro" ? "#fff" : "#023A5D"}
+                />
+              }
+              ativo={content == "financeiro"}
             />
             <IconButton
               label={"Pedidos"}
-              onClick={() => setContent("pedidos")}
+              onClick={() =>
+                navigation.navigate("Pedidos", { content: "pedidos" })
+              }
               icon={
                 <ShoppingBag
                   color={content == "pedidos" ? "#fff" : "#023A5D"}
                 />
               }
-              ativo={content == "pedidos" ? true : false}
+              ativo={content == "pedidos"}
             />
             <IconButton
               label={"Contratos"}
-              onClick={() => setContent("contratos")}
+              onClick={() =>
+                navigation.navigate("Contratos", { content: "contratos" })
+              }
               icon={
                 <DocumentText1
                   color={content == "contratos" ? "#fff" : "#023A5D"}
                 />
               }
-              ativo={content == "contratos" ? true : false}
+              ativo={content == "contratos"}
             />
             <IconButton
               label={"Notas"}
-              onClick={() => setContent("notas")}
-              icon={
-                <ReceiptText color={content == "notas" ? "#fff" : "#023A5D"} />
+              onClick={() =>
+                navigation.navigate("Notas", { content: "notas" })
               }
-              ativo={content == "notas" ? true : false}
+              icon={
+                <ReceiptText
+                  color={content == "notas" ? "#fff" : "#023A5D"}
+                />
+              }
+              ativo={content == "notas"}
             />
           </View>
-        </Header>
-        <ScrollView contentContainerStyle={{}} style={{ width: "100%" }}>
-          <Pressable
-            style={{
-              width: "100%",
-              paddingHorizontal: 10,
-              justifyContent: "center",
-              alignItems: "center",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <View className="w-full gap-5 p-5">
-              <FinanceiroCard value="R$10.000,00" title="Total a Pagar" />
-              <FinanceiroCard value="R$ 5.500,00" title="Total Vencido" />
-              <FinanceiroCard value="R$ 5.000,00" title="Total à Vencer" />
+          <View style={styles.filterContainer}>
+            <View style={styles.filterTypeContainer}>
+              <Text style={styles.filterLabel}>Tipo de Filtro</Text>
+              <ButtonGeneral
+                onClick={() => setTipoFiltro(tipoFiltro == "S" ? "P" : "S")}
+                label={tipoFiltro == "S" ? "Safras" : "Período"}
+              />
             </View>
-          </Pressable>
-        </ScrollView>
+            <View style={styles.dropdownContainer}>
+              {tipoFiltro == "S" && (
+                <>
+                  <Text style={styles.filterLabel}>Safras</Text>
+                  <CustomDropdown
+                    onChange={(key) => {
+                      const selectedSafra = safras.find(
+                        (safra) => safra.key === key
+                      );
+                      if (selectedSafra) {
+                        setSafra(selectedSafra.name);
+                      }
+                    }}
+                    value={safraSelected}
+                    list={safras}
+                  />
+                </>
+              )}
+              {tipoFiltro == "P" && (
+                <>
+                  <Label size="md" weight="semibold">
+                    Período
+                  </Label>
+                  <View style={styles.datePickersContainer}>
+                    <DatePicker
+                      label="Selecionar Data"
+                      value={dataInicial}
+                      onChange={setDataInicial}
+                    />
+                    <Text style={styles.toLabel}>á</Text>
+                    <DatePicker
+                      label="Selecionar Data"
+                      value={dataFinal}
+                      onChange={setDataFinal}
+                    />
+                  </View>
+                </>
+              )}
+            </View>
+          </View>
+        </Header>
+        <View style={styles.contentContainer}>
+          {content == "financeiro" && (
+            <FinanceiroGeral
+              tipoFiltro={tipoFiltro}
+              safra={safra}
+              dataInicial={formatDate(dataInicial)}
+              dataFinal={formatDate(dataFinal)}
+            />
+          )}
+          {content == "pedidos" && <Pedidos />}
+          {content == "contratos" && <Contratos />}
+        </View>
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  innerContainer: {
+    flex: 1,
+    marginTop: 100,
+    alignItems: "center",
+    width: "100%",
+  },
+  iconButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    gap: 16,
+    width: "100%",
+  },
+  filterContainer: {
+    flexDirection: "row",
+    gap: 16,
+    marginTop: 20,
+    width: "100%",
+  },
+  filterTypeContainer: {
+    justifyContent: "center",
+    width: "33%",
+  },
+  dropdownContainer: {
+    flexDirection: "column",
+    width: "50%",
+    gap: 8,
+  },
+  filterLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  datePickersContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 16,
+  },
+  toLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  contentContainer: {
+    flex: 1,
+    width: "100%",
+  },
+});
 
 export default Financeiro;

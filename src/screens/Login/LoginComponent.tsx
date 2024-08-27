@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { CheckBox } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LoginButton from '@/src/components/buttons/LoginButton';
@@ -35,8 +35,8 @@ const LoginComponent: React.FC<LoginProps> = ({
   };
 
   return (
-    <View className="flex-1 w-10/12 items-center gap-2 py-7">
-      <Text className="px-3 text-lg text-black mb-2 font-bold">Login</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Login</Text>
       <LoginInput
         label="CPF ou CNPJ"
         placeholder="Digite seu CPF ou CNPJ"
@@ -51,27 +51,71 @@ const LoginComponent: React.FC<LoginProps> = ({
         value={password}
         onChangeText={setPassword}
       />
-      <View className="p-0 mt-5 flex-row w-full items-center justify-between">
+      <View style={styles.checkboxContainer}>
         <CheckBox
           center
           title="Mantenha-me conectado"
           checked={checked}
           onPress={() => setChecked(!checked)}
-          containerStyle={{ margin: 0, padding: 0, gap: 0 }}
-          textStyle={{ fontSize: 12, fontWeight: '400', color: '#707070' }}
+          containerStyle={styles.checkbox}
+          textStyle={styles.checkboxText}
           checkedIcon={<Icon name="check-square" size={24} color="grey" />}
           uncheckedIcon={<Icon name="square-o" size={24} color="grey" />}
         />
         <Pressable onPress={toggleComponent}>
-          <Text className="text-sm font-normal text-[#707070]">Esqueci a Senha</Text>
+          <Text style={styles.forgotPasswordText}>Esqueci a Senha</Text>
         </Pressable>
       </View>
-      <View className='w-full p-2'>
-        <Text className='text-left color-bordo'>{msg}</Text>
+      <View style={styles.messageContainer}>
+        <Text style={styles.errorMessage}>{msg}</Text>
       </View>
       <LoginButton label="Login" onClick={handleLogin} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '83%',
+    alignItems: 'center',
+    paddingVertical: 28,
+    gap: 8,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 8,
+    paddingHorizontal: 12,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  checkbox: {
+    margin: 0,
+    padding: 0,
+  },
+  checkboxText: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: '#707070',
+  },
+  forgotPasswordText: {
+    fontSize: 14,
+    color: '#707070',
+  },
+  messageContainer: {
+    width: '100%',
+    padding: 8,
+  },
+  errorMessage: {
+    color: '#8B0000',
+  },
+});
 
 export default LoginComponent;

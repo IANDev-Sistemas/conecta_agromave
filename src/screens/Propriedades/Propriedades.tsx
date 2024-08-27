@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  StyleSheet,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import CustomDropdown from "@/src/components/inputs/Dropdown";
@@ -48,17 +49,17 @@ const Propriedades: React.FC = () => {
       const consultoresFazenda = getConsultoresByFazenda(fazenda.codigo);
       setSelectedConsultores(consultoresFazenda);
     } else {
-      setSelectedConsultores([]); // Limpar consultores se a fazenda não for encontrada
+      setSelectedConsultores([]);
     }
 
     setSelectedFazenda(fazenda);
   };
 
   return (
-    <View className="flex-1 h-full bg-white">
-      <View className="flex-1 mt-28 items-center w-full h-full">
+    <View style={styles.container}>
+      <View style={styles.innerContainer}>
         <Header title="Propriedades">
-          <View className="flex-col w-2/3 gap-5">
+          <View style={styles.dropdownContainer}>
             <CustomDropdown
               onChange={(value) => handleFazendaChange(Number(value))}
               value={selectedFazenda ? selectedFazenda.codigo : ""}
@@ -72,45 +73,29 @@ const Propriedades: React.FC = () => {
         </Header>
 
         {selectedFazenda && (
-          <ScrollView contentContainerStyle={{}} style={{ width: "100%" }}>
-            <Pressable
-              style={{
-                width: "100%",
-                paddingHorizontal: 10,
-                justifyContent: "center",
-                alignItems: "center",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
+          <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <Pressable style={styles.pressableContainer}>
               <FazendaCard fazenda={selectedFazenda} />
-              <View className="text-left ml-16 w-full flex-column mt-4">
-                <Text className="text-lg font-bold">Consultores</Text>
+              <View style={styles.consultoresContainer}>
+                <Text style={styles.consultoresTitle}>Consultores</Text>
                 {selectedConsultores && selectedConsultores.length > 0 ? (
                   selectedConsultores.map((consultor, index) => (
                     <Consultor key={index} {...consultor} />
                   ))
                 ) : (
-                  <Text className="text-gray-600">Nenhum consultor encontrado.</Text>
+                  <Text style={styles.noConsultoresText}>Nenhum consultor encontrado.</Text>
                 )}
               </View>
               <TouchableOpacity
-                style={{
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+                style={styles.buttonContainer}
                 onPress={() =>
                   navigation.navigate("Visitas", {
                     selectedFazenda: selectedFazenda?.codigo,
                   })
                 }
               >
-                <View
-                  style={{ padding: 16 }}
-                  className="rounded-xl bg-principal w-full items-center mt-8"
-                >
-                  <Text className="font-bold text-white">Visualizar Visitas</Text>
+                <View style={styles.button}>
+                  <Text style={styles.buttonText}>Visualizar Visitas</Text>
                 </View>
               </TouchableOpacity>
             </Pressable>
@@ -120,5 +105,62 @@ const Propriedades: React.FC = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  innerContainer: {
+    marginTop: 90,
+    alignItems: "center",
+    width: "100%",
+  },
+  dropdownContainer: {
+    flexDirection: "column",
+    width: "66%",
+    gap: 20,
+  },
+  scrollViewContent: {
+    width: "100%",
+  },
+  pressableContainer: {
+    width: "100%",
+    paddingHorizontal: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+  },
+  consultoresContainer: {
+    textAlign: "left",
+    marginLeft: 16,
+    width: "100%",
+    marginTop: 16,
+  },
+  consultoresTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  noConsultoresText: {
+    color: "#606060",
+  },
+  buttonContainer: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: "#023A5D",
+    width: "100%",
+    alignItems: "center",
+    marginTop: 16,
+  },
+  buttonText: {
+    fontWeight: "bold",
+    color: "white",
+  },
+});
 
 export default Propriedades;

@@ -36,6 +36,9 @@ type BottomTabNavigation = {
   Consultor: { selectedFazenda?: number };
   Cliente:undefined;
   Financeiro: { content?: string };
+  Pedidos: { content?: string };
+  Contratos: { content?: string };
+  Notas: { content?: string };
 };
 
 export type BottomTabsTypes = BottomTabNavigationProp<BottomTabNavigation> 

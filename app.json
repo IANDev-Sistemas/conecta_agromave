@@ -34,13 +34,10 @@
       [
         "expo-notifications",
         {
-          "icon": "./local/assets/notification-icon-agromave.png",
+          "icon": "./assets/images/icon-agromave.png",
           "color": "#ffffff",
           "defaultChannel": "default",
-          "sounds": [
-            "./local/assets/notification-sound.wav",
-            "./local/assets/notification-sound-other.wav"
-          ]
+          "sounds": []
         }
       ],
       [
@@ -55,7 +52,8 @@
             "deploymentTarget": "13.4"
           }
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
@@ -68,9 +66,7 @@
         "projectId": "37cdb63d-01f8-48f8-9567-ef62262abe5b"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/37cdb63d-01f8-48f8-9567-ef62262abe5b"
     },

@@ -79,10 +79,10 @@ const Eventos = () => {
   const noFiltersApplied = searchText === "" && !startDate && !endDate;
 
   return (
-    <View className="flex-1 h-full bg-white">
-      <View className="flex-1 mt-28 items-center w-full h-full">
+    <View style={styles.container}>
+      <View style={styles.innerContainer}>
         <Header title="Eventos">
-          <View className="w-2/3 flex-row gap-5">
+          <View style={styles.searchContainer}>
             <StyledInput
               icon={<SearchNormal1 size={20} color="#ADADAD" />}
               placeholder="Buscar Eventos"
@@ -98,9 +98,9 @@ const Eventos = () => {
           <Animated.View
             style={{ height: animationHeight, overflow: "hidden" }}
           >
-            <View className="flex-col w-2/3 gap-5 mt-4">
+            <View style={styles.filterContainer}>
               <Text style={styles.label}>Período</Text>
-              <View className="flex-row justify-between">
+              <View style={styles.datePickersContainer}>
                 <DatePicker
                   label="Data Início"
                   value={startDate}
@@ -118,24 +118,14 @@ const Eventos = () => {
         </Header>
 
         <ScrollView
-          contentContainerStyle={{ paddingBottom: 100 }}
-          style={{ width: "100%" }}
+          contentContainerStyle={styles.scrollViewContent}
+          style={styles.scrollView}
         >
-          <Pressable
-            style={{
-              width: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <View style={{ flex: 1 }}>
+          <Pressable style={styles.contentContainer}>
+            <View style={styles.carouselContainer}>
               {noFiltersApplied ? (
                 <>
-                  <Text className="font-bold text-xl py-4 px-8">
-                    Eventos em destaque
-                  </Text>
+                  <Text style={styles.sectionTitle}>Eventos em destaque</Text>
                   <Carousel
                     loop
                     width={Dimensions.get("window").width}
@@ -161,19 +151,15 @@ const Eventos = () => {
                   />
                 </>
               ) : (
-                <Text className="font-bold text-xl py-4 px-8 text-left mt-2">
-                  Resultados da Busca
-                </Text>
+                <Text style={styles.sectionTitle}>Resultados da Busca</Text>
               )}
             </View>
             {noFiltersApplied && (
-              <View className="w-full  text-left">
-                <Text className="font-bold text-xl py-4 px-8 text-left mt-2">
-                  Últimos
-                </Text>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Últimos</Text>
               </View>
             )}
-            <View className="w-full justify-center items-center text-left">
+            <View style={styles.eventsContainer}>
               {filteredEvents.map((evento, index) => (
                 <EventosItem key={index} {...evento} />
               ))}
@@ -186,6 +172,21 @@ const Eventos = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  innerContainer: {
+    flex: 1,
+    marginTop: 100,
+    alignItems: "center",
+    width: "100%",
+  },
+  searchContainer: {
+    flexDirection: "row",
+    width: "66%",
+    gap: 10,
+  },
   expandButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -197,10 +198,50 @@ const styles = StyleSheet.create({
     color: "#000",
     marginRight: 8,
   },
+  filterContainer: {
+    flexDirection: "column",
+    width: "66%",
+    marginTop: 16,
+    gap: 10,
+  },
+  datePickersContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   label: {
     fontSize: 16,
     color: "#000",
     marginBottom: 8,
+  },
+  scrollViewContent: {
+    paddingBottom: 100,
+  },
+  scrollView: {
+    width: "100%",
+  },
+  contentContainer: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+  },
+  carouselContainer: {
+    flex: 1,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+  },
+  sectionHeader: {
+    width: "100%",
+    textAlign: "left",
+  },
+  eventsContainer: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
