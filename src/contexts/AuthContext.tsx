@@ -12,6 +12,7 @@ import * as Notifications from "expo-notifications";
 import { Alert } from "react-native";
 import { useFazenda } from "./FazendaContext";
 import { tKeyGenerator } from "../helpers/tKeyGenerator";
+import { useSafra } from "./SafraContext";
 
 interface AuthProps {
   authState?: {
@@ -23,6 +24,7 @@ interface AuthProps {
       codigo: number;
       email: string;
       telefone: string;
+      limite:number;
     } | null;
   };
   onLogin?: (cgc: string, password: string, checked: boolean) => Promise<any>;
@@ -81,6 +83,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       codigo: number;
       email: string;
       telefone: string;
+      limite:number;
     } | null;
   }>({
     token: null,
@@ -89,13 +92,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     usuario: null,
   });
 
-  const { carregarFazendas } = useFazenda(); 
+  const { carregarFazendas } = useFazenda();
+  const { carregarSafras } = useSafra();
 
-  const initialLoad = async () => {
-    if (authState.usuario?.codigo) {
-      await carregarFazendas(authState.usuario.codigo);
-    }
-  }
+
+
+
+  useEffect(() => {
+    const fetchData = async (authState:any) => {
+      if (authState.authenticated == true) {
+        await carregarFazendas(authState.usuario?.codigo);
+        await carregarSafras(authState.usuario?.codigo);
+      }
+    };
+
+    fetchData(authState);
+  }, [authState]);
 
 
   useEffect(() => {
@@ -115,7 +127,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           "nome" in usuario &&
           "codigo" in usuario &&
           "telefone" in usuario &&
-          "email" in usuario
+          "email" in usuario &&
+          "limite" in usuario
             ? usuario
             : null,
         });
@@ -165,7 +178,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
 
           await getDados(cgc);
-          await initialLoad();
           return response.data;
         }
       } else {
@@ -184,7 +196,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const forgotPassword = async (cgc: string) => {
-    console.log(`cgc:${cgc}`);
     try {
       const response = await apiPublic.get("/odwctrl", {
         params: {
@@ -201,7 +212,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         setAuthState({
           token: null,
-          authenticated: true,
+          authenticated: false,
           status: "needupdate",
           usuario: null,
         });
@@ -233,6 +244,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           cpfCnpj: cgc,
         },
       });
+
 
       setAuthState({
         token: token,
@@ -295,7 +307,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     validationCode: string,
     newPwd: string
   ) => {
-    console.log(`cgc:${cgc}, code:${validationCode}, newPwd: ${newPwd}`);
     try {
       const response = await apiPublic.get("/odwctrl", {
         params: {

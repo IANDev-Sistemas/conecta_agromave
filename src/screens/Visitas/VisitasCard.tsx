@@ -1,8 +1,6 @@
-// components/Consultor.tsx
 import React from "react";
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
-import { AttachSquare, User, Whatsapp } from "iconsax-react-native";
-import { Divider } from "@rneui/themed";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { AttachSquare } from "iconsax-react-native";
 
 interface VisitasProps {
   consultor: string;
@@ -11,32 +9,17 @@ interface VisitasProps {
   link: string;
 }
 
-const VisitasCard: React.FC<VisitasProps> = ({
-  consultor,
-  data,
-  tipo,
-  link,
-}) => {
+const VisitasCard: React.FC<VisitasProps> = ({ consultor, data, tipo }) => {
   return (
-    <View
-      style={{
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 2,
-      }}
-      className=" flex-row mt-5  w-11/12 rounded-xl border-background border-1 bg-white items-center pb-8 pt-4 px-8 "
-    >
-      <View className="gap-2 w-4/5 flex-row ">
-        <View className="gap-2  flex-col ">
-          <Text className="text-md font-medium">Consultor: {consultor}</Text>
-          <Text className="text-md font-medium flex-wrap ">
-            Tipo da vistoria: {tipo}
-          </Text>
-          <Text className="text-md font-medium">Data: {data}</Text>
+    <View style={styles.cardContainer}>
+      <View style={styles.textContainer}>
+        <View style={styles.columnContainer}>
+          <Text style={styles.text}>Consultor: {consultor}</Text>
+          <Text style={styles.text}>Tipo da vistoria: {tipo}</Text>
+          <Text style={styles.text}>Data: {data}</Text>
         </View>
       </View>
-      <View className=" gap-2">
+      <View style={styles.iconContainer}>
         <TouchableOpacity>
           <AttachSquare size={35} color="black" />
         </TouchableOpacity>
@@ -44,5 +27,40 @@ const VisitasCard: React.FC<VisitasProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  cardContainer: {
+    flexDirection: "row",
+    marginTop: 20,
+    width: "91.66%", // equivalente a 11/12
+    borderRadius: 15,
+    borderColor: "#E0E0E0", // substituto para a cor "border-background"
+    borderWidth: 1,
+    backgroundColor: "white",
+    alignItems: "center",
+    paddingBottom: 20,
+    paddingTop: 10,
+    paddingHorizontal: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+  },
+  textContainer: {
+    flexDirection: "row",
+    width: "80%",
+  },
+  columnContainer: {
+    flexDirection: "column",
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "500",
+    flexWrap: "wrap",
+  },
+  iconContainer: {
+    marginLeft: 10,
+  },
+});
 
 export default VisitasCard;

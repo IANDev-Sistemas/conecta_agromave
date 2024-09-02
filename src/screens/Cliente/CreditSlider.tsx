@@ -1,37 +1,40 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Slider from '@react-native-community/slider';
+import { formatCurrency } from '@/src/helpers/formatCurrency';
 
 interface CreditSliderProps {
-  maxCreditLimit: number;
-  currentCredit:number;
-  setCurrentCredit:(value:number)=>void;
+  maxCreditLimit: number | undefined;
+  currentCredit: number | undefined;
 }
 
-const CreditSlider: React.FC<CreditSliderProps> = ({ maxCreditLimit,  currentCredit, setCurrentCredit }) => {
+const CreditSlider: React.FC<CreditSliderProps> = ({ maxCreditLimit, currentCredit }) => {
 
+  if (maxCreditLimit === undefined) {
+    maxCreditLimit = 0;
+  }
 
-  const handleValueChange = (value: number) => {
-    setCurrentCredit(value);
-  };
+  if (currentCredit === undefined) {
+    currentCredit = 0;
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.sliderContainer}>
         <Slider
+          disabled={true}
           style={styles.slider}
           minimumValue={0}
           maximumValue={maxCreditLimit}
-          step={50} 
+          step={50}
           value={currentCredit}
-          onValueChange={handleValueChange}
           minimumTrackTintColor="#023A5D"
           maximumTrackTintColor="#023A5D"
           thumbTintColor="#023A5D"
         />
       </View>
       <Text style={styles.creditText}>
-        R$ {currentCredit.toFixed(2)} / R$ {maxCreditLimit.toFixed(2)}
+        {formatCurrency(currentCredit)} / {formatCurrency(maxCreditLimit)}
       </Text>
       <Text style={styles.limitText}>Limite de crédito</Text>
     </View>
@@ -56,7 +59,7 @@ const styles = StyleSheet.create({
     height: 30,
   },
   creditText: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#333',
   },

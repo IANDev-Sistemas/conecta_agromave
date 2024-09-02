@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
 import { fazendas, visitas } from "@/dummydata";
 import Header from "@/src/components/general/Header";
 import CustomDropdown from "@/src/components/inputs/Dropdown";
@@ -38,13 +38,13 @@ const Visitas = () => {
   );
 
   return (
-    <View className="flex-1 w-full bg-white">
-      <View className="mt-28 h-full items-center w-full">
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
         <Header title="Visitas">
-          <View className="flex-col mt-5 w-2/3 gap-5">
+          <View style={styles.dropdownContainer}>
             <CustomDropdown
               label="Propriedades"
-              onChange={(value) => setSelectedFazenda(value)}
+              onChange={(value) => setSelectedFazenda(Number(value))}
               value={selectedFazenda}
               list={fazendas.map((fazenda) => ({
                 key: fazenda.id,
@@ -55,18 +55,10 @@ const Visitas = () => {
           </View>
         </Header>
         <ScrollView
-          contentContainerStyle={{ paddingBottom: 200 }}
-          style={{ width: "100%" }}
+          contentContainerStyle={styles.scrollViewContent}
+          style={styles.scrollView}
         >
-          <Pressable
-            style={{
-              width: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
+          <Pressable style={styles.pressable}>
             {filteredVisitas.map((visita, index) => (
               <VisitasCard key={index} {...visita} />
             ))}
@@ -76,5 +68,38 @@ const Visitas = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: "white",
+  },
+  headerContainer: {
+    marginTop: 100,
+    height: "100%",
+    alignItems: "center",
+    width: "100%",
+  },
+  dropdownContainer: {
+    flexDirection: "column",
+    marginTop: 5,
+    width: "66%",
+    gap: 5,
+  },
+  scrollViewContent: {
+    paddingBottom: 200,
+  },
+  scrollView: {
+    width: "100%",
+  },
+  pressable: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+  },
+});
 
 export default Visitas;

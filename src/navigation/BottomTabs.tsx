@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { BottomTabNavigationProp, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from "../screens/Home";
+import Home from "../screens/Home/Home";
 import AgendaScreen from "../screens/Agenda/AgendaScreen";
 import Cliente from "../screens/Cliente/Cliente";
 import CustomDrawer from "./CustomDrawer";

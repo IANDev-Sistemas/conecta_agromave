@@ -20,6 +20,7 @@ import TimePicker from "@/src/components/inputs/TimePicker";
 import DatePicker from "@/src/components/inputs/DatePicker";
 import ButtonGeneral from "@/src/components/buttons/ButtonGeneral";
 import { formatDate } from "@/src/helpers/formDate";
+import { useSafra } from "@/src/contexts/SafraContext";
 
 type RouteParams = {
   params: {
@@ -27,36 +28,21 @@ type RouteParams = {
   };
 };
 
-const safras = [
-  {
-    key: 0,
-    name: "SAFRA 2024/25",
-  },
-  {
-    key: 1,
-    name: "SAFRA 2024",
-  },
-  {
-    key: 2,
-    name: "SAFRA 2023/24",
-  },
-  {
-    key: 3,
-    name: "SAFRA 2023",
-  },
-];
-
 type Safra = {
   key: number;
   name: string;
 };
 
 const Financeiro = () => {
+  const { safras } = useSafra();
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const [content, setContent] = useState<string>(
     route.params?.content || "financeiro"
   );
-  const [dataInicial, setDataInicial] = useState<Date | null>(new Date());
+  const [dataInicial, setDataInicial] = useState<Date | null>(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1); // Primeiro dia do mês atual
+  });
   const [dataFinal, setDataFinal] = useState<Date | null>(new Date());
   const [tipoFiltro, setTipoFiltro] = useState<string>("S");
   const [safra, setSafra] = useState<string>(safras[0].name);
@@ -81,9 +67,7 @@ const Financeiro = () => {
                 navigation.navigate("Financeiro", { content: "financeiro" })
               }
               icon={
-                <Wallet
-                  color={content == "financeiro" ? "#fff" : "#023A5D"}
-                />
+                <Wallet color={content == "financeiro" ? "#fff" : "#023A5D"} />
               }
               ativo={content == "financeiro"}
             />
@@ -113,13 +97,9 @@ const Financeiro = () => {
             />
             <IconButton
               label={"Notas"}
-              onClick={() =>
-                navigation.navigate("Notas", { content: "notas" })
-              }
+              onClick={() => navigation.navigate("Notas", { content: "notas" })}
               icon={
-                <ReceiptText
-                  color={content == "notas" ? "#fff" : "#023A5D"}
-                />
+                <ReceiptText color={content == "notas" ? "#fff" : "#023A5D"} />
               }
               ativo={content == "notas"}
             />
@@ -182,8 +162,14 @@ const Financeiro = () => {
               dataFinal={formatDate(dataFinal)}
             />
           )}
-          {content == "pedidos" && <Pedidos />}
-          {content == "contratos" && <Contratos />}
+          {content == "pedidos" && (
+            <Pedidos
+              tipoFiltro={tipoFiltro}
+              safra={safra}
+              dataInicial={formatDate(dataInicial)}
+              dataFinal={formatDate(dataFinal)}
+            />
+          )}
         </View>
       </View>
     </View>
@@ -210,7 +196,7 @@ const styles = StyleSheet.create({
   filterContainer: {
     flexDirection: "row",
     gap: 16,
-    marginTop: 20,
+    marginTop: 10,
     width: "100%",
   },
   filterTypeContainer: {
@@ -229,7 +215,8 @@ const styles = StyleSheet.create({
   datePickersContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 16,
+    alignItems: "center",
+    gap: 8,
   },
   toLabel: {
     fontSize: 16,

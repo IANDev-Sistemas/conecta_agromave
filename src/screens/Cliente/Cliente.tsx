@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -20,11 +20,12 @@ import LoginButton from "@/src/components/buttons/LoginButton";
 const statusBarHeight = Constants.statusBarHeight;
 
 const Cliente = () => {
-  const [currentCredit, setCurrentCredit] = useState<number>(0);
-  const [email, setEmail] = useState<string>("email@email.com");
-  const [celular, setCelular] = useState<string>("(41)99999-9999");
   const navigation = useNavigation<BottomTabsTypes>();
   const { authState } = useAuth();
+
+  const { usuario } = authState || {};
+  const { nome, email, telefone, limite } = usuario || {};
+
   return (
     <View style={styles.container}>
       <View
@@ -45,15 +46,8 @@ const Cliente = () => {
             source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
             avatarStyle={styles.avatarStyle}
           />
-          <Text style={styles.greetingText}>
-            {" "}
-            Olá, {authState?.usuario?.nome}{" "}
-          </Text>
-          <CreditSlider
-            maxCreditLimit={1000}
-            currentCredit={currentCredit}
-            setCurrentCredit={setCurrentCredit}
-          />
+          <Text style={styles.greetingText}>Olá, {nome}</Text>
+          <CreditSlider maxCreditLimit={limite} currentCredit={limite / 2} />
           <View style={styles.formContainer}>
             <ScrollView
               contentContainerStyle={{ paddingBottom: 20 }}
@@ -65,20 +59,14 @@ const Cliente = () => {
                 <LoginInput
                   label="Email"
                   placeholder="Digite seu email"
-                  value={
-                    authState?.usuario?.email ? authState?.usuario?.email : ""
-                  }
-                  onChangeText={setEmail}
+                  value={email || ""}
+                  onChangeText={() => {}}
                 />
                 <LoginInput
                   label="Celular"
                   placeholder=""
-                  value={
-                    authState?.usuario?.telefone
-                      ? authState?.usuario?.telefone
-                      : ""
-                  }
-                  onChangeText={setCelular}
+                  value={telefone || ""}
+                  onChangeText={() => {}}
                 />
 
                 <LoginButton onClick={() => {}} label="Salvar Alterações" />
@@ -106,9 +94,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   mainContent: {
-    marginTop: 100,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    marginTop: 90,
     backgroundColor: "#E7E7E7",
     alignItems: "center",
   },

@@ -1,53 +1,48 @@
 import React from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import { Wallet2 } from "iconsax-react-native";
 import { formatCurrency } from "@/src/helpers/formatCurrency";
 import { formatDateString } from "@/src/helpers/formatDateString";
 
-type ResumoCardProps = {
-  conta: {
-    filial: string;
-    dataemissao: string;
-    condicao: string;
-    chave: string;
-    valorparcela: number;
-    documento: string;
-    datavencimento: string;
-    vencidos: string;
-    da: number;
-    valoraberto: number;
-    status: string;
-    valorpago: number;
+type PedidoCardProps = {
+  pedido: {
+    cidade: string;
+    produto: string;
+    safra: string;
+    valor: number;
+    valorpedido: number;
+    seriepedido: string;
+    numpedido: number;
+    datapedido: string;
+    quantidadeproduto: number;
   };
 };
 
-const ResumoCard: React.FC<ResumoCardProps> = ({ conta }) => {
+const PedidosCard: React.FC<PedidoCardProps> = ({ pedido }) => {
   return (
     <TouchableOpacity style={styles.cardContainer}>
       <View style={styles.headerRow}>
-        <Wallet2 size={24} color="#238228" />
-        <Text style={styles.titleText}>Pagamento</Text>
-        <Text style={styles.orderNumber}>Nota: {conta.documento}</Text>
+        <Text style={styles.titleText}>{pedido.produto}</Text>
+        <Text style={styles.orderNumber}>#{pedido.numpedido}</Text>
       </View>
       <View style={styles.divider} />
       <View style={styles.infoRow}>
         <View style={styles.infoBlock}>
-          <Text style={styles.label}>Filial</Text>
-          <Text style={styles.value}>{conta.filial}</Text>
+          <Text style={styles.label}>Cidade</Text>
+          <Text style={styles.value}>{pedido.cidade}</Text>
         </View>
         <View style={styles.infoBlock}>
-          <Text style={styles.label}>Data</Text>
-          <Text style={styles.value}>{formatDateString(conta.dataemissao)}</Text>
+          <Text style={styles.label}>Safra</Text>
+          <Text style={styles.value}>{pedido.safra}</Text>
         </View>
       </View>
       <View style={styles.infoRow}>
         <View style={styles.infoBlock}>
-          <Text style={styles.label}>Vencimento</Text>
-          <Text style={styles.value}>{formatDateString(conta.datavencimento)}</Text>
+          <Text style={styles.label}>Valor</Text>
+          <Text style={styles.value}>{formatCurrency(pedido.valor)}</Text>
         </View>
         <View style={styles.infoBlock}>
-          <Text style={styles.label}>Valor</Text>
-          <Text style={styles.value}>{formatCurrency(conta.valorparcela)}</Text>
+          <Text style={styles.label}>Data do Pedido</Text>
+          <Text style={styles.value}>{pedido.datapedido}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -73,25 +68,24 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start", // Alinha ao topo para suportar múltiplas linhas
     marginBottom: 12,
-    flexWrap: "wrap",
+    flexWrap: "wrap", // Permite quebrar as linhas, se necessário
   },
   titleText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
-    color: "#333333",
-    flex: 1,
-    marginLeft: 8, // Espaçamento entre o ícone e o texto
-    flexWrap: "wrap",
+    color: "#333333", // Permite que o título ocupe o espaço disponível
+    marginRight: 10, // Espaçamento entre o título e o número do pedido
+    flexWrap: "wrap", // Permite que o texto quebre linhas
   },
   orderNumber: {
     fontSize: 14,
     fontWeight: "600",
     color: "#238228",
-    flexShrink: 1,
-    flexWrap: "wrap",
-    textAlign: "right",
+    flexShrink: 1, // Permite que o número do pedido encolha se necessário
+    flexWrap: "wrap", // Permite que o número do pedido quebre linhas
+    textAlign: "right", // Alinha o número do pedido à direita
   },
   divider: {
     height: 1,
@@ -120,4 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ResumoCard;
+export default PedidosCard;
