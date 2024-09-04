@@ -3,55 +3,48 @@ import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { formatCurrency } from "@/src/helpers/formatCurrency";
 import { formatDateString } from "@/src/helpers/formatDateString";
 
-interface PedidoCardProps {
-  pedido: {
+interface NotasCardProps {
+  nota: {
     cidade: string;
     safra: string;
-    produtos: Array<{
-      produto: string;
-      quantidadeproduto: number;
-      quantidadefaturado: number;
-      valor: number;
-    }>;
     valor: number;
-    seriepedido: string;
-    numpedido: number;
+    serienota: string;
+    numnota: number;
     datapedido: string;
   };
   onPress: () => void;
 }
 
-const PedidosCard: React.FC<PedidoCardProps> = ({ pedido, onPress }) => {
+const NotasCard: React.FC<NotasCardProps> = ({ nota, onPress }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.cardContainer}>
       <View style={styles.headerRow}>
-        <Text style={styles.orderNumber}>Pedido {pedido.numpedido}</Text>
+        <Text style={styles.orderNumber}>Nota {nota.numnota}</Text>
       </View>
       <View style={styles.divider} />
       <View style={styles.infoRow}>
         <View style={styles.infoBlock}>
           <Text style={styles.label}>Cidade</Text>
-          <Text style={styles.value}>{pedido.cidade}</Text>
+          <Text style={styles.value}>{nota.cidade}</Text>
         </View>
         <View style={styles.infoBlock}>
           <Text style={styles.label}>Safra</Text>
-          <Text style={styles.value}>{pedido.safra}</Text>
+          <Text style={styles.value}>{nota.safra}</Text>
         </View>
       </View>
       <View style={styles.infoRow}>
         <View style={styles.infoBlock}>
           <Text style={styles.label}>Valor Total</Text>
-          <Text style={styles.value}>{formatCurrency(pedido.valor)}</Text>
+          <Text style={styles.value}>{formatCurrency(nota.valor)}</Text>
         </View>
         <View style={styles.infoBlock}>
           <Text style={styles.label}>Data do Pedido</Text>
-          <Text style={styles.value}>{formatDateString(pedido.datapedido)}</Text>
+          <Text style={styles.value}>{formatDateString(nota.datapedido)}</Text>
         </View>
       </View>
     </TouchableOpacity>
   );
 };
-
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -72,24 +65,16 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start", // Alinha ao topo para suportar múltiplas linhas
+    alignItems: "flex-start",
     marginBottom: 12,
-    flexWrap: "wrap", // Permite quebrar as linhas, se necessário
-  },
-  titleText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333333", // Permite que o título ocupe o espaço disponível
-    marginRight: 10, // Espaçamento entre o título e o número do pedido
-    flexWrap: "wrap", // Permite que o texto quebre linhas
+    flexWrap: "wrap",
   },
   orderNumber: {
     fontSize: 16,
     fontWeight: "600",
     color: "#238228",
-    flexShrink: 1, // Permite que o número do pedido encolha se necessário
-    flexWrap: "wrap", // Permite que o número do pedido quebre linhas
-    textAlign: "right", // Alinha o número do pedido à direita
+    flexShrink: 1,
+    textAlign: "right",
   },
   divider: {
     height: 1,
@@ -118,4 +103,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PedidosCard;
+export default NotasCard;

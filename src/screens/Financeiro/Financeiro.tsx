@@ -1,26 +1,23 @@
 import IconButton from "@/src/components/buttons/IconButton";
 import Header from "@/src/components/general/Header";
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import {
-  DocumentText1,
   ReceiptText,
   ShoppingBag,
   Wallet,
 } from "iconsax-react-native";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import FinanceiroCard from "./FinanceiroCard";
 import FinanceiroGeral from "./FinanceiroGeral";
 import { BottomTabsTypes } from "@/src/navigation/BottomTabs";
 import Pedidos from "./Pedidos";
-import Contratos from "./Contratos";
 import CustomDropdown from "@/src/components/inputs/Dropdown";
 import Label from "@/src/components/general/Label";
-import TimePicker from "@/src/components/inputs/TimePicker";
 import DatePicker from "@/src/components/inputs/DatePicker";
 import ButtonGeneral from "@/src/components/buttons/ButtonGeneral";
 import { formatDate } from "@/src/helpers/formDate";
 import { useSafra } from "@/src/contexts/SafraContext";
+import Notas from "./Notas";
 
 type RouteParams = {
   params: {
@@ -82,18 +79,6 @@ const Financeiro = () => {
                 />
               }
               ativo={content == "pedidos"}
-            />
-            <IconButton
-              label={"Contratos"}
-              onClick={() =>
-                navigation.navigate("Contratos", { content: "contratos" })
-              }
-              icon={
-                <DocumentText1
-                  color={content == "contratos" ? "#fff" : "#023A5D"}
-                />
-              }
-              ativo={content == "contratos"}
             />
             <IconButton
               label={"Notas"}
@@ -170,6 +155,14 @@ const Financeiro = () => {
               dataFinal={formatDate(dataFinal)}
             />
           )}
+          {content == "notas" && (
+            <Notas
+              tipoFiltro={tipoFiltro}
+              safra={safra}
+              dataInicial={formatDate(dataInicial)}
+              dataFinal={formatDate(dataFinal)}
+            />
+          )}
         </View>
       </View>
     </View>
@@ -189,9 +182,11 @@ const styles = StyleSheet.create({
   },
   iconButtonsContainer: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
-    gap: 16,
+    justifyContent: "center",
+    alignItems:"center",
+    gap: 40,
     width: "100%",
+    marginLeft:-10
   },
   filterContainer: {
     flexDirection: "row",

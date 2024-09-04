@@ -5,7 +5,7 @@ import Constants from "expo-constants";
 import { Divider } from "@rneui/themed";
 import { useNavigationState } from "@react-navigation/native";
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { Calendar, CardPos, House, LogoutCurve, Profile2User, ProfileCircle, Routing, SmsNotification, TicketStar } from "iconsax-react-native";
+import { Calendar, Calendar1, CardPos, House, LogoutCurve, Profile2User, ProfileCircle, Routing, SmsNotification, TicketStar } from "iconsax-react-native";
 
 const statusBarHeight = Platform.OS === "ios" ? 50 : Constants.statusBarHeight + 20;
 
@@ -80,7 +80,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
     { icon: <CardPos size={24} />, label: "Financeiro", route: "Financeiro" },
     { icon: <Calendar size={24} />, label: "Agenda", route: "Agenda" },
     { icon: <Profile2User size={24} />, label: "Consultor", route: "Consultor" },
-    { icon: <TicketStar size={24} />, label: "Eventos", route: "Eventos" },
+    { icon: <Calendar1 size={24} />, label: "Eventos", route: "Eventos" },
   ];
 
   const profileItems = [

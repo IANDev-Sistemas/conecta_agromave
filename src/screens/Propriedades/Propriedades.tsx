@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,13 +14,15 @@ import FazendaCard from "./FazendaCard";
 import { BottomTabsTypes } from "@/src/navigation/BottomTabs";
 import Consultor from "./ConsultorCardFazenda";
 import { useFazenda } from "@/src/contexts/FazendaContext";
-import { consultores } from "@/dummydata";
+import { useAuth } from "@/src/contexts/AuthContext";
+import { getConsultores } from "../Consultor/ConsultorRoutes";
 
 interface Consultor {
-  tipo: string;
+  codigo: string;
+  telefone: string | null;
+  nr: number;
   nome: string;
-  contato: string;
-  email: string;
+  email: string | null;
 }
 
 interface Fazenda {
@@ -32,28 +34,36 @@ interface Fazenda {
 }
 
 const Propriedades: React.FC = () => {
-  const [selectedFazenda, setSelectedFazenda] = useState<Fazenda | null>(null);
-  const [selectedConsultores, setSelectedConsultores] = useState<Consultor[]>([]);
-  const navigation = useNavigation<BottomTabsTypes>();
 
   const { fazendas } = useFazenda();
 
-  const getConsultoresByFazenda = (codigoFazenda: number) => {
-    return consultores.filter((consultor) => consultor.idFazenda === codigoFazenda);
-  };
-
+  const [selectedFazenda, setSelectedFazenda] = useState<Fazenda | null>(fazendas[0]);
+  const [selectedConsultores, setSelectedConsultores] = useState<Consultor[]>([]);
+  const navigation = useNavigation<BottomTabsTypes>();
   const handleFazendaChange = (value: number) => {
     const fazenda = fazendas.find((f) => f.codigo === value) || null;
 
-    if (fazenda) {
-      const consultoresFazenda = getConsultoresByFazenda(fazenda.codigo);
-      setSelectedConsultores(consultoresFazenda);
-    } else {
-      setSelectedConsultores([]);
-    }
-
     setSelectedFazenda(fazenda);
   };
+
+  const { authState } = useAuth();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let response;
+
+      try {
+        const codCliente = authState?.usuario?.codigo;
+        response = await getConsultores(codCliente, selectedFazenda?.codigo);
+      } catch (error) {
+        console.error("Erro ao buscar as notas:", error);
+      } finally {
+        setSelectedConsultores(response);
+      }
+    };
+
+    fetchData();
+  }, [selectedFazenda]);
 
   return (
     <View style={styles.container}>
@@ -80,7 +90,14 @@ const Propriedades: React.FC = () => {
                 <Text style={styles.consultoresTitle}>Consultores</Text>
                 {selectedConsultores && selectedConsultores.length > 0 ? (
                   selectedConsultores.map((consultor, index) => (
-                    <Consultor key={index} {...consultor} />
+                    <Consultor
+                      selectedFazenda={selectedFazenda.codigo}
+                      codigo={consultor.codigo}
+                      telefone={consultor.telefone ? consultor.telefone : "Não informado"}
+                      nr={consultor.nr}
+                      nome={consultor.nome}
+                      email={consultor.email ? consultor.email : "Não informado"}
+                    />
                   ))
                 ) : (
                   <Text style={styles.noConsultoresText}>Nenhum consultor encontrado.</Text>

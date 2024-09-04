@@ -1,4 +1,5 @@
 export const formatDateString = (dateString: string) => {
-    const [year, month, day] = dateString.split("-");
-    return `${day}/${month}/${year}`;
-  };
+  const delimiter = dateString.includes("-") ? "-" : "/";
+  const [year, month, day] = dateString.split(delimiter);
+  return `${day}/${month}/${year}`;
+};

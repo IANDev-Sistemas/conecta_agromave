@@ -85,7 +85,6 @@ const Home = () => {
             <View style={styles.column}>
               <WeatherCard previsao={previsao} cidade="Cidade" uf="UF" />
               <CotacaoCard cotacoes={cotacoes} />
-              <HomeCard icon={<ShoppingBag color={"#023A5D"} />} title="Pedidos" />
             </View>
             <View style={styles.row}>
               <IconButton
@@ -194,7 +193,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    marginTop: 20,
+    marginTop: 10,
     width: "100%",
     justifyContent: "space-evenly",
     gap: 4,

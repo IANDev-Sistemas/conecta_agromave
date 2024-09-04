@@ -1,28 +1,53 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Linking, Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { User, Whatsapp } from "iconsax-react-native";
 import { Divider } from "@rneui/themed";
+import { BottomTabsTypes } from "@/src/navigation/BottomTabs"; // Assumindo que essa seja a tipagem de suas rotas
 
 interface ConsultorProps {
-  tipo: string;
+  codigo: string;
+  telefone: string | null;
+  nr: number;
   nome: string;
+  email: string | null;
+  selectedFazenda: number; 
 }
 
-const Consultor: React.FC<ConsultorProps> = ({ tipo, nome }) => {
+const Consultor: React.FC<ConsultorProps> = ({ nome, telefone, email, nr, selectedFazenda }) => {
+  const navigation = useNavigation<BottomTabsTypes>(); // Use a tipagem correta para navegação
+
+  const handleContact = () => {
+    if (telefone) {
+      const whatsappUrl = `https://wa.me/${telefone}`;
+      Linking.openURL(whatsappUrl).catch(() =>
+        Alert.alert("Erro", "Não foi possível abrir o WhatsApp.")
+      );
+    } else {
+      Alert.alert("Contato Indisponível", "O telefone do consultor não está disponível.");
+    }
+  };
+
+  const handleShowDetails = () => {
+    navigation.navigate("Consultor", {
+      selectedFazenda: selectedFazenda, // Passa o código da fazenda como parâmetro
+    });
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.tipo}>{tipo}</Text>
+      <Text style={styles.tipo}>Consultor</Text>
       <View style={styles.row}>
         <View style={styles.consultorInfo}>
           <Text style={styles.nome}>{nome}</Text>
         </View>
         <Divider orientation="vertical" width={2} style={styles.divider} />
-        <TouchableOpacity style={styles.iconButton}>
+        <TouchableOpacity style={styles.iconButton} onPress={handleShowDetails}>
           <User size={22} color="black" />
           <Text style={styles.buttonText}>Dados</Text>
         </TouchableOpacity>
         <Divider orientation="vertical" width={2} style={styles.divider} />
-        <TouchableOpacity style={styles.iconButton}>
+        <TouchableOpacity style={styles.iconButton} onPress={handleContact}>
           <Whatsapp size={22} color="black" />
           <Text style={styles.buttonText}>Contato</Text>
         </TouchableOpacity>

@@ -29,6 +29,7 @@ import Visitas from "../screens/Visitas/Visitas";
 import Consultor from "../screens/Consultor/Consultor";
 import Eventos from "../screens/Eventos/Eventos";
 import Financeiro from "../screens/Financeiro/Financeiro";
+import Contratos from "../screens/Financeiro/Contratos";
 
 type BottomTabNavigation = {
   Propriedades: undefined;
@@ -208,7 +209,7 @@ const BottomTabs = ({ navigation }: any) => {
           />
           <Tab.Screen
           name="Contratos"
-          component={Financeiro}
+          component={Contratos}
           options={{
             tabBarIcon: ({ focused, color }) =>
               handleIcon("Contratos", focused, color),

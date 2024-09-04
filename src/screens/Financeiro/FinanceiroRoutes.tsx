@@ -69,3 +69,38 @@ export const getPedidos = async (
     };
   }
 };
+
+export const getNotas = async (
+  codCliente: number | undefined,
+  tipoFiltro: string,
+  safra: string,
+  dataInicial: string,
+  dataFinal: string
+) => {
+  const tKey = tKeyGenerator();
+
+  try {
+    const response = await apiPublic.get("/odwctrl", {
+      params: {
+        action: "execTarefa",
+        apelido: "CNTAGROMAVE-api-rotas",
+        tKey: tKey,
+        scriptFunction: "getInvoice",
+        codCliente: codCliente,
+        tipoFiltro: tipoFiltro,
+        safra: safra,
+        dataInicial: dataInicial,
+        dataFinal: dataFinal,
+      },
+    });
+
+    return response.data;
+
+  } catch (error) {
+    console.error("Error during finance get:", error);
+    return {
+      error: true,
+      msg: "Invalid details",
+    };
+  }
+};

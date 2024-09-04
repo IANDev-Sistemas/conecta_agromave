@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import FinanceiroCard from "./FinanceiroCard";
 import PedidosCard from "./PedidosCard";
+import AnaliticoCard from "./AnaliticoCard";
 import { getPedidos } from "./FinanceiroRoutes";
 import { useAuth } from "@/src/contexts/AuthContext";
 import { formatCurrency } from "@/src/helpers/formatCurrency";
@@ -21,15 +22,19 @@ type PedidosProps = {
 
 interface Pedido {
   cidade: string;
-  produto: string;
   safra: string;
+  produtos: Array<{
+    produto: string;
+    quantidadeproduto: number;
+    quantidadefaturado: number;
+    valor: number;
+  }>;
   valor: number;
-  valorpedido: number;
   seriepedido: string;
   numpedido: number;
   datapedido: string;
-  quantidadeproduto: number;
 }
+
 
 const Pedidos: React.FC<PedidosProps> = ({
   tipoFiltro,
@@ -40,8 +45,19 @@ const Pedidos: React.FC<PedidosProps> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [totalPedidos, setTotalPedidos] = useState<number>(0);
   const [listaPedidos, setListaPedidos] = useState<Array<Pedido>>([]);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [pedidoSelecionado, setPedidoSelecionado] = useState<Pedido | null>(null);
 
   const { authState } = useAuth();
+
+  const handleCardPress = (pedido: Pedido) => {
+    setPedidoSelecionado(pedido);
+    setModalVisible(true);
+  };
+
+  const renderPedidoCard = ({ item }: { item: Pedido }) => (
+    <PedidosCard pedido={item} onPress={() => handleCardPress(item)} />
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,10 +85,6 @@ const Pedidos: React.FC<PedidosProps> = ({
     fetchData();
   }, [tipoFiltro, safra, dataInicial, dataFinal]);
 
-  const renderPedidoCard = ({ item }: { item: Pedido }) => (
-    <PedidosCard pedido={item} />
-  );
-
   return (
     <View style={styles.container}>
       {loading ? (
@@ -97,6 +109,13 @@ const Pedidos: React.FC<PedidosProps> = ({
           />
         </>
       )}
+      {pedidoSelecionado && (
+        <AnaliticoCard
+          pedido={pedidoSelecionado}
+          isVisible={modalVisible}
+          onClose={() => setModalVisible(false)}
+        />
+      )}
     </View>
   );
 };
@@ -105,7 +124,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 20,
     backgroundColor: "white",
-    flex: 1, // Ocupa toda a altura disponível
+    flex: 1,
     paddingHorizontal: 16,
   },
   loadingContainer: {
@@ -114,10 +133,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   financeiroCardContainer: {
-    marginBottom: 20, // Espaço abaixo do FinanceiroCard
+    marginBottom: 20,
   },
   flatListContent: {
-    paddingBottom: 20, // Espaço na parte inferior da lista
+    paddingBottom: 20,
     justifyContent: "center",
     alignItems: "center",
   },

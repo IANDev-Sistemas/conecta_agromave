@@ -1,4 +1,3 @@
-import { consultores, fazendas } from '@/dummydata';
 import Header from '@/src/components/general/Header';
 import CustomDropdown from '@/src/components/inputs/Dropdown';
 import { BottomTabsTypes } from '@/src/navigation/BottomTabs';
@@ -6,10 +5,16 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import ConsultorCard from './ConsultorCard';
+import { useFazenda } from '@/src/contexts/FazendaContext';
+import { getConsultores } from './ConsultorRoutes';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 interface Consultor {
-  tipo: string;
+  codigo: string;
+  telefone: string | null;
+  nr: number;
   nome: string;
+  email: string | null;
 }
 
 type RouteParams = {
@@ -18,11 +23,15 @@ type RouteParams = {
   };
 };
 
-const Consultor = () => {
-  const route = useRoute<RouteProp<RouteParams, "params">>();
+const ConsultorScreen = () => {
+  const route = useRoute<RouteProp<RouteParams, 'params'>>();
   const [selectedFazenda, setSelectedFazenda] = useState<number>(
     route.params?.selectedFazenda || 0
   );
+  const [consultores, setConsultores] = useState<Consultor[]>([]);
+
+  const { fazendas } = useFazenda();
+  const { authState } = useAuth();
 
   useEffect(() => {
     if (route.params?.selectedFazenda !== undefined) {
@@ -30,9 +39,17 @@ const Consultor = () => {
     }
   }, [route.params?.selectedFazenda]);
 
-  const filteredConsultores = consultores.filter(
-    (consultor) => consultor.idFazenda == selectedFazenda
-  );
+  useEffect(() => {
+    const fetchConsultores = async () => {
+      if (selectedFazenda) {
+        const codCliente = authState?.usuario?.codigo;
+       const response = await getConsultores(codCliente, selectedFazenda);
+        setConsultores(response);
+      }
+    };
+
+    fetchConsultores();
+  }, [selectedFazenda]);
 
   const navigation = useNavigation<BottomTabsTypes>();
 
@@ -46,7 +63,7 @@ const Consultor = () => {
               onChange={(value) => setSelectedFazenda(Number(value))} // Converte o valor para número
               value={selectedFazenda}
               list={fazendas.map((fazenda) => ({
-                key: fazenda.id,
+                key: fazenda.codigo,
                 name: fazenda.nome,
               }))}
               placeholder="Selecione a propriedade"
@@ -54,16 +71,16 @@ const Consultor = () => {
           </View>
         </Header>
 
-        {selectedFazenda !== 0 && filteredConsultores.length > 0 && (
+        {selectedFazenda !== 0 && consultores.length > 0 && (
           <ScrollView
             contentContainerStyle={styles.scrollViewContent}
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
           >
             <Pressable style={styles.pressableContainer}>
               <View style={styles.consultoresHeader}>
                 <Text style={styles.consultoresTitle}>Consultores</Text>
               </View>
-              {filteredConsultores.map((consultor, index) => (
+              {consultores.map((consultor, index) => (
                 <ConsultorCard key={index} {...consultor} />
               ))}
             </Pressable>
@@ -112,4 +129,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Consultor;
+export default ConsultorScreen;
