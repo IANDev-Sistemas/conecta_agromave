@@ -230,11 +230,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const getDados = async (cgc: string) => {
-
     const tKey = tKeyGenerator();
-
+  
+    console.log("Iniciando getDados para:", cgc); // Log antes da chamada API
+  
     const token = "my-jwt";
     try {
+      console.log("Tentando realizar requisição..."); // Confirmação da tentativa
+  
       const response = await apiPublic.get("/odwctrl", {
         params: {
           action: "execTarefa",
@@ -244,29 +247,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           cpfCnpj: cgc,
         },
       });
-
-
+  
+      console.log("Requisição bem-sucedida:", response.data); // Se a requisição funcionar
+  
       setAuthState({
         token: token,
         authenticated: true,
         status: "login",
         usuario: response.data,
       });
-
+  
       await SecureStore.setItemAsync(
         "Usuario_Details",
         JSON.stringify(response.data)
       );
-
+  
       return response.data;
     } catch (error) {
-      console.error("Error during password change:", error);
+      console.error("Erro ao fazer getDados:", error);
       return {
         error: true,
         msg: "Invalid details",
       };
     }
   };
+  
   
 
   const checkValidationCode = async (cgc: string, validationCode: string) => {

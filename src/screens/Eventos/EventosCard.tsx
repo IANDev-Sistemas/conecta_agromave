@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { View, Text, Image, Pressable, Modal, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ModalEvento from "./ModalEvento";
+import { formatDateString } from "@/src/helpers/formatDateString";
 
 interface EventoCardProps {
   title: string;
@@ -31,7 +32,7 @@ const EventoCard: React.FC<EventoCardProps> = ({
           <Text style={styles.title}>{title}</Text>
           <View style={styles.infoRow}>
             <Calendar2 size={20} color="#292D32" />
-            <Text style={styles.infoText}>{date}</Text>
+            <Text style={styles.infoText}>{formatDateString(date)}</Text>
           </View>
           <View style={styles.infoRow}>
             <Location size={20} color="#292D32" />

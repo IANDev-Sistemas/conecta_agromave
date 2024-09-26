@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
+    elevation:10
   },
   tipo: {
     fontSize: 14,

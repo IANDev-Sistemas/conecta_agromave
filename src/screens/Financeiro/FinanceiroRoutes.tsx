@@ -10,6 +10,7 @@ export const getFinanceiro = async (
 ) => {
   const tKey = tKeyGenerator();
 
+  console.log(tKey)
   try {
     const response = await apiPublic.get("/odwctrl", {
       params: {

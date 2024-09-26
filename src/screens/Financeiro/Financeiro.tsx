@@ -64,7 +64,7 @@ const Financeiro = () => {
                 navigation.navigate("Financeiro", { content: "financeiro" })
               }
               icon={
-                <Wallet color={content == "financeiro" ? "#fff" : "#023A5D"} />
+                <Wallet color={content == "financeiro" ? "#fff" : "#007E34"} />
               }
               ativo={content == "financeiro"}
             />
@@ -75,7 +75,7 @@ const Financeiro = () => {
               }
               icon={
                 <ShoppingBag
-                  color={content == "pedidos" ? "#fff" : "#023A5D"}
+                  color={content == "pedidos" ? "#fff" : "#007E34"}
                 />
               }
               ativo={content == "pedidos"}
@@ -84,7 +84,7 @@ const Financeiro = () => {
               label={"Notas"}
               onClick={() => navigation.navigate("Notas", { content: "notas" })}
               icon={
-                <ReceiptText color={content == "notas" ? "#fff" : "#023A5D"} />
+                <ReceiptText color={content == "notas" ? "#fff" : "#007E34"} />
               }
               ativo={content == "notas"}
             />
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     flexDirection: "row",
-    gap: 16,
+    gap: 12,
     marginTop: 10,
     width: "100%",
   },

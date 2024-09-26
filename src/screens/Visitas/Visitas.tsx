@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, Pressable, StyleSheet } from "react-native";
-import { fazendas, visitas } from "@/dummydata";
+import { View, ScrollView, Pressable, StyleSheet, Text, ActivityIndicator } from "react-native";
 import Header from "@/src/components/general/Header";
 import CustomDropdown from "@/src/components/inputs/Dropdown";
 import VisitasCard from "./VisitasCard";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useFazenda } from "@/src/contexts/FazendaContext"; // Supondo que essa função exista
+import { getVisitas } from "./VisitasRoute";
+import { useAuth } from "@/src/contexts/AuthContext";
 
 interface Fazenda {
-  id: number;
+  codigo: number;
   nome: string;
-  municipio: string;
-  area: string;
+  cidade: string;
+  uf: string;
+  area: number;
 }
 
 type RouteParams = {
@@ -20,12 +23,15 @@ type RouteParams = {
 };
 
 const Visitas = () => {
+  const { fazendas } = useFazenda();
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const navigation = useNavigation();
 
   const [selectedFazenda, setSelectedFazenda] = useState<number>(
     route.params?.selectedFazenda || 0
   );
+  const [visitasData, setVisitasData] = useState<any[]>([]); 
+  const [loading, setLoading] = useState<boolean>(false); 
 
   useEffect(() => {
     if (route.params?.selectedFazenda !== undefined) {
@@ -33,9 +39,26 @@ const Visitas = () => {
     }
   }, [route.params?.selectedFazenda]);
 
-  const filteredVisitas = visitas.filter(
-    (visita) => visita.idFazenda === selectedFazenda
-  );
+  const { authState } = useAuth();
+
+  useEffect(() => {
+    const fetchVisitas = async () => {
+      setLoading(true);
+      try {
+        const codCliente = authState?.usuario?.codigo;
+        const response = await getVisitas(codCliente, selectedFazenda);
+        setVisitasData(response);
+      } catch (error) {
+        console.error("Erro ao buscar as visitas:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (selectedFazenda) {
+      fetchVisitas();
+    }
+  }, [selectedFazenda]);
 
   return (
     <View style={styles.container}>
@@ -47,23 +70,37 @@ const Visitas = () => {
               onChange={(value) => setSelectedFazenda(Number(value))}
               value={selectedFazenda}
               list={fazendas.map((fazenda) => ({
-                key: fazenda.id,
+                key: fazenda.codigo,
                 name: fazenda.nome,
               }))}
               placeholder="Selecione a propriedade"
             />
           </View>
         </Header>
-        <ScrollView
-          contentContainerStyle={styles.scrollViewContent}
-          style={styles.scrollView}
-        >
-          <Pressable style={styles.pressable}>
-            {filteredVisitas.map((visita, index) => (
-              <VisitasCard key={index} {...visita} />
-            ))}
-          </Pressable>
-        </ScrollView>
+
+        {loading ? (
+         <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#007E34" />
+            <Text>Carregando visitas...</Text>
+          </View>
+        ) : (
+          <ScrollView
+            contentContainerStyle={styles.scrollViewContent}
+            style={styles.scrollView}
+          >
+            <Pressable style={styles.pressable}>
+              {visitasData.length > 0 ? (
+                visitasData.map((visita, index) => (
+                  <VisitasCard key={index} {...visita} />
+                ))
+              ) : (
+                <View style={styles.loadingContainer}>
+                  <Text>Nenhuma visita encontrada para esta fazenda.</Text>
+                </View>
+              )}
+            </Pressable>
+          </ScrollView>
+        )}
       </View>
     </View>
   );
@@ -81,9 +118,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
+  loadingContainer: {
+    marginTop:150,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   dropdownContainer: {
     flexDirection: "column",
-    marginTop: 5,
+    marginTop: 20,
     width: "66%",
     gap: 5,
   },

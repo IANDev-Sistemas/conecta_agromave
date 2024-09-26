@@ -46,7 +46,7 @@ const CustomHeader = ({
               onPress={() => navigation.navigate("Cliente")}
               style={styles.menuItem}
             >
-              <ProfileCircle variant="Bold" size={24} color="#023A5D" />
+              <ProfileCircle variant="Bold" size={24} color="#007E34" />
               <Text style={styles.menuItemText}>Cliente</Text>
             </TouchableOpacity>
           </View>
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     justifyContent: "center",
-    backgroundColor: "#023A5D",
+    backgroundColor: "#007E34",
     paddingHorizontal: 40,
     paddingVertical: 20,
   },
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   logoutButton: {
-    backgroundColor: "#023A5D",
+    backgroundColor: "#007E34",
     borderRadius: 9999,
     padding: 8,
     flexDirection: "row",

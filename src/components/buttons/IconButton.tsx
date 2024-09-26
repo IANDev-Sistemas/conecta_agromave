@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   active: {
-    backgroundColor: "#1B3265",
+    backgroundColor: "#007E34",
   },
   inactive: {
     backgroundColor: "white",

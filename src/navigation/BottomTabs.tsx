@@ -58,7 +58,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <House size="24" color={focused ? "#023A5D" : color} />
+          <House size="24" color={focused ? "#007E34" : color} />
         </View>
       );
     case "Home":
@@ -71,7 +71,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <Home2 size="24" color={focused ? "#023A5D" : color} />
+          <Home2 size="24" color={focused ? "#007E34" : color} />
         </View>
       );
     case "Visitas":
@@ -84,7 +84,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <Routing size="24" color={focused ? "#023A5D" : color} />
+          <Routing size="24" color={focused ? "#007E34" : color} />
         </View>
       );
     case "Financeiro":
@@ -97,7 +97,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <CardPos size={24} color={focused ? "#023A5D" : color} />
+          <CardPos size={24} color={focused ? "#007E34" : color} />
         </View>
       );
     case "Pedidos":
@@ -110,7 +110,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <ShoppingBag size={24} color={focused ? "#023A5D" : color} />
+          <ShoppingBag size={24} color={focused ? "#007E34" : color} />
         </View>
       );
     case "Contratos":
@@ -123,7 +123,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <DocumentText1 size={24} color={focused ? "#023A5D" : color} />
+          <DocumentText1 size={24} color={focused ? "#007E34" : color} />
         </View>
       );
     case "Notas":
@@ -136,7 +136,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <ReceiptText size={24} color={focused ? "#023A5D" : color} />
+          <ReceiptText size={24} color={focused ? "#007E34" : color} />
         </View>
       );
     case "Agenda":
@@ -149,7 +149,7 @@ const handleIcon = (label: string, focused: boolean, color: string) => {
             paddingHorizontal: 16,
           }}
         >
-          <Calendar size={24} color={focused ? "#023A5D" : color} />
+          <Calendar size={24} color={focused ? "#007E34" : color} />
         </View>
       );
     default:
@@ -184,7 +184,7 @@ const BottomTabs = ({ navigation }: any) => {
               borderTopLeftRadius: 16,
               borderTopRightRadius: 16,
               position: "absolute",
-              backgroundColor: "#023A5D",
+              backgroundColor: "#007E34",
               height: Platform.OS === "ios" ? 90 : 60,
               overflow: "hidden",
               bottom: 0,
@@ -250,7 +250,7 @@ const BottomTabs = ({ navigation }: any) => {
                 <TouchableOpacity
                   style={{
                     marginVertical: "auto",
-                    backgroundColor: "#023A5D",
+                    backgroundColor: "#007E34",
                     justifyContent: "center",
                     alignItems: "center",
                     paddingRight: 20,

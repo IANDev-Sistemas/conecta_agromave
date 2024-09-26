@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#E5E7EB", // Cor de fundo cinza claro
     borderRadius: 25, // Bordas arredondadas
-    paddingVertical: 8,
+    paddingVertical: 2,
     paddingHorizontal: 16,
     width: "100%",
   },

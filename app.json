@@ -17,12 +17,13 @@
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.ggodinho.conecta_agromave"
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/images/adaptive-icon.png",
+      "backgroundColor": "#ffffff"
     },
+    "package": "com.ggodinho.conecta_agromave",
+    "permissions": ["INTERNET"]
+  },
     "web": {
       "bundler": "metro",
       "output": "static",

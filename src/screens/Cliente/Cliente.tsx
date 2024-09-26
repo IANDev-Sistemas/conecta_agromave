@@ -43,7 +43,7 @@ const Cliente = () => {
           <Avatar
             size={90}
             rounded
-            source={{ uri: "https://randomuser.me/api/portraits/men/36.jpg" }}
+            icon={{name: 'user', type: 'font-awesome'}}
             avatarStyle={styles.avatarStyle}
           />
           <Text style={styles.greetingText}>Olá, {nome}</Text>
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     justifyContent: "center",
-    backgroundColor: "#023A5D",
+    backgroundColor: "#007E34",
     paddingHorizontal: 40,
   },
   mainContent: {
@@ -105,14 +105,14 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   avatarStyle: {
-    borderColor: "#023A5D",
+    borderColor: "#007E34",
     borderWidth: 2,
   },
   greetingText: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#023A5D",
+    color: "#007E34",
   },
   formContainer: {
     backgroundColor: "white",

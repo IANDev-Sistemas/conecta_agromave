@@ -13,59 +13,59 @@ import Header from "../../components/general/Header";
 import DatePicker from "@/src/components/inputs/DatePicker";
 import { AddCircle } from "iconsax-react-native";
 import NovaProgModal from "./NovaProgModal";
+import { getAgenda } from "./AgentaRoutes";
+import { useAuth } from "@/src/contexts/AuthContext";
 
 const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
 type Appointment = {
-  time: string;
-  type: string;
-  description: string;
+  hour: string;
+  user_name: string;
+  farm_name: string;
+  type_name: string | null;
 };
 
-// Definindo o tipo do objeto appointments, onde as chaves são strings (datas) e os valores são arrays de Appointment
+
 type Appointments = {
   [date: string]: Appointment[];
 };
 
-// Exemplo de objeto com os agendamentos
-const appointments: Appointments = {
-  "2024-08-16": [
-    {
-      time: "14:00",
-      type: "Visita Técnica",
-      description: "Revisão de sistema",
-    },
-    {
-      time: "16:00",
-      type: "Consulta",
-      description: "Consulta médica",
-    },
-  ],
-  "2024-08-18": [
-    {
-      time: "09:00",
-      type: "Reunião",
-      description: "Discussão de projeto",
-    },
-  ],
-};
 
 const AgendaScreen: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [days, setDays] = useState<string[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [appointments, setAppointments] = useState<Array<Appointments>>([]);;
   const [showOnlyEvents, setShowOnlyEvents] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
-  useEffect(() => {
-    loadInitialDays();
-  }, []);
-
+  
   const loadInitialDays = () => {
     const initialDays = generateDays(new Date(), 14, []);
     setDays(initialDays);
   };
+  
+  useEffect(() => {
+    loadInitialDays();
+  }, []);
+  const { authState } = useAuth();
+
+  useEffect(() => {
+    const fetchAgenda = async () => {
+  
+      try {
+        const codCliente = authState?.usuario?.codigo;
+        const response = await getAgenda(codCliente);
+        setAppointments(response);
+        
+      } catch (error) {
+        console.error("Erro ao buscar as visitas:", error);
+      } 
+    };
+
+    fetchAgenda();
+  }, []);
 
   const generateDays = (
     startDate: Date,
@@ -140,37 +140,48 @@ const AgendaScreen: React.FC = () => {
   };
 
   const filteredDays = showOnlyEvents
-    ? days.filter((day) => appointments[day])
-    : days;
+  ? days.filter((day) => {
+      const dayAppointments = appointments.find((app) => app.date === day)?.visitas || [];
+      return dayAppointments.length > 0;
+    })
+  : days;
 
   const renderAppointmentItem = (appointment: Appointment) => (
-    <View style={styles.appointmentItem} key={appointment.time}>
-      <Text style={styles.appointmentTime}>{appointment.time}</Text>
-      <Text>{appointment.type}</Text>
-      <Text>{appointment.description}</Text>
+    <View style={styles.appointmentItem}>
+      <Text style={styles.appointmentTime}>{moment(appointment.hour, "HH:mm:ss").format("HH:mm")}</Text>
+      <Text>{appointment.type_name}</Text>
+      <Text>{appointment.user_name}</Text>
+      <Text>{appointment.farm_name}</Text>
     </View>
   );
 
   const renderDayItem = ({ item }: { item: string }) => {
     const dayOfMonth = moment(item).format("DD");
     const dayOfWeek = weekDays[moment(item).day()];
-    const isLastDayOfMonth = moment(item).isSame(
-      moment(item).endOf("month"),
-      "day"
-    );
+    
+    // Verifica se é o primeiro dia do mês
+    const isFirstDayOfMonth = moment(item).date() === 1;
     const monthName = moment(item).format("MMMM");
-
-    const dayAppointments = appointments[item];
-
+  
+    // Filtrar os appointments para o dia atual
+    const dayAppointments = appointments.find((app) => app.date === item)?.visitas || [];
+  
     return (
       <View key={item} style={styles.dayContainer}>
+        {/* Renderiza o nome do mês antes do primeiro dia */}
+        {isFirstDayOfMonth && (
+          <Text style={styles.monthName}>
+            {monthName.charAt(0).toUpperCase() + monthName.slice(1)}
+          </Text>
+        )}
+  
         <Pressable style={styles.dayPressable}>
           <View style={styles.dayInfo}>
             <Text style={styles.dayOfMonth}>{dayOfMonth}</Text>
             <Text style={styles.dayOfWeek}>{dayOfWeek}</Text>
           </View>
           <View>
-            {dayAppointments ? (
+            {dayAppointments.length > 0 ? (
               dayAppointments.map((appointment) =>
                 renderAppointmentItem(appointment)
               )
@@ -179,11 +190,6 @@ const AgendaScreen: React.FC = () => {
             )}
           </View>
         </Pressable>
-        {isLastDayOfMonth && (
-          <Text style={styles.monthName}>
-            {monthName.charAt(0).toUpperCase() + monthName.slice(1)}
-          </Text>
-        )}
       </View>
     );
   };
@@ -253,7 +259,7 @@ const styles = StyleSheet.create({
   addButton: {
     flexDirection: "row",
     gap: 7,
-    backgroundColor: "#023A5D",
+    backgroundColor: "#007E34",
     padding: 6,
     width: "50%",
     borderRadius: 16,

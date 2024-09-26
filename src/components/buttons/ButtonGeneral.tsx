@@ -14,7 +14,7 @@ const ButtonGeneral: React.FC<ButtonProps> = ({ label, onClick, disabled = false
     <TouchableOpacity
       style={[
         styles.button, 
-        { backgroundColor: disabled ? '#d3d3d3' : color || '#023A5D' }
+        { backgroundColor: disabled ? '#d3d3d3' : color || '#007E34' }
       ]}
       onPress={onClick}
       disabled={disabled}

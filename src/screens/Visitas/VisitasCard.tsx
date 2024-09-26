@@ -1,27 +1,38 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Linking } from "react-native";
 import { AttachSquare } from "iconsax-react-native";
+import { formatDateString } from "@/src/helpers/formatDateString";
 
 interface VisitasProps {
-  consultor: string;
-  data: string;
+  user_name: string;
+  date: string;
   tipo: string;
-  link: string;
+  visit_id_sync: string;
 }
 
-const VisitasCard: React.FC<VisitasProps> = ({ consultor, data, tipo }) => {
+const VisitasCard: React.FC<VisitasProps> = ({ user_name, date, visit_id_sync }) => {
+  const openLink = () => {
+    const url = `https://relatorio.tbdc.com.br/visita/${visit_id_sync}`;
+    Linking.openURL(url);
+  };
+
   return (
     <View style={styles.cardContainer}>
       <View style={styles.textContainer}>
         <View style={styles.columnContainer}>
-          <Text style={styles.text}>Consultor: {consultor}</Text>
-          <Text style={styles.text}>Tipo da vistoria: {tipo}</Text>
-          <Text style={styles.text}>Data: {data}</Text>
+          <View>
+            <Text style={styles.text}>Consultor:</Text>
+            <Text style={styles.texttitle}>{user_name}</Text>
+          </View>
+          <View>
+            <Text style={styles.text}>Data:</Text>
+            <Text style={styles.texttitle}>{formatDateString(date)}</Text>
+          </View>
         </View>
       </View>
       <View style={styles.iconContainer}>
-        <TouchableOpacity>
-          <AttachSquare size={35} color="black" />
+        <TouchableOpacity onPress={openLink}>
+          <AttachSquare size={35} color="#007E34" />
         </TouchableOpacity>
       </View>
     </View>
@@ -32,19 +43,20 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: "row",
     marginTop: 20,
-    width: "91.66%", // equivalente a 11/12
-    borderRadius: 15,
-    borderColor: "#E0E0E0", // substituto para a cor "border-background"
-    borderWidth: 1,
-    backgroundColor: "white",
-    alignItems: "center",
-    paddingBottom: 20,
-    paddingTop: 10,
+    alignItems:"center",
+    width: "90%",
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
     paddingHorizontal: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
+    paddingVertical: 16,
+    shadowColor: "rgba(0, 0, 0, 0.1)",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.8,
+    shadowRadius: 8,
+    elevation: 20,
+    marginBottom: 16,
+    borderLeftWidth: 6,
+    borderColor: "#238228"
   },
   textContainer: {
     flexDirection: "row",
@@ -52,10 +64,16 @@ const styles = StyleSheet.create({
   },
   columnContainer: {
     flexDirection: "column",
+    gap:10
   },
   text: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "400",
+    flexWrap: "wrap",
+  },
+  texttitle:{
+    fontSize: 16,
+    fontWeight: "600",
     flexWrap: "wrap",
   },
   iconContainer: {

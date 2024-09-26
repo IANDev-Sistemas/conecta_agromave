@@ -37,7 +37,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ label, value, onChange, icon })
         <Pressable onPress={() => setShowPicker(true)} style={styles.inputContainer}>
           {icon && <View style={styles.icon}>{icon}</View>}
           <Text style={styles.text}>
-            {value ? value.toDateString() : label}
+          {value ? new Date(value).toLocaleDateString('pt-BR') : label}
           </Text>
           {showPicker && (
             <DateTimePicker
@@ -66,9 +66,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#E5E7EB", // Cor de fundo
-    borderRadius: 9999, // Bordas arredondadas
+    borderRadius: 12, // Bordas arredondadas
     paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
   },
   icon: {
     marginRight: 8,

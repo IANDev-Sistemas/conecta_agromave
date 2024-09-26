@@ -2,22 +2,23 @@ import { Calendar2, Location } from "iconsax-react-native";
 import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import ModalEvento from "./ModalEvento";
+import { formatDateString } from "@/src/helpers/formatDateString";
 
 interface EventosItemProps {
-  title: string;
-  date: string;
-  location: string;
-  imageUrl: string;
-  description: string;
+  evento: string;
+  datainicial: string;
+  nomemunicipio: string;
+  urlprincipal: string;
+  descricaodetalhada: string;
   onRedirect: () => void;
 }
 
 const EventosItem: React.FC<EventosItemProps> = ({
-  title,
-  date,
-  location,
-  imageUrl,
-  description,
+  evento,
+  datainicial,
+  nomemunicipio,
+  urlprincipal,
+  descricaodetalhada,
   onRedirect,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -29,28 +30,28 @@ const EventosItem: React.FC<EventosItemProps> = ({
         onPress={() => setModalVisible(true)}
       >
         <Image
-          source={{ uri: imageUrl }}
+          source={{ uri: urlprincipal }}
           style={styles.image}
           resizeMode="cover"
         />
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title}>{evento}</Text>
           <View style={styles.row}>
             <Calendar2 size={20} color="#292D32" />
-            <Text style={styles.infoText}>{date}</Text>
+            <Text style={styles.infoText}>{formatDateString(datainicial)}</Text>
           </View>
           <View style={styles.row}>
             <Location size={20} color="#292D32" />
-            <Text style={styles.infoText}>{location}</Text>
+            <Text style={styles.infoText}>{nomemunicipio}</Text>
           </View>
         </View>
       </TouchableOpacity>
 
       <ModalEvento
         visible={modalVisible}
-        imageUrl={imageUrl}
-        title={title}
-        description={description}
+        imageUrl={urlprincipal}
+        title={evento}
+        description={descricaodetalhada}
         onClose={() => setModalVisible(false)}
         onRedirect={onRedirect}
       />
@@ -81,12 +82,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   infoContainer: {
+    width:"50%",
     marginLeft: 16,
     gap: 8,
   },
   title: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: "bold",
+    flexWrap:"wrap"
   },
   row: {
     flexDirection: "row",

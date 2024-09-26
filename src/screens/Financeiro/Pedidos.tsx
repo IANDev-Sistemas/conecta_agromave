@@ -89,7 +89,7 @@ const Pedidos: React.FC<PedidosProps> = ({
     <View style={styles.container}>
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="#007E34" />
           <Text>Carregando pedidos...</Text>
         </View>
       ) : (

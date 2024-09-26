@@ -19,7 +19,7 @@ interface MenuItemProps {
 
 const MenuItem: React.FC<MenuItemProps> = ({ icon, label, route, currentRoute, onPress }) => {
   const isActive = currentRoute === route;
-  const iconColor = isActive ? "white" : "#023A5D";
+  const iconColor = isActive ? "white" : "#007E34";
   
   return (
     <TouchableOpacity
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   activeMenuItem: {
-    backgroundColor: '#023A5D',
+    backgroundColor: '#007E34',
   },
   menuText: {
     marginLeft: 10,
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     padding: 7,
     marginTop: 20,
     borderRadius: 16,
-    backgroundColor: "#023A5D",
+    backgroundColor: "#007E34",
     justifyContent: "center",
     flexDirection: "row",
     alignItems: "center",

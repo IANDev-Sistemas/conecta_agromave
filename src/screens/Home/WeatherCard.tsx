@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: "500",
     marginLeft: 50,
-    color: "#023A5D",
+    color: "#007E34",
     marginBottom: 20,
   },
   row: {
@@ -97,13 +97,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    color: "#023A5D",
+    color: "#007E34",
     gap: 10,
   },
   colImage: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    color: "#023A5D",
+    color: "#007E34",
   },
 });

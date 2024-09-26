@@ -86,7 +86,7 @@ const Home = () => {
               <WeatherCard previsao={previsao} cidade="Cidade" uf="UF" />
               <CotacaoCard cotacoes={cotacoes} />
             </View>
-            <View style={styles.row}>
+            {/* <View style={styles.row}>
               <IconButton
                 label={"Pedidos"}
                 onClick={() => { }}
@@ -159,7 +159,7 @@ const Home = () => {
                 icon={<SmsNotification color={"#023A5D"} />}
                 ativo={false}
               />
-            </View>
+            </View> */}
           </Pressable>
         </ScrollView>
       </View>

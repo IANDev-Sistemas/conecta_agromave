@@ -1,9 +1,7 @@
 import apiPublic from "@/src/api/api";
 import { tKeyGenerator } from "@/src/helpers/tKeyGenerator";
 
-export const getConsultores = async (
-  codCliente: number | undefined,
-  codPropriedade: number | undefined
+export const getEvent = async (
 ) => {
   const tKey = tKeyGenerator();
 
@@ -13,13 +11,12 @@ export const getConsultores = async (
         action: "execTarefa",
         apelido: "CNTAGROMAVE-api-rotas",
         tKey: tKey,
-        scriptFunction: "getConsultant",
-        codCliente: codCliente,
-        codPropriedade: codPropriedade,
+        scriptFunction: "getEvent",
       },
     });
-
-    return response.data;
+    
+    return response.data
+    
   } catch (error) {
     console.error("Error during finance get:", error);
     return {
