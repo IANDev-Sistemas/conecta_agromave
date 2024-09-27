@@ -52,6 +52,7 @@ const Eventos = () => {
       setLoading(true);
       try {
         const response = await getEvent();
+        console.log(response[0]?.midias[0]?.url)
         setEventData(response);
         setFilteredEvents(response);
       } catch (error) {
@@ -171,7 +172,7 @@ const Eventos = () => {
                           title={item.evento}
                           date={item.datainicial}
                           location={item.nomemunicipio}
-                          imageUrl={item.urlprincipal}
+                          imageUrl={item.midias[0]?.url}
                           description={item.descricaodetalhada}
                           onRedirect={() => Linking.openURL(item.urlprincipal)}
                         />
@@ -195,7 +196,7 @@ const Eventos = () => {
                       evento={evento.evento}
                       datainicial={evento.datainicial}
                       nomemunicipio={evento.nomemunicipio}
-                      urlprincipal={evento.urlprincipal}
+                      imageUrl={evento.midias[0]?.url}
                       descricaodetalhada={evento.descricaodetalhada}
                       onRedirect={() => Linking.openURL(evento.urlprincipal)}
                     />

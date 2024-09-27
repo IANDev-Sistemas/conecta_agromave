@@ -8,7 +8,7 @@ interface EventosItemProps {
   evento: string;
   datainicial: string;
   nomemunicipio: string;
-  urlprincipal: string;
+  imageUrl: string;
   descricaodetalhada: string;
   onRedirect: () => void;
 }
@@ -17,7 +17,7 @@ const EventosItem: React.FC<EventosItemProps> = ({
   evento,
   datainicial,
   nomemunicipio,
-  urlprincipal,
+  imageUrl,
   descricaodetalhada,
   onRedirect,
 }) => {
@@ -30,7 +30,7 @@ const EventosItem: React.FC<EventosItemProps> = ({
         onPress={() => setModalVisible(true)}
       >
         <Image
-          source={{ uri: urlprincipal }}
+          source={{ uri: imageUrl }}
           style={styles.image}
           resizeMode="cover"
         />
@@ -49,7 +49,7 @@ const EventosItem: React.FC<EventosItemProps> = ({
 
       <ModalEvento
         visible={modalVisible}
-        imageUrl={urlprincipal}
+        imageUrl={imageUrl}
         title={evento}
         description={descricaodetalhada}
         onClose={() => setModalVisible(false)}
