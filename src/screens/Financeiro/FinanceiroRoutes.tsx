@@ -39,6 +39,7 @@ export const getFinanceiro = async (
 export const getPedidos = async (
   codCliente: number | undefined,
   tipoFiltro: string,
+  grupoFiltro: string,
   safra: string,
   dataInicial: string,
   dataFinal: string
@@ -54,6 +55,7 @@ export const getPedidos = async (
         scriptFunction: "getOrder",
         codCliente: codCliente,
         tipoFiltro: tipoFiltro,
+        grupoFiltro: grupoFiltro,
         safra: safra,
         dataInicial: dataInicial,
         dataFinal: dataFinal,

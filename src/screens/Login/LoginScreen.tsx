@@ -99,10 +99,6 @@ const LoginScreen = () => {
         extraScrollHeight={40}
       >
         <View style={styles.container}>
-          <Animated.Image
-            style={[styles.logo, { transform: [{ translateY: translationLogo }] }]}
-            source={require("../../../assets/images/conecta_logo_new.png")}
-          />
           <Animated.View
             style={[
               styles.animatedView,
@@ -165,6 +161,9 @@ const styles = StyleSheet.create({
   },
   logo: {
     position: 'absolute',
+    width: 400, 
+    height: 400, 
+    resizeMode: 'contain',
   },
   animatedView: {
     position: 'absolute',

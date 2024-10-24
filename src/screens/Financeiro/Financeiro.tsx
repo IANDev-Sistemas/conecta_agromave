@@ -18,6 +18,8 @@ import ButtonGeneral from "@/src/components/buttons/ButtonGeneral";
 import { formatDate } from "@/src/helpers/formDate";
 import { useSafra } from "@/src/contexts/SafraContext";
 import Notas from "./Notas";
+import { useGrupo } from "@/src/contexts/GrupoContext";
+import Background from "@/src/components/general/Background";
 
 type RouteParams = {
   params: {
@@ -29,9 +31,14 @@ type Safra = {
   key: number;
   name: string;
 };
+type Grupo = {
+  key: number;
+  name: string;
+};
 
 const Financeiro = () => {
   const { safras } = useSafra();
+  const { grupos } = useGrupo();
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const [content, setContent] = useState<string>(
     route.params?.content || "financeiro"
@@ -43,7 +50,9 @@ const Financeiro = () => {
   const [dataFinal, setDataFinal] = useState<Date | null>(new Date());
   const [tipoFiltro, setTipoFiltro] = useState<string>("S");
   const [safra, setSafra] = useState<string>(safras[0].name);
+  const [grupo, setGrupo] = useState<string>(grupos[0].name);
   const [safraSelected, setSafraSelected] = useState<Safra | null>(safras[0]);
+  const [grupoSelected, setGruposSelected] = useState<Grupo | null>(grupos[0]);
 
   useEffect(() => {
     if (route.params?.content) {
@@ -54,7 +63,7 @@ const Financeiro = () => {
   const navigation = useNavigation<BottomTabsTypes>();
 
   return (
-    <View style={styles.container}>
+    <Background>
       <View style={styles.innerContainer}>
         <Header title="Meu Financeiro">
           <View style={styles.iconButtonsContainer}>
@@ -135,6 +144,22 @@ const Financeiro = () => {
                   </View>
                 </>
               )}
+              {content == "pedidos" &&
+              <>
+               <Text style={styles.filterLabel}>Grupo de Produtos</Text>
+                  <CustomDropdown
+                    onChange={(key) => {
+                      const grupoSelected = grupos.find(
+                        (grupo) => grupo.key === key
+                      );
+                      if (grupoSelected) {
+                        setGrupo(grupoSelected.name);
+                      }
+                    }}
+                    value={grupoSelected}
+                    list={grupos}
+                  />
+               </>}
             </View>
           </View>
         </Header>
@@ -150,6 +175,7 @@ const Financeiro = () => {
           {content == "pedidos" && (
             <Pedidos
               tipoFiltro={tipoFiltro}
+              grupoFiltro={grupo}
               safra={safra}
               dataInicial={formatDate(dataInicial)}
               dataFinal={formatDate(dataFinal)}
@@ -165,7 +191,7 @@ const Financeiro = () => {
           )}
         </View>
       </View>
-    </View>
+    </Background>
   );
 };
 
@@ -176,7 +202,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
-    marginTop: 100,
+    marginTop: 90,
     alignItems: "center",
     width: "100%",
   },
@@ -195,7 +221,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   filterTypeContainer: {
-    justifyContent: "center",
     width: "33%",
   },
   dropdownContainer: {

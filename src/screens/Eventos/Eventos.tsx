@@ -19,6 +19,7 @@ import DatePicker from "@/src/components/inputs/DatePicker";
 import ButtonGeneral from "@/src/components/buttons/ButtonGeneral";
 import { getEvent } from "./EventoRoutes";
 import { Linking } from 'react-native';
+import Background from "@/src/components/general/Background";
 
 const Eventos = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -100,7 +101,7 @@ const Eventos = () => {
   const noFiltersApplied = searchText === "" && !startDate && !endDate;
 
   return (
-    <View style={styles.container}>
+    <Background>
       <View style={styles.innerContainer}>
         <Header title="Eventos">
           <View style={styles.searchContainer}>
@@ -209,18 +210,14 @@ const Eventos = () => {
           </ScrollView>
         )}
       </View>
-    </View>
+    </Background>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
   innerContainer: {
     flex: 1,
-    marginTop: 100,
+    marginTop: 90,
     alignItems: "center",
     width: "100%",
   },

@@ -2,10 +2,16 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
+  ScrollView,
+  Pressable,
   StyleSheet,
   ActivityIndicator,
+  LayoutAnimation,
+  UIManager,
+  Platform,
   FlatList,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import FinanceiroCard from "./FinanceiroCard";
 import PedidosCard from "./PedidosCard";
 import AnaliticoCard from "./AnaliticoCard";
@@ -13,8 +19,13 @@ import { getPedidos } from "./FinanceiroRoutes";
 import { useAuth } from "@/src/contexts/AuthContext";
 import { formatCurrency } from "@/src/helpers/formatCurrency";
 
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
 type PedidosProps = {
   tipoFiltro: string;
+  grupoFiltro: string;
   safra: string;
   dataInicial: string;
   dataFinal: string;
@@ -30,34 +41,30 @@ interface Pedido {
     valor: number;
   }>;
   valor: number;
+  condicaopgto:number;
+  valorfaturar:number;
   seriepedido: string;
   numpedido: number;
   datapedido: string;
 }
 
-
 const Pedidos: React.FC<PedidosProps> = ({
   tipoFiltro,
+  grupoFiltro,
   safra,
   dataInicial,
   dataFinal,
 }) => {
+  const [content, setContent] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [totalPedidos, setTotalPedidos] = useState<number>(0);
+  const [totalFaturar, setTotalFaturar] = useState<number>(0);
   const [listaPedidos, setListaPedidos] = useState<Array<Pedido>>([]);
+  const [listaFaturar, setListaFaturar] = useState<Array<Pedido>>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [pedidoSelecionado, setPedidoSelecionado] = useState<Pedido | null>(null);
 
   const { authState } = useAuth();
-
-  const handleCardPress = (pedido: Pedido) => {
-    setPedidoSelecionado(pedido);
-    setModalVisible(true);
-  };
-
-  const renderPedidoCard = ({ item }: { item: Pedido }) => (
-    <PedidosCard pedido={item} onPress={() => handleCardPress(item)} />
-  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,6 +76,7 @@ const Pedidos: React.FC<PedidosProps> = ({
         response = await getPedidos(
           codCliente,
           tipoFiltro,
+          grupoFiltro,
           safra,
           dataInicial,
           dataFinal
@@ -76,14 +84,37 @@ const Pedidos: React.FC<PedidosProps> = ({
       } catch (error) {
         console.error("Erro ao buscar os pedidos:", error);
       } finally {
-        setTotalPedidos(response.total || 0);
-        setListaPedidos(response.list || []);
+        setTotalPedidos(response?.pedidos.total || 0);
+        setTotalFaturar(response?.faturar.total || 0);
+        setListaPedidos(response?.pedidos.list || []);
+        setListaFaturar(response?.faturar.list || []);
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [tipoFiltro, safra, dataInicial, dataFinal]);
+  }, [tipoFiltro,grupoFiltro, safra, dataInicial, dataFinal]);
+
+  const handleCardPress = (contentType: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setContent(contentType);
+  };
+
+  const handleBackPress = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setContent("");
+  };
+
+  const handlePedidoSelecionado = (pedido: Pedido) => {
+    setPedidoSelecionado(pedido);
+    setModalVisible(true);  // Abre o modal
+  };
+
+  const renderPedidoCard = ({ item }: { item: Pedido }) => (
+    <View style={{ marginVertical: 5, justifyContent: 'center', alignItems: 'center' }}>
+      <PedidosCard pedido={item} onPress={() => handlePedidoSelecionado(item)} />
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -93,21 +124,69 @@ const Pedidos: React.FC<PedidosProps> = ({
           <Text>Carregando pedidos...</Text>
         </View>
       ) : (
-        <>
-          <View style={styles.financeiroCardContainer}>
-            <FinanceiroCard
-              value={formatCurrency(totalPedidos)}
-              title="Total de Pedidos"
-              onPress={() => {}}
-            />
-          </View>
-          <FlatList
-            data={listaPedidos}
-            renderItem={renderPedidoCard}
-            keyExtractor={(item, index) => item.numpedido.toString() + index.toString()}
-            contentContainerStyle={styles.flatListContent}
-          />
-        </>
+        <ScrollView
+          contentContainerStyle={styles.scrollViewContent}
+          style={styles.scrollView}
+        >
+          <Pressable style={styles.pressableContainer}>
+            {content === "" ? (
+              <View style={styles.financeiroCardsContainer}>
+                <FinanceiroCard
+                  onPress={() => handleCardPress("totalPedidos")}
+                  value={formatCurrency(totalPedidos)}
+                  title="Total de Pedidos"
+                />
+                <FinanceiroCard
+                  onPress={() => handleCardPress("aFaturar")}
+                  value={formatCurrency(totalFaturar)}
+                  title="Total à Faturar"
+                />
+              </View>
+            ) : (
+              <>
+                <View style={styles.backButtonContainer}>
+                  <Pressable onPress={handleBackPress} style={styles.backButton}>
+                    <Ionicons name="arrow-back" size={24} color="black" />
+                    <Text style={styles.backButtonText}>Voltar</Text>
+                  </Pressable>
+                </View>
+
+                <View style={styles.financeiroCardsContainer}>
+                  {content === "totalPedidos" && (
+                    <>
+                      <FinanceiroCard
+                        value={formatCurrency(totalPedidos)}
+                        title="Total de Pedidos"
+                        onPress={() => {}}
+                      />
+                      <FlatList
+                        data={listaPedidos}
+                        renderItem={renderPedidoCard}
+                        keyExtractor={(item) => item.numpedido.toString()}
+                        scrollEnabled={false}
+                      />
+                    </>
+                  )}
+                  {content === "aFaturar" && (
+                    <>
+                      <FinanceiroCard
+                        value={formatCurrency(totalFaturar)}
+                        title="Total à Faturar"
+                        onPress={() => {}}
+                      />
+                      <FlatList
+                        data={listaFaturar}
+                        renderItem={renderPedidoCard}
+                        keyExtractor={(item) => item.numpedido.toString()}
+                        scrollEnabled={false}
+                      />
+                    </>
+                  )}
+                </View>
+              </>
+            )}
+          </Pressable>
+        </ScrollView>
       )}
       {pedidoSelecionado && (
         <AnaliticoCard
@@ -123,7 +202,7 @@ const Pedidos: React.FC<PedidosProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
-    backgroundColor: "white",
+
     flex: 1,
     paddingHorizontal: 16,
   },
@@ -132,13 +211,35 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  financeiroCardContainer: {
-    marginBottom: 20,
+  scrollViewContent: {
+    paddingBottom: 100,
   },
-  flatListContent: {
-    paddingBottom: 20,
+  scrollView: {
+    width: "100%",
+  },
+  pressableContainer: {
+    width: "100%",
+    paddingHorizontal: 10,
     justifyContent: "center",
     alignItems: "center",
+  },
+  financeiroCardsContainer: {
+    width: "100%",
+    gap: 20,
+    padding: 0,
+  },
+  backButtonContainer: {
+    width: "100%",
+  },
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  backButtonText: {
+    marginLeft: 8,
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 

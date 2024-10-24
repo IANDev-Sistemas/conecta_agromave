@@ -16,6 +16,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import CreditSlider from "./CreditSlider"; // Certifique-se de que o caminho está correto
 import LoginInput from "@/src/components/inputs/LoginInput";
 import LoginButton from "@/src/components/buttons/LoginButton";
+import Background from "@/src/components/general/Background";
 
 const statusBarHeight = Constants.statusBarHeight;
 
@@ -27,7 +28,7 @@ const Cliente = () => {
   const { nome, email, telefone, limite } = usuario || {};
 
   return (
-    <View style={styles.container}>
+    <Background>
       <View
         style={[
           styles.header,
@@ -76,7 +77,7 @@ const Cliente = () => {
           </View>
         </View>
       </View>
-    </View>
+    </Background>
   );
 };
 
@@ -84,35 +85,43 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
-    backgroundColor: "white",
+    backgroundColor: "transparent",
   },
   header: {
     position: "absolute",
     width: "100%",
     justifyContent: "center",
-    backgroundColor: "#007E34",
+    backgroundColor: "white",
     paddingHorizontal: 40,
   },
   mainContent: {
     marginTop: 90,
-    backgroundColor: "#E7E7E7",
+    backgroundColor: "transparent",
     alignItems: "center",
   },
   innerContent: {
     marginTop: 20,
     alignItems: "center",
     gap: 20,
-    width: "100%",
+    width: "100%", 
   },
   avatarStyle: {
     borderColor: "#007E34",
     borderWidth: 2,
   },
   greetingText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#007E34",
+    backgroundColor: "white", // Fundo branco
+    paddingVertical: 10, // Espaçamento vertical
+    paddingHorizontal: 15, // Espaçamento horizontal
+    borderRadius: 16, // Bordas arredondadas
+    borderWidth: 2, // Largura da borda
+    borderColor: "#007E34", // Cor da borda
+    color: "#007E34", // Cor do texto
+    textAlign: "center", // Centraliza o texto
+    overflow: "hidden", // Garante que o conteúdo fique dentro das bordas arredondadas
   },
   formContainer: {
     backgroundColor: "white",

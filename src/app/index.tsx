@@ -6,18 +6,21 @@ import Router from "../navigation/Router";
 import { FazendaProvider } from "../contexts/FazendaContext";
 import theme from "../../GlobalStyle"; // Importando estilos globais // Certifique-se de ajustar o caminho
 import { SafraProvider } from "../contexts/SafraContext";
+import { GrupoProvider } from "../contexts/GrupoContext";
 
 export default function Index() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider theme={theme}>
-        <FazendaProvider>
-          <SafraProvider>
-            <AuthProvider>
-              <Router />
-            </AuthProvider>
-          </SafraProvider>
-        </FazendaProvider>
+      <GrupoProvider>
+          <FazendaProvider>
+            <SafraProvider>
+              <AuthProvider>
+                <Router />
+              </AuthProvider>
+            </SafraProvider>
+          </FazendaProvider>
+        </GrupoProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );

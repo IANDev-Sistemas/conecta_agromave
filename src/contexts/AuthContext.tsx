@@ -13,6 +13,7 @@ import { Alert } from "react-native";
 import { useFazenda } from "./FazendaContext";
 import { tKeyGenerator } from "../helpers/tKeyGenerator";
 import { useSafra } from "./SafraContext";
+import { useGrupo } from "./GrupoContext";
 
 interface AuthProps {
   authState?: {
@@ -94,6 +95,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const { carregarFazendas } = useFazenda();
   const { carregarSafras } = useSafra();
+  const { carregarGrupos } = useGrupo();
 
 
 
@@ -103,6 +105,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (authState.authenticated == true) {
         await carregarFazendas(authState.usuario?.codigo);
         await carregarSafras(authState.usuario?.codigo);
+        await carregarGrupos();
       }
     };
 

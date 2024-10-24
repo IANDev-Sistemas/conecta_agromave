@@ -22,6 +22,8 @@ interface Pedido {
       valor: number;
     }>;
     valor: number;
+    condicaopgto:number;
+    valorfaturar:number;
     seriepedido: string;
     numpedido: number;
     datapedido: string;
@@ -45,9 +47,10 @@ const AnaliticoCard: React.FC<AnaliticoCardProps> = ({
       <View style={styles.productItem}>
         <Text style={styles.productName}>{item.produto}</Text>
         <View style={styles.productDetails}>
+          {item.quantidadeproduto !==0 &&
           <Text style={styles.productDetailText}>
             Quantidade: {item.quantidadeproduto}
-          </Text>
+          </Text>}
           <Text
             style={styles.productDetailText}
           >{formatCurrency(item.valor)}</Text>
@@ -82,8 +85,12 @@ const AnaliticoCard: React.FC<AnaliticoCardProps> = ({
               <View style={styles.detailsContainer}>
                 <Text style={styles.detailLabel}>Valor Total:</Text>
                 <Text style={styles.detailValue}>
-                  {formatCurrency(pedido.valor)}
+                {formatCurrency(pedido.valor  ? pedido.valor : pedido.valorfaturar)}
                 </Text>
+              </View>
+              <View style={styles.detailsContainer}>
+                <Text style={styles.detailLabel}>Pagamento:</Text>
+                <Text style={styles.detailValuePag}>{pedido.condicaopgto}</Text>
               </View>
 
               <View style={styles.detailsContainer}>
@@ -158,6 +165,11 @@ const styles = StyleSheet.create({
   detailLabel: {
     fontSize: 16,
     color: "#666",
+    fontWeight: "600",
+  },
+  detailValuePag:{
+    fontSize: 14,
+    color: "#333",
     fontWeight: "600",
   },
   detailValue: {

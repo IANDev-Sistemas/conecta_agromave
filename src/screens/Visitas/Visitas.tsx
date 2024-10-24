@@ -7,6 +7,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { useFazenda } from "@/src/contexts/FazendaContext"; // Supondo que essa função exista
 import { getVisitas } from "./VisitasRoute";
 import { useAuth } from "@/src/contexts/AuthContext";
+import Background from "@/src/components/general/Background";
 
 interface Fazenda {
   codigo: number;
@@ -61,7 +62,7 @@ const Visitas = () => {
   }, [selectedFazenda]);
 
   return (
-    <View style={styles.container}>
+    <Background>
       <View style={styles.headerContainer}>
         <Header title="Visitas">
           <View style={styles.dropdownContainer}>
@@ -102,7 +103,7 @@ const Visitas = () => {
           </ScrollView>
         )}
       </View>
-    </View>
+    </Background>
   );
 };
 
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   headerContainer: {
-    marginTop: 100,
+    marginTop: 90,
     height: "100%",
     alignItems: "center",
     width: "100%",

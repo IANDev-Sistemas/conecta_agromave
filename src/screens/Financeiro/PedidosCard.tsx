@@ -14,6 +14,7 @@ interface PedidoCardProps {
       valor: number;
     }>;
     valor: number;
+    valorfaturar:number;
     seriepedido: string;
     numpedido: number;
     datapedido: string;
@@ -41,7 +42,7 @@ const PedidosCard: React.FC<PedidoCardProps> = ({ pedido, onPress }) => {
       <View style={styles.infoRow}>
         <View style={styles.infoBlock}>
           <Text style={styles.label}>Valor Total</Text>
-          <Text style={styles.value}>{formatCurrency(pedido.valor)}</Text>
+          <Text style={styles.value}>{formatCurrency(pedido.valor  ? pedido.valor : pedido.valorfaturar)}</Text>
         </View>
         <View style={styles.infoBlock}>
           <Text style={styles.label}>Data do Pedido</Text>

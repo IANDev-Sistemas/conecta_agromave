@@ -220,7 +220,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 20,
     flex: 1,
-    backgroundColor: "white",
   },
   loadingContainer: {
     marginTop:150,

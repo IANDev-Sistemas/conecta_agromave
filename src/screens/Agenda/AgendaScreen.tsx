@@ -15,6 +15,7 @@ import { AddCircle } from "iconsax-react-native";
 import NovaProgModal from "./NovaProgModal";
 import { getAgenda } from "./AgentaRoutes";
 import { useAuth } from "@/src/contexts/AuthContext";
+import Background from "@/src/components/general/Background";
 
 const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
@@ -195,7 +196,7 @@ const AgendaScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <Background>
       <Header title="Agenda">
         <View style={styles.headerActions}>
           <TouchableOpacity
@@ -239,7 +240,7 @@ const AgendaScreen: React.FC = () => {
           visible={showModal}
         />
       )}
-    </View>
+    </Background>
   );
 };
 

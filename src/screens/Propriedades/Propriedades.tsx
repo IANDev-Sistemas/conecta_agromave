@@ -16,6 +16,7 @@ import Consultor from "./ConsultorCardFazenda";
 import { useFazenda } from "@/src/contexts/FazendaContext";
 import { useAuth } from "@/src/contexts/AuthContext";
 import { getConsultores } from "../Consultor/ConsultorRoutes";
+import Background from "@/src/components/general/Background";
 
 interface Consultor {
   codigo: string;
@@ -66,7 +67,7 @@ const Propriedades: React.FC = () => {
   }, [selectedFazenda]);
 
   return (
-    <View style={styles.container}>
+    <Background>
       <View style={styles.innerContainer}>
         <Header title="Propriedades">
           <View style={styles.dropdownContainer}>
@@ -119,7 +120,7 @@ const Propriedades: React.FC = () => {
           </ScrollView>
         )}
       </View>
-    </View>
+    </Background>
   );
 };
 

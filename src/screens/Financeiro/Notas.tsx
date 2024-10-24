@@ -94,7 +94,6 @@ const Notas: React.FC<NotasProps> = ({ tipoFiltro, safra, dataInicial, dataFinal
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
-    backgroundColor: "white",
     flex: 1,
     paddingHorizontal: 16,
   },

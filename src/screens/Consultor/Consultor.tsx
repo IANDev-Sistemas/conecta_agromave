@@ -15,6 +15,7 @@ import ConsultorCard from "./ConsultorCard";
 import { useFazenda } from "@/src/contexts/FazendaContext";
 import { getConsultores } from "./ConsultorRoutes";
 import { useAuth } from "@/src/contexts/AuthContext";
+import Background from "@/src/components/general/Background";
 
 interface Consultor {
   codigo: string;
@@ -73,7 +74,7 @@ const ConsultorScreen = () => {
   const navigation = useNavigation<BottomTabsTypes>();
 
   return (
-    <View style={styles.container}>
+    <Background>
       <View style={styles.innerContainer}>
         <Header title="Consultores">
           <View style={styles.dropdownContainer}>
@@ -112,8 +113,8 @@ const ConsultorScreen = () => {
             </ScrollView>
           )
         )}
-      </View>
     </View>
+    </Background>
   );
 };
 
@@ -128,9 +129,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   innerContainer: {
-    marginTop: 100,
+    marginTop: 90,
     alignItems: "center",
     width: "100%",
+    height:"100%"
   },
   dropdownContainer: {
     flexDirection: "column",
