@@ -18,6 +18,12 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios":{
+        "appleId":"douglas@iandev.com.br",
+        "ascAppId":"6737345927",
+        "appleTeamId":"QCCB2AAX2J"
+      }
+    }
   }
 }

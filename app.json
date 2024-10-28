@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "conecta_agromave",
+    "name": "COnecta agromave",
     "slug": "conecta_agromave",
     "description": "Conecta Agromave",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon-agromave.png",
     "scheme": "myapp",
@@ -14,16 +14,28 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.conecta.agromave",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true,
+          "NSExceptionDomains": {
+            "obs.grupoagromave.com.br": {
+              "NSTemporaryExceptionAllowsInsecureHTTPLoads": true,
+              "NSIncludesSubdomains": true
+            }
+          }
+        }
+      }
     },
     "android": {
-    "adaptiveIcon": {
-      "foregroundImage": "./assets/images/adaptive-icon.png",
-      "backgroundColor": "#ffffff"
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.ggodinho.conecta_agromave",
+      "permissions": ["INTERNET"]
     },
-    "package": "com.ggodinho.conecta_agromave",
-    "permissions": ["INTERNET"]
-  },
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -52,7 +64,9 @@
           },
           "ios": {
             "infoPlist": {
-              "NSAppTransportSecurity": { "NSAllowsArbitraryLoads": true }
+              "NSAppTransportSecurity": {
+                "NSAllowsArbitraryLoads": true
+              }
             },
             "deploymentTarget": "13.4"
           }
