@@ -4,7 +4,7 @@ import Header from "@/src/components/general/Header";
 import CustomDropdown from "@/src/components/inputs/Dropdown";
 import VisitasCard from "./VisitasCard";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import { useFazenda } from "@/src/contexts/FazendaContext"; // Supondo que essa função exista
+import { useFazenda } from "@/src/contexts/FazendaContext"; 
 import { getVisitas } from "./VisitasRoute";
 import { useAuth } from "@/src/contexts/AuthContext";
 import Background from "@/src/components/general/Background";
@@ -28,37 +28,42 @@ const Visitas = () => {
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const navigation = useNavigation();
 
-  const [selectedFazenda, setSelectedFazenda] = useState<number>(
-    route.params?.selectedFazenda || 0
-  );
-  const [visitasData, setVisitasData] = useState<any[]>([]); 
-  const [loading, setLoading] = useState<boolean>(false); 
+  // Atualize para armazenar o nome e o código da fazenda selecionada
+  const [selectedFazenda, setSelectedFazenda] = useState<number | null>(null);
+  const [selectedFazendaNome, setSelectedFazendaNome] = useState<string>("");
+
+  const [visitasData, setVisitasData] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (route.params?.selectedFazenda !== undefined) {
-      setSelectedFazenda(route.params.selectedFazenda);
+      const fazenda = fazendas.find(f => f.codigo === route.params.selectedFazenda);
+      if (fazenda) {
+        setSelectedFazenda(fazenda.codigo);
+        setSelectedFazendaNome(fazenda.nome);
+      }
     }
-  }, [route.params?.selectedFazenda]);
+  }, [route.params?.selectedFazenda, fazendas]);
 
   const { authState } = useAuth();
 
   useEffect(() => {
     const fetchVisitas = async () => {
-      setLoading(true);
-      try {
-        const codCliente = authState?.usuario?.codigo;
-        const response = await getVisitas(codCliente, selectedFazenda);
-        setVisitasData(response);
-      } catch (error) {
-        console.error("Erro ao buscar as visitas:", error);
-      } finally {
-        setLoading(false);
+      if (selectedFazenda) {
+        setLoading(true);
+        try {
+          const codCliente = authState?.usuario?.codigo;
+          const response = await getVisitas(codCliente, selectedFazendaNome);
+          setVisitasData(response);
+        } catch (error) {
+          console.error("Erro ao buscar as visitas:", error);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
-    if (selectedFazenda) {
-      fetchVisitas();
-    }
+    fetchVisitas();
   }, [selectedFazenda]);
 
   return (
@@ -68,7 +73,13 @@ const Visitas = () => {
           <View style={styles.dropdownContainer}>
             <CustomDropdown
               label="Propriedades"
-              onChange={(value) => setSelectedFazenda(Number(value))}
+              onChange={(value) => {
+                const fazenda = fazendas.find(f => f.codigo === Number(value));
+                if (fazenda) {
+                  setSelectedFazenda(fazenda.codigo);
+                  setSelectedFazendaNome(fazenda.nome);
+                }
+              }}
               value={selectedFazenda}
               list={fazendas.map((fazenda) => ({
                 key: fazenda.codigo,
@@ -80,15 +91,12 @@ const Visitas = () => {
         </Header>
 
         {loading ? (
-         <View style={styles.loadingContainer}>
+          <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#007E34" />
             <Text>Carregando visitas...</Text>
           </View>
         ) : (
-          <ScrollView
-            contentContainerStyle={styles.scrollViewContent}
-            style={styles.scrollView}
-          >
+          <ScrollView contentContainerStyle={styles.scrollViewContent} style={styles.scrollView}>
             <Pressable style={styles.pressable}>
               {visitasData.length > 0 ? (
                 visitasData.map((visita, index) => (
@@ -120,7 +128,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   loadingContainer: {
-    marginTop:150,
+    marginTop: 150,
     justifyContent: "center",
     alignItems: "center",
   },

@@ -1,36 +1,52 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, Easing, Platform, Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import { 
+  Animated, Easing, Platform, Text, TouchableOpacity, View, StyleSheet, Linking 
+} from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 import Constants from "expo-constants";
 import { Divider } from "@rneui/themed";
 import { useNavigationState } from "@react-navigation/native";
 import { DrawerNavigationProp } from '@react-navigation/drawer';
-import { Calendar, Calendar1, CardPos, House, LogoutCurve, Profile2User, ProfileCircle, Routing, SmsNotification, TicketStar } from "iconsax-react-native";
+import { 
+  Calendar, Calendar1, CardPos, House, LogoutCurve, Profile2User, 
+  ProfileCircle, Routing, SmsNotification, 
+  Whatsapp
+} from "iconsax-react-native";
 
 const statusBarHeight = Platform.OS === "ios" ? 50 : Constants.statusBarHeight + 20;
 
 interface MenuItemProps {
   icon: React.ReactNode;
   label: string;
-  route: string;
+  route?: string;
   currentRoute: string | null;
-  onPress: () => void;
+  onClick?: () => void; // Propriedade opcional
+  navigation: DrawerNavigationProp<any>;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ icon, label, route, currentRoute, onPress }) => {
+const MenuItem: React.FC<MenuItemProps> = ({ 
+  icon, label, route, currentRoute, onClick, navigation 
+}) => {
   const isActive = currentRoute === route;
   const iconColor = isActive ? "white" : "#007E34";
-  
+
+  const handlePress = () => {
+    if (onClick) {
+      onClick(); // Executa função personalizada
+    } else if (route) {
+      navigation.navigate(route); // Navega para a rota especificada
+    }
+  };
+
   return (
     <TouchableOpacity
-      onPress={onPress}
-      style={[
-        styles.menuItem,
-        isActive && styles.activeMenuItem,
-      ]}
+      onPress={handlePress}
+      style={[styles.menuItem, isActive && styles.activeMenuItem]}
     >
       {React.cloneElement(icon as React.ReactElement, { color: iconColor })}
-      <Text style={[styles.menuText, isActive && styles.activeMenuText]}>{label}</Text>
+      <Text style={[styles.menuText, isActive && styles.activeMenuText]}>
+        {label}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -43,13 +59,13 @@ interface CustomDrawerProps {
 const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) => {
   const animationValue = useRef(new Animated.Value(500)).current;
   const { onLogout } = useAuth();
-  
+
   const navigationState = useNavigationState(state => state);
   const currentRoute = navigationState.routes[navigationState.index];
-  
+
   const currentRouteIndex = currentRoute?.state?.index;
   const currentRouteNames = currentRoute?.state?.routeNames;
-  
+
   let currentRouteName: string | null = null;
   if (currentRouteIndex !== undefined && currentRouteNames && currentRouteNames.length > currentRouteIndex) {
     currentRouteName = currentRouteNames[currentRouteIndex];
@@ -73,18 +89,30 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
     }).start(closeDrawer);
   };
 
+  const openWhatsApp = async () => {
+    const url = 'https://api.whatsapp.com/send?phone=5508007300505';
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.warn("Não foi possível abrir o link:", url);
+    }
+  };
+
   const menuItems = [
-    { icon: <ProfileCircle size={30} color="white"  />, label: "Cliente", route: "Cliente" },
-    { icon: <House size="24" color="white"  />, label: "Propriedades", route: "Propriedades" },
+    { icon: <ProfileCircle size={30} />, label: "Cliente", route: "Cliente" },
+    { icon: <House size={24} />, label: "Propriedades", route: "Propriedades" },
     { icon: <Routing size={24} />, label: "Visitas", route: "Visitas" },
     { icon: <CardPos size={24} />, label: "Financeiro", route: "Financeiro" },
     { icon: <Calendar size={24} />, label: "Agenda", route: "Agenda" },
     { icon: <Profile2User size={24} />, label: "Consultor", route: "Consultor" },
     { icon: <Calendar1 size={24} />, label: "Eventos", route: "Eventos" },
-  ];
-
-  const profileItems = [
-    { icon: <SmsNotification  size={24} />, label: "Notificações", route: "Notificações" }
+    {
+      icon: <Whatsapp size={24} />,
+      label: "Atendimento SAC",
+      onClick: openWhatsApp // Função para abrir WhatsApp
+    }
   ];
 
   return (
@@ -99,29 +127,13 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
         <Text style={styles.drawerTitle}>Menus</Text>
         {menuItems.map((item) => (
           <MenuItem
-            key={item.route}
+            key={item.label}
             icon={item.icon}
             label={item.label}
             route={item.route}
             currentRoute={currentRouteName}
-            onPress={() => {
-              navigation.navigate(item.route);
-              handleClose();
-            }}
-          />
-        ))}
-        <Divider />
-        {profileItems.map((item) => (
-          <MenuItem
-            key={item.route}
-            icon={item.icon}
-            label={item.label}
-            route={item.route}
-            currentRoute={currentRouteName}
-            onPress={() => {
-              navigation.navigate(item.route);
-              handleClose();
-            }}
+            onClick={item.onClick}
+            navigation={navigation}
           />
         ))}
         <Divider />

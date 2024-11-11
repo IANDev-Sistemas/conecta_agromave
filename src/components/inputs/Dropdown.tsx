@@ -1,19 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { EvilIcons } from '@expo/vector-icons';
 
 interface DropdownProps {
   list: Array<{ key: number | string; name: string }>;
   value: any;
   label?: string;
-  onChange: (key: number | string) => void;
+  onChange: (key: number | string | null) => void;
   placeholder?: string;
   position?: 'auto' | 'top' | 'bottom';
   blur?: () => void;
   disable?: boolean;
   search?: boolean;
   searchField?: 'name' | 'key';
+  clearable?: boolean;
 }
 
 const CustomDropdown: React.FC<DropdownProps> = ({
@@ -22,12 +23,34 @@ const CustomDropdown: React.FC<DropdownProps> = ({
   label,
   onChange,
   placeholder,
-  position,
+  position = 'auto',
   blur,
-  disable,
-  search,
-  searchField,
+  disable = false,
+  search = false,
+  searchField = 'name',
+  clearable = false,
 }) => {
+  const [filteredData, setFilteredData] = useState(list);
+  const [inputValue, setInputValue] = useState<string | null>(value ?? '');
+
+  useEffect(() => {
+    setInputValue(value ?? ''); // Sincroniza input com o valor selecionado
+  }, [value]);
+
+  const handleSearch = (text: string) => {
+    setInputValue(text);
+    const filtered = list.filter((item) =>
+      item[searchField].toString().toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredData(filtered);
+  };
+
+  const handleClear = () => {
+    setInputValue(''); // Limpa o campo de texto
+    setFilteredData(list); // Restaura a lista completa
+    onChange(null); // Define o valor como null
+  };
+
   if (blur) blur();
 
   const textColor = disable ? '#ACB4BA' : '#000000';
@@ -42,20 +65,29 @@ const CustomDropdown: React.FC<DropdownProps> = ({
         inputSearchStyle={styles.inputSearchStyle}
         itemTextStyle={styles.itemTextStyle}
         containerStyle={styles.dropdownContainer}
-        data={list}
+        data={filteredData}
         maxHeight={200}
         labelField="name"
         valueField="key"
         placeholder={placeholder ?? ''}
-        value={value}
+        value={inputValue}
         search={search}
         searchPlaceholder="Busca..."
-        searchField={searchField}
-        renderRightIcon={
-          search ? () => <EvilIcons name="search" size={24} color="#ACB4BA" /> : undefined
+        onChangeText={search ? handleSearch : undefined}
+        renderRightIcon={() =>
+          clearable && inputValue ? (
+            <TouchableOpacity onPress={handleClear} style={styles.clearButton}>
+              <EvilIcons name="close" size={24} color="#ACB4BA" />
+            </TouchableOpacity>
+          ) : search ? (
+            <EvilIcons name="search" size={24} color="#ACB4BA" />
+          ) : null
         }
-        onChange={(item) => onChange(item.key)}
-        dropdownPosition={position ? position : 'auto'}
+        onChange={(item) => {
+          onChange(item.key); // Atualiza o valor selecionado
+          setFilteredData(list); // Restaura a lista completa
+        }}
+        dropdownPosition={position}
         disable={disable}
       />
     </View>
@@ -68,18 +100,15 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   label: {
-    fontWeight: '600', 
+    fontWeight: '600',
     marginBottom: 4,
   },
   dropdown: {
     backgroundColor: '#EEEEEE',
-    width: '100%',
-    color: '#ACB4BA',
-    fontWeight: '400',
-    fontSize: 12,
     padding: 10,
     borderRadius: 12,
     height: 44,
+    width: '100%',
   },
   placeholderStyle: {
     color: '#ACB4BA',
@@ -96,6 +125,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 8,
     backgroundColor: '#FFFFFF',
+  },
+  clearButton: {
+    marginLeft: 8,
   },
 });
 

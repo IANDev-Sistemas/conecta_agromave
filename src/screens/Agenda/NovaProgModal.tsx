@@ -87,7 +87,7 @@ const NovaProgModal: React.FC<CustomModalProps> = ({
                 value={new Date()}
                 onChange={onChange}
               />
-              <Text style={styles.inlineText}>á</Text>
+              <Text style={styles.inlineText}>a</Text>
               <DatePicker
                 label="Selecionar Data"
                 value={new Date()}

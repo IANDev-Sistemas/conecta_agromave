@@ -10,7 +10,6 @@ export const getFinanceiro = async (
 ) => {
   const tKey = tKeyGenerator();
 
-  console.log(tKey)
   try {
     const response = await apiPublic.get("/odwctrl", {
       params: {
@@ -25,9 +24,8 @@ export const getFinanceiro = async (
         dataFinal: dataFinal,
       },
     });
-  
-    return response.data;
 
+    return response.data;
   } catch (error) {
     console.error("Error during finance get:", error);
     return {
@@ -42,7 +40,9 @@ export const getPedidos = async (
   grupoFiltro: string,
   safra: string,
   dataInicial: string,
-  dataFinal: string
+  dataFinal: string,
+  tipoFiltroProduto: string,
+  produto: string
 ) => {
   const tKey = tKeyGenerator();
 
@@ -59,13 +59,14 @@ export const getPedidos = async (
         safra: safra,
         dataInicial: dataInicial,
         dataFinal: dataFinal,
+        tipoFiltroProduto: tipoFiltroProduto,
+        produto: produto,
       },
     });
-  
-    return response.data;
 
+    return response.data;
   } catch (error) {
-    console.error("Error during finance get:", error);
+    console.error("Error during pedidos get:", error);
     return {
       error: true,
       msg: "Invalid details",
@@ -98,7 +99,6 @@ export const getNotas = async (
     });
 
     return response.data;
-
   } catch (error) {
     console.error("Error during finance get:", error);
     return {

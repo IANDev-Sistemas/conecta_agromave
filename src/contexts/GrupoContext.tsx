@@ -9,7 +9,7 @@ interface Grupo {
 
 interface GrupoContextProps {
 grupos: Grupo[];
-  carregarGrupos: () => Promise<void>;
+  carregarGrupos: (codCliente: number | null | undefined) => Promise<void>;
 }
 
 const GrupoContext = createContext<GrupoContextProps | undefined>(undefined);
@@ -29,8 +29,14 @@ interface GrupoProviderProps {
 export const GrupoProvider: React.FC<GrupoProviderProps> = ({ children }) => {
   const [grupos, setGrupos] = useState<Grupo[]>([]);
 
-  const carregarGrupos = async () => {
+  const carregarGrupos = async (codCliente: number | null | undefined) => {
     const tKey = tKeyGenerator();
+
+    if (!codCliente) {
+      console.error("Código do cliente não fornecido.");
+      return;
+    }
+
     try {
       const response = await apiPublic.get("/odwctrl", {
         params: {
@@ -38,6 +44,7 @@ export const GrupoProvider: React.FC<GrupoProviderProps> = ({ children }) => {
           apelido: "CNTAGROMAVE-api-rotas",
           tKey: tKey,
           scriptFunction: "getGroups",
+          codCliente: codCliente,
         },
       });
       if (response.data) {

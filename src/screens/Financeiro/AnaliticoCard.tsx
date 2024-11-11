@@ -89,7 +89,7 @@ const AnaliticoCard: React.FC<AnaliticoCardProps> = ({
                 </Text>
               </View>
               <View style={styles.detailsContainer}>
-                <Text style={styles.detailLabel}>Pagamento:</Text>
+                <Text style={styles.detailLabel}>Condição:</Text>
                 <Text style={styles.detailValuePag}>{pedido.condicaopgto}</Text>
               </View>
 

@@ -68,7 +68,7 @@ const Home = () => {
     const { url } = event;
     if (url.startsWith("http")) {
       Linking.openURL(url);
-      return false; // Impede a navegação na WebView
+      return false;
     }
     return true;
   };
@@ -78,7 +78,6 @@ const Home = () => {
       source={require("../../../assets/images/background.png")}
       style={styles.background}
     >
-      {/* Camada de opacidade */}
       <View style={styles.overlay} />
 
       <View style={styles.container}>
@@ -86,9 +85,77 @@ const Home = () => {
           <ScrollView contentContainerStyle={styles.scrollViewContent} style={styles.scrollView}>
             <Pressable style={styles.pressableContainer}>
               <View style={styles.column}>
-                <WeatherCard previsao={previsao} cidade="Cidade" uf="UF" />
+                {/* <WeatherCard previsao={previsao} cidade="Cidade" uf="UF" /> */}
                 <CotacaoCard cotacoes={cotacoes} />
+
+                {/* Primeira Cotação */}
                 <View style={styles.webViewContainer}>
+                  <Text style={styles.cardTitle}>Soja</Text>
+                  <WebView
+                    originWhitelist={["*"]}
+                    source={{
+                      html: `
+                        <html>
+                          <head>
+                            <meta name="viewport" content="width=device-width, initial-scale=0.8">
+                          </head>
+                          <body style="margin:0; gap:100px; display:flex">
+                            <script type="text/javascript" src="https://www.noticiasagricolas.com.br/widget/cotacoes.js.php?id=199&fonte=Arial,Helvetica,sans-serif&tamanho=10pt&largura=400px&cortexto=333333&corcabecalho=B2C3C6&corlinha=DCE7E9&imagem=true&output=js"></script>
+                          </body>
+                        </html>
+                      `,
+                    }}
+                    style={{ width: 340, height: 280 }}
+                    onShouldStartLoadWithRequest={handleLinkPress}
+                  />
+                </View>
+
+                {/* Segunda Cotação */}
+                <View style={styles.webViewContainerCot}>
+                  <Text style={styles.cardTitle}>Milho</Text>
+                  <WebView
+                    originWhitelist={["*"]}
+                    source={{
+                      html: `
+                        <html>
+                          <head>
+                            <meta name="viewport" content="width=device-width, initial-scale=0.8">
+                          </head>
+                          <body style="margin:0;gap:100px; display:flex">
+                            <script type="text/javascript" src="https://www.noticiasagricolas.com.br/widget/cotacoes.js.php?id=198&fonte=Verdana&tamanho=10pt&largura=400px&cortexto=333333&corcabecalho=B2C3C6&corlinha=DCE7E9&imagem=true&output=js"></script>
+                          </body>
+                        </html>
+                      `,
+                    }}
+                    style={{ width: 340, height: 300 }}
+                    onShouldStartLoadWithRequest={handleLinkPress}
+                  />
+                </View>
+
+                {/* Terceira Cotação */}
+                <View style={styles.webViewContainerCot}>
+                  <Text style={styles.cardTitle}>Algodão</Text>
+                  <WebView
+                    originWhitelist={["*"]}
+                    source={{
+                      html: `
+                        <html>
+                          <head>
+                            <meta name="viewport" content="width=device-width, initial-scale=0.8">
+                          </head>
+                          <body style="margin:0; gap:100px; display:flex">
+                            <script type="text/javascript" src="https://www.noticiasagricolas.com.br/widgets/cotacoes?id=131&fonte=Arial%2C%20Helvetica%2C%20sans-serif&tamanho=10pt&largura=400px&cortexto=333333&corcabecalho=B2C3C6&corlinha=DCE7E9&imagem=true&output=js"></script>
+                          </body>
+                        </html>
+                      `,
+                    }}
+                    style={{ width: 340, height: 300 }}
+                    onShouldStartLoadWithRequest={handleLinkPress}
+                  />
+                </View>
+
+                {/* Notícias */}
+                <View style={styles.webViewContainerNews}>
                   <Text style={styles.cardTitle}>Notícias</Text>
                   <WebView
                     originWhitelist={["*"]}
@@ -98,16 +165,17 @@ const Home = () => {
                           <head>
                             <meta name="viewport" content="width=device-width, initial-scale=1.0">
                           </head>
-                          <body style="margin:0;padding: 0 4px 0 4px; gap:100px; display:flex">
-                            <script type="text/javascript" src="https://www.noticiasagricolas.com.br/widget/noticias.js.php?subsecao=2,80,4,40,13,97,15,148,154,32,101,108,111,114,116,117,120&largura=350px&altura=850px&fonte=Arial%2C%20Helvetica%2C%20sans-serif&tamanho=11pt&cortexto=333333&corlink=006666&qtd=15&output=js"></script>
+                          <body style="margin:0; display:flex">
+                            <script type="text/javascript" src="https://www.noticiasagricolas.com.br/widget/noticias.js.php?subsecao=2,80,4,40,13,97,15,148,154,32,101,108,111,114,116,117,120&largura=350px&altura=850px&fonte=Arial,Helvetica,sans-serif&tamanho=11pt&cortexto=333333&corlink=006666&qtd=15&output=js"></script>
                           </body>
                         </html>
                       `,
                     }}
-                    style={{ width: 340, height: 800, padding:10 }}
+                    style={{ width: 340, height: 800 }}
                     onShouldStartLoadWithRequest={handleLinkPress}
                   />
                 </View>
+
               </View>
             </Pressable>
           </ScrollView>
@@ -120,11 +188,11 @@ const Home = () => {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    resizeMode: "cover", // Garante que a imagem cubra a tela
+    resizeMode: "cover",
   },
   overlay: {
-    ...StyleSheet.absoluteFillObject, // Preenche toda a tela
-    backgroundColor: "rgba(255, 255, 255, 0.6)",// Fundo preto com opacidade de 40%
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255, 255, 255, 0.6)",
   },
   container: {
     flex: 1,
@@ -163,8 +231,20 @@ const styles = StyleSheet.create({
   },
   webViewContainer: {
     marginTop: 20,
-    width: Dimensions.get("window").width - 32,
-    height: 800,
+    width: Dimensions.get("window").width - 70,
+    height: 265,
+    overflow: "hidden",
+  },
+  webViewContainerCot: {
+    marginTop: 20,
+    width: Dimensions.get("window").width - 70,
+    height: 245,
+    overflow: "hidden",
+  },
+  webViewContainerNews: {
+    marginTop: 20,
+    width: Dimensions.get("window").width - 20,
+    height: 350,
     overflow: "hidden",
   },
 });

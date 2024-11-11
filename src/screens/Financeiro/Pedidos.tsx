@@ -26,6 +26,8 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 type PedidosProps = {
   tipoFiltro: string;
   grupoFiltro: string;
+  produto: string;
+  tipoFiltroProduto: string;
   safra: string;
   dataInicial: string;
   dataFinal: string;
@@ -50,6 +52,8 @@ interface Pedido {
 
 const Pedidos: React.FC<PedidosProps> = ({
   tipoFiltro,
+  produto,
+  tipoFiltroProduto,
   grupoFiltro,
   safra,
   dataInicial,
@@ -79,7 +83,10 @@ const Pedidos: React.FC<PedidosProps> = ({
           grupoFiltro,
           safra,
           dataInicial,
-          dataFinal
+          dataFinal,
+          tipoFiltroProduto,
+          produto,
+          
         );
       } catch (error) {
         console.error("Erro ao buscar os pedidos:", error);
@@ -93,7 +100,7 @@ const Pedidos: React.FC<PedidosProps> = ({
     };
 
     fetchData();
-  }, [tipoFiltro,grupoFiltro, safra, dataInicial, dataFinal]);
+  }, [tipoFiltro,grupoFiltro, safra, dataInicial, dataFinal,produto, tipoFiltroProduto]);
 
   const handleCardPress = (contentType: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);

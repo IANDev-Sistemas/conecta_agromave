@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "COnecta agromave",
+    "name": "Conecta Agromave",
     "slug": "conecta_agromave",
     "description": "Conecta Agromave",
     "version": "1.0.1",
@@ -10,7 +10,7 @@
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash-agromave.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "ios": {
@@ -30,11 +30,26 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icon-agromave.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.ggodinho.conecta_agromave",
-      "permissions": ["INTERNET"]
+      "permissions": ["INTERNET"],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "https",
+              "host": "api.whatsapp.com"
+            },
+            {
+              "scheme": "whatsapp"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",

@@ -14,6 +14,7 @@ import { useFazenda } from "./FazendaContext";
 import { tKeyGenerator } from "../helpers/tKeyGenerator";
 import { useSafra } from "./SafraContext";
 import { useGrupo } from "./GrupoContext";
+import { useProduto } from "./ProdutoContext";
 
 interface AuthProps {
   authState?: {
@@ -96,6 +97,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { carregarFazendas } = useFazenda();
   const { carregarSafras } = useSafra();
   const { carregarGrupos } = useGrupo();
+  const { carregarProdutos } = useProduto();
 
 
 
@@ -105,7 +107,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (authState.authenticated == true) {
         await carregarFazendas(authState.usuario?.codigo);
         await carregarSafras(authState.usuario?.codigo);
-        await carregarGrupos();
+        await carregarGrupos(authState.usuario?.codigo);
+        await carregarProdutos(authState.usuario?.codigo);
+        console.log("carregado")
       }
     };
 

@@ -3,7 +3,7 @@ import { tKeyGenerator } from "@/src/helpers/tKeyGenerator";
 
 export const getVisitas = async (
   codCliente: number | undefined,
-  codFazenda: number | undefined
+  fazenda: string | undefined
 ) => {
   const tKey = tKeyGenerator();
 
@@ -15,7 +15,7 @@ export const getVisitas = async (
         tKey: tKey,
         scriptFunction: "getVisit",
         codCliente: codCliente,
-        codFazenda: codFazenda,
+        fazenda: fazenda,
       },
     });
 

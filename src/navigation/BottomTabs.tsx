@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
   TouchableWithoutFeedback,
   Platform,
   TouchableOpacity,
+  Animated,
+  PanResponder,
+  GestureResponderEvent,
+  Linking,
 } from "react-native";
 import { BottomTabNavigationProp, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../screens/Home/Home";
@@ -21,30 +25,100 @@ import {
   More,
   ShoppingBag,
   DocumentText1,
-  Receipt1,
   ReceiptText,
+  Whatsapp,
 } from "iconsax-react-native";
 import Propriedades from "../screens/Propriedades/Propriedades";
 import Visitas from "../screens/Visitas/Visitas";
 import Consultor from "../screens/Consultor/Consultor";
 import Eventos from "../screens/Eventos/Eventos";
 import Financeiro from "../screens/Financeiro/Financeiro";
-import Contratos from "../screens/Financeiro/Contratos";
 
 type BottomTabNavigation = {
   Propriedades: undefined;
   Visitas: { selectedFazenda?: number };
   Consultor: { selectedFazenda?: number };
-  Cliente:undefined;
+  Cliente: undefined;
   Financeiro: { content?: string };
   Pedidos: { content?: string };
   Contratos: { content?: string };
   Notas: { content?: string };
 };
 
-export type BottomTabsTypes = BottomTabNavigationProp<BottomTabNavigation> 
+export type BottomTabsTypes = BottomTabNavigationProp<BottomTabNavigation>;
 
 const Tab = createBottomTabNavigator();
+
+const openWhatsApp = async () => {
+  const url = 'https://api.whatsapp.com/send?phone=5508007300505';
+  const supported = await Linking.canOpenURL(url);
+
+  if (supported) {
+    await Linking.openURL(url);
+  } else {
+    console.warn("Não foi possível abrir o link:", url);
+  }
+};
+
+interface FloatingButtonProps {
+  onPress: (event: GestureResponderEvent) => void;
+}
+
+const FloatingButton: React.FC<FloatingButtonProps> = ({ onPress }) => {
+  const pan = useRef(new Animated.ValueXY()).current;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        // "Anexa" o valor atual ao deslocamento
+        pan.setOffset({
+          x: pan.x._value,
+          y: pan.y._value,
+        });
+        pan.setValue({ x: 0, y: 0 });
+      },
+      onPanResponderMove: Animated.event(
+        [null, { dx: pan.x, dy: pan.y }],
+        { useNativeDriver: false }
+      ),
+      onPanResponderRelease: () => {
+        pan.flattenOffset(); // Reseta o deslocamento para evitar o retorno
+      },
+    })
+  ).current;
+
+  return (
+    <Animated.View
+      style={{
+        position: "absolute",
+        bottom: 80,
+        right: 20,
+        transform: [{ translateX: pan.x }, { translateY: pan.y }],
+      }}
+      {...panResponder.panHandlers}
+    >
+      <TouchableOpacity
+        onPress={onPress}
+        style={{
+          backgroundColor: "#007E34",
+          borderRadius: 50,
+          width: 60,
+          height: 60,
+          justifyContent: "center",
+          alignItems: "center",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.3,
+          shadowRadius: 5,
+          elevation: 5,
+        }}
+      >
+        <Whatsapp color="white" size={32} />
+      </TouchableOpacity>
+    </Animated.View>
+  );
+};
 
 const handleIcon = (label: string, focused: boolean, color: string) => {
   switch (label) {
@@ -170,7 +244,7 @@ const BottomTabs = ({ navigation }: any) => {
   return (
     <TouchableWithoutFeedback onPress={handleOutsidePress}>
       <View style={{ flex: 1 }}>
-        <Tab.Navigator
+      <Tab.Navigator
           screenOptions={{
             header: () => (
               <CustomHeader
@@ -207,7 +281,7 @@ const BottomTabs = ({ navigation }: any) => {
             }}
             initialParams={{content:"pedidos"}}
           />
-          <Tab.Screen
+          {/* <Tab.Screen
           name="Contratos"
           component={Contratos}
           options={{
@@ -215,15 +289,7 @@ const BottomTabs = ({ navigation }: any) => {
               handleIcon("Contratos", focused, color),
           }}
           initialParams={{content:"contratos"}}
-        />
-           <Tab.Screen
-            name="Home"
-            component={Home}
-            options={{
-              tabBarIcon: ({ focused, color }) =>
-                handleIcon("Home", focused, color),
-            }}
-          />
+        /> */}
           <Tab.Screen
             name="Financeiro"
             component={Financeiro}
@@ -232,6 +298,14 @@ const BottomTabs = ({ navigation }: any) => {
                 handleIcon("Financeiro", focused, color),
             }}
             initialParams={{content:"financeiro"}}
+          />
+          <Tab.Screen
+            name="Home"
+            component={Home}
+            options={{
+              tabBarIcon: ({ focused, color }) =>
+                handleIcon("Home", focused, color),
+            }}
           />
           <Tab.Screen
             name="Notas"
@@ -253,7 +327,7 @@ const BottomTabs = ({ navigation }: any) => {
                     backgroundColor: "#007E34",
                     justifyContent: "center",
                     alignItems: "center",
-                    paddingRight: 20,
+                    paddingRight: 40,
                     paddingLeft: 10,
                     gap: 15,
                   }}
@@ -299,6 +373,8 @@ const BottomTabs = ({ navigation }: any) => {
         {drawerVisible && (
           <CustomDrawer closeDrawer={toggleDrawer} navigation={navigation} />
         )}
+
+        <FloatingButton onPress={()=>openWhatsApp()} />
       </View>
     </TouchableWithoutFeedback>
   );
