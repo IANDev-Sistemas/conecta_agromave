@@ -3,7 +3,7 @@
     "name": "Conecta Agromave",
     "slug": "conecta_agromave",
     "description": "Conecta Agromave",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon-agromave.png",
     "scheme": "myapp",
@@ -40,11 +40,7 @@
           "action": "VIEW",
           "data": [
             {
-              "scheme": "https",
-              "host": "api.whatsapp.com"
-            },
-            {
-              "scheme": "whatsapp"
+              "scheme": "https"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]

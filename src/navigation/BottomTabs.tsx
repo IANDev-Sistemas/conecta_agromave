@@ -49,16 +49,6 @@ export type BottomTabsTypes = BottomTabNavigationProp<BottomTabNavigation>;
 
 const Tab = createBottomTabNavigator();
 
-const openWhatsApp = async () => {
-  const url = 'https://api.whatsapp.com/send?phone=5508007300505';
-  const supported = await Linking.canOpenURL(url);
-
-  if (supported) {
-    await Linking.openURL(url);
-  } else {
-    console.warn("Não foi possível abrir o link:", url);
-  }
-};
 
 interface FloatingButtonProps {
   onPress: (event: GestureResponderEvent) => void;
@@ -374,7 +364,7 @@ const BottomTabs = ({ navigation }: any) => {
           <CustomDrawer closeDrawer={toggleDrawer} navigation={navigation} />
         )}
 
-        <FloatingButton onPress={()=>openWhatsApp()} />
+        <FloatingButton onPress={() => Linking.openURL('https://wa.me/5508007300505')} />
       </View>
     </TouchableWithoutFeedback>
   );

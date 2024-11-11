@@ -90,7 +90,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
   };
 
   const openWhatsApp = async () => {
-    const url = 'https://api.whatsapp.com/send?phone=5508007300505';
+    const url = 'https://wa.me/5508007300505';
     const supported = await Linking.canOpenURL(url);
 
     if (supported) {
@@ -111,7 +111,7 @@ const CustomDrawer: React.FC<CustomDrawerProps> = ({ closeDrawer, navigation }) 
     {
       icon: <Whatsapp size={24} />,
       label: "Atendimento SAC",
-      onClick: openWhatsApp // Função para abrir WhatsApp
+      onClick: ()=> Linking.openURL('https://wa.me/5508007300505') // Função para abrir WhatsApp
     }
   ];
 
