@@ -33,6 +33,7 @@
         "foregroundImage": "./assets/images/icon-agromave.png",
         "backgroundColor": "#ffffff"
       },
+      "versionCode": 2,
       "package": "com.ggodinho.conecta_agromave",
       "permissions": ["INTERNET"],
       "intentFilters": [
@@ -96,7 +97,7 @@
         "projectId": "37cdb63d-01f8-48f8-9567-ef62262abe5b"
       }
     },
-    "runtimeVersion": "1.0.0",
+    "runtimeVersion": "1.0.2",
     "updates": {
       "url": "https://u.expo.dev/37cdb63d-01f8-48f8-9567-ef62262abe5b"
     },
